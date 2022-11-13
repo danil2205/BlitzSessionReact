@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
+import 'bootstrap-social/bootstrap-social.css'
 import reportWebVitals from './reportWebVitals';
 import Navbar from "./components/NavBar";
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Home from "./components/HomeComponent.js";
 import Accounts from "./components/AccountComponent";
 import Session from "./components/SessionComponent";
@@ -21,6 +24,10 @@ const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
+      {
+        path: "/",
+        element: <Home />
+      },
       {
         path: "/home",
         element: <Home />
