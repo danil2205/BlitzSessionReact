@@ -109,6 +109,12 @@ span {
   margin-top: 20px;
 }
 
+.login-button {
+  position: absolute;
+  right: 60px;
+  top: 20px;
+}
+
 .content {
   padding: 40px;
   background: #f1f1f1;
@@ -148,7 +154,7 @@ span {
   line-height: 1.5;
 }
 
-.primary-button {
+.primary-button, .login-button {
   background: transparent;
   border: 2px solid #0061eb;
   padding: 10px;
@@ -165,19 +171,11 @@ span {
   text-decoration: none;
 }
 
-.primary-button:hover {
+.primary-button:hover, .login-button:hover {
   background:#0061eb;
   color:#fff;
   text-decoration:none;
 }
-
-
-
-
-
-
-
-
 
 table {
   width: 100%;

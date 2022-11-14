@@ -1,6 +1,43 @@
 import * as ActionTypes from './ActionTypes'
 import { expressURL } from "../shared/expressURL";
 
+export const postAccount = (access_token, nickname, account_id, expires_at) => (dispatch) => {
+  const newAccount = {
+    access_token: access_token,
+    nickname: nickname,
+    account_id: account_id,
+    expires_at: expires_at,
+  }
+
+  return fetch(expressURL + 'accounts/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'body': JSON.stringify(newAccount),
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin'
+  })
+    .then((response) => {
+        if (response.ok) return response;
+        const error = new Error(`Error ${response.status}: ${response.statusText}`);
+        error.response = response;
+        throw error;
+      },
+      (error) => {
+        throw new Error(error.message);
+      })
+    .then((response) => response.json())
+    .then((response) => {
+      console.log(response);
+      alert(`Your Account: ${JSON.stringify(response)}`);
+    })
+    .catch((error) => {
+      console.log('Post account ', error.message);
+      alert('Your account could not be added\nError: ' + error.message);
+    });
+};
+
 export const fetchAccounts = () => (dispatch) => {
   dispatch(accountsLoading(true));
 
@@ -8,9 +45,6 @@ export const fetchAccounts = () => (dispatch) => {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      // 'mode': 'cors',
-      // 'Access-Control-Allow-Origin': '*',
-      // 'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization',
     },
     credentials: 'same-origin'
   })
@@ -41,3 +75,4 @@ export const addAccounts = (accounts) => ({
   type: ActionTypes.ADD_ACCOUNTS,
   payload: accounts,
 });
+

@@ -1,5 +1,6 @@
 import React from "react";
 import { Loading } from "./LoadingComponent";
+import { wargamingLink } from "../shared/wargaming";
 
 const Accounts = (props) => {
   if (props.isLoading) {
@@ -28,9 +29,11 @@ const Accounts = (props) => {
       <div className="profile-container">
         <div className="table">
           <div className="headerAccount">
-            <h2>Linked Account WoT Blitz</h2>
+            <h2>Linked Accounts WoT Blitz</h2>
             <div className="server">
-              <button className="primary-button add-account icon"><span>Add Account</span></button>
+              <a href={wargamingLink} target="_blank" rel="noreferrer">
+                <button className="primary-button add-account icon"><span>Add Account</span></button>
+              </a>
             </div>
           </div>
           <div className="accounts-table-container">
