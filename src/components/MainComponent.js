@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { fetchAccounts, postAccount } from "../redux/ActionCreators";
+import { fetchAccounts, postAccount, postUser } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -33,6 +33,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
   // postAccount: () => {dispatch(postAccount())},
+  postUser: (username, password) => {dispatch(postUser(username, password))},
 });
 
 class Main extends Component {
@@ -45,7 +46,7 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar postUser={this.props.postUser} />
         <Routes>
           <Route path="/home" element={<Home />}/>
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}

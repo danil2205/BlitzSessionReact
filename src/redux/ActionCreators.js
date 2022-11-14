@@ -1,5 +1,5 @@
 import * as ActionTypes from './ActionTypes'
-import { expressURL } from "../shared/expressURL";
+import {expressURL} from "../shared/expressURL";
 
 export const postAccount = (access_token, nickname, account_id, expires_at) => (dispatch) => {
   const newAccount = {
@@ -75,4 +75,43 @@ export const addAccounts = (accounts) => ({
   type: ActionTypes.ADD_ACCOUNTS,
   payload: accounts,
 });
+
+export const addAccount = (accounts) => ({
+  type: ActionTypes.ADD_ACCOUNT,
+  payload: accounts,
+});
+
+export const postUser = (username, password) => (dispatch) =>  {
+  const newAccount = {
+    username: username,
+    password: password,
+  }
+
+  return fetch(expressURL + 'users/login', {
+    method: 'POST',
+    body: JSON.stringify(newAccount),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then((response) => {
+        if (response.ok) return response;
+        const error = new Error(`Error ${response.status}: ${response.statusText}`);
+        error.response = response;
+        throw error;
+      },
+      (error) => {
+        throw new Error(error.message);
+      })
+    .then((response) => response.json() )
+    .then((response) => {
+      localStorage.setItem('token', response.token);
+      dispatch(addAccount(response))
+    })
+    .catch((error) => {
+      console.log('Post Account ', error.message);
+      alert('Your account cannot be added\nError: ' + error.message);
+    });
+};
 

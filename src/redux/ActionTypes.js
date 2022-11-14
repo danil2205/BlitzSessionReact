@@ -1,3 +1,4 @@
 export const ACCOUNTS_LOADING = "ACCOUNTS_LOADING";
 export const ACCOUNTS_FAILED = "ACCOUNTS_FAILED";
 export const ADD_ACCOUNTS = "ADD_ACCOUNTS";
+export const ADD_ACCOUNT = "ADD_ACCOUNT";

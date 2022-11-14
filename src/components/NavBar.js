@@ -4,8 +4,8 @@ import { SidebarData } from "../shared/SidebarData";
 import * as FaIcons from "react-icons/fa";
 import { IconContext } from "react-icons";
 import logo from "../logo/blitz.png";
-import "../App.css";
-import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Nav, NavItem} from "reactstrap";
+import {Button, Col, Form, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row} from "reactstrap";
+import {Control, LocalForm} from "react-redux-form";
 
 
 class RenderLoginForm extends Component {
@@ -17,7 +17,7 @@ class RenderLoginForm extends Component {
     }
 
     this.toggleModal = this.toggleModal.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   toggleModal() {
     this.setState({
@@ -25,11 +25,11 @@ class RenderLoginForm extends Component {
     })
   }
 
-  handleLogin(event) {
-    this.toggleModal();
-    alert(`Username: ${this.username.value} Password: ${this.password.value} Remember: ${this.remember.checked}`);
-    event.preventDefault();
+  handleSubmit(values) {
+    this.props.postUser(values.username, values.password);
+    this.toggleModal()
   }
+
 
   render() {
     return (
@@ -44,26 +44,32 @@ class RenderLoginForm extends Component {
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
           <ModalBody>
-            <Form onSubmit={this.handleLogin}>
-              <FormGroup>
-                <Label htmlFor="username">Username</Label>
-                <Input type="text" id="username" name="username"
-                       innerRef={(input) => this.username = input } />
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="password">Password</Label>
-                <Input type="password" id="password" name="password"
-                       innerRef={(input) => this.password = input } />
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input type="checkbox" id="remember" name="remember"
-                         innerRef={(input) => this.remember = input }/>
-                  Remember me
-                </Label>
-              </FormGroup>
-              <Button type="submit" value="submit" color="primary">Login</Button>
-            </Form>
+            <LocalForm model="login" onSubmit={(values) => this.handleSubmit(values)}>
+
+              <Row className="form-group">
+                <Label htmlFor="username" md={12}>Username</Label>
+                <Col md={12}>
+                  <Control.text model=".username" id="username" name="username" placeholder="Your Username" className="form-control" />
+                </Col>
+              </Row>
+
+              <Row className="form-group">
+                <Label htmlFor="password" md={12}>Password</Label>
+                <Col md={12}>
+                  <Control.text model=".password" id="password" name="password" placeholder="Your Password" className="form-control" />
+                </Col>
+              </Row>
+
+              <Row>
+                <Label md={12}> </Label>
+              </Row>
+
+              <Row className="form-group">
+                <Col>
+                  <Button type="submit" value="submit" color="primary">Submit</Button>
+                </Col>
+              </Row>
+            </LocalForm>
           </ModalBody>
         </Modal>
       </>
@@ -71,7 +77,7 @@ class RenderLoginForm extends Component {
   }
 }
 
-const Navbar = () => {
+const Navbar = (props) => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
 
@@ -104,7 +110,7 @@ const Navbar = () => {
           </ul>
         </nav>
       </IconContext.Provider>
-      <RenderLoginForm />
+      <RenderLoginForm postUser={props.postUser} />
     </>
   );
 }
