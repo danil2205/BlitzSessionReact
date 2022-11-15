@@ -27,6 +27,7 @@ const withRouter = (Component) => {
 const mapStateToProps = (state) => {
   return {
     accounts: state.accounts,
+    jwttoken: state.jwttoken,
   }
 };
 
@@ -48,7 +49,9 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Navbar postUser={this.props.postUser} checkJWTToken={this.props.checkJWTToken} />
+        <Navbar postUser={this.props.postUser}
+                tokenStatus={this.props.jwttoken.jwttoken.success}
+        />
         <Routes>
           <Route path="/home" element={<Home />}/>
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}
