@@ -226,3 +226,12 @@ table tbody tr td {
   flex: 2;
   font-size: 16px;
 }
+
+.username-text-logout {
+  position: absolute;
+  right: 170px;
+  top: 28px;
+  font-size: 20px;
+  font-weight: 400;
+}
+

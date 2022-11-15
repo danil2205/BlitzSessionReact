@@ -6,9 +6,21 @@ import { IconContext } from "react-icons";
 import logo from "../logo/blitz.png";
 import { Button, Col, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row } from "reactstrap";
 import { Control, LocalForm } from "react-redux-form";
+import { Loading } from "./LoadingComponent";
+import * as IoIcons from "react-icons/io";
 
-const authorizationButton = (toggleModal, tokenStatus) => {
-  if (!tokenStatus) {
+const authorizationButton = (toggleModal, tokenInfo) => {
+  if (tokenInfo.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  }
+
+  if (!tokenInfo.jwttoken.success) {
     return (
       <Button className="login-button" outline onClick={toggleModal}>
         Login<span className="fa fa-sign-in fa-lg"></span>
@@ -16,9 +28,13 @@ const authorizationButton = (toggleModal, tokenStatus) => {
     );
   } else {
     return (
-      <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
-        Logout<span className="fa fa-sign-in fa-lg"></span>
-      </Button>
+      <div className="username-logout">
+        <span className="username-text-logout">{tokenInfo.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
+        <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
+          Logout<span className="fa fa-sign-in fa-lg"></span>
+        </Button>
+      </div>
+
     );
   }
 };
@@ -41,7 +57,7 @@ class RenderLoginForm extends Component {
   }
 
   handleSubmit(values) {
-    this.props.postUser(values.username, values.password);
+    this.props.loginUser(values.username, values.password);
     this.toggleModal()
   }
 
@@ -51,7 +67,7 @@ class RenderLoginForm extends Component {
       <>
         <Nav className="ml-auto" navbar>
           <NavItem>
-            {authorizationButton(this.toggleModal, this.props.tokenStatus)}
+            {authorizationButton(this.toggleModal, this.props.tokenInfo)}
           </NavItem>
         </Nav>
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
@@ -123,7 +139,11 @@ const Navbar = (props) => {
           </ul>
         </nav>
       </IconContext.Provider>
-      <RenderLoginForm postUser={props.postUser} tokenStatus={props.tokenStatus} />
+      <RenderLoginForm loginUser={props.loginUser}
+                       tokenInfo={props.tokenInfo}
+                       // isLoading={props.jwttoken.isLoading}
+                       // errMess={props.jwttoken.errMess}
+      />
     </>
   );
 }

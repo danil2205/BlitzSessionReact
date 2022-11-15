@@ -81,7 +81,7 @@ export const addAccount = (accounts) => ({
   payload: accounts,
 });
 
-export const postUser = (username, password) => (dispatch) =>  {
+export const loginUser = (username, password) => (dispatch) =>  {
   const newAccount = {
     username: username,
     password: password,
@@ -152,4 +152,3 @@ export const checkJWTToken = () => (dispatch) =>  {
     .then((tkn) => dispatch(tokenValid(tkn)))
     .catch((error) => dispatch(tokenFailed(error.message)));
 };
-

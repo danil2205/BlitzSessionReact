@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { checkJWTToken, fetchAccounts, postAccount, postUser} from "../redux/ActionCreators";
+import { checkJWTToken, fetchAccounts, postAccount, loginUser } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
   // postAccount: () => {dispatch(postAccount())},
-  postUser: (username, password) => {dispatch(postUser(username, password))},
+  loginUser: (username, password) => {dispatch(loginUser(username, password))},
   checkJWTToken: () => {dispatch(checkJWTToken())},
 });
 
@@ -49,8 +49,10 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Navbar postUser={this.props.postUser}
-                tokenStatus={this.props.jwttoken.jwttoken.success}
+        <Navbar loginUser={this.props.loginUser}
+                tokenInfo={this.props.jwttoken}
+                // isLoading={this.props.jwttoken.isLoading}
+                // errMess={this.props.jwttoken.errMess}
         />
         <Routes>
           <Route path="/home" element={<Home />}/>
