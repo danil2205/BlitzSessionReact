@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { fetchAccounts, postAccount, postUser } from "../redux/ActionCreators";
+import { checkJWTToken, fetchAccounts, postAccount, postUser} from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -34,19 +34,21 @@ const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
   // postAccount: () => {dispatch(postAccount())},
   postUser: (username, password) => {dispatch(postUser(username, password))},
+  checkJWTToken: () => {dispatch(checkJWTToken())},
 });
 
 class Main extends Component {
 
   componentDidMount() {
     this.props.fetchAccounts();
+    this.props.checkJWTToken();
     // this.props.postAccount();
   }
 
   render() {
     return (
       <div>
-        <Navbar postUser={this.props.postUser} />
+        <Navbar postUser={this.props.postUser} checkJWTToken={this.props.checkJWTToken} />
         <Routes>
           <Route path="/home" element={<Home />}/>
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}

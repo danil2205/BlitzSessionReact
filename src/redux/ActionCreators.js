@@ -116,3 +116,40 @@ export const postUser = (username, password) => (dispatch) =>  {
     });
 };
 
+export const tokenChecking = () => ({
+  type: ActionTypes.JWTTOKEN_LOADING,
+});
+
+export const tokenFailed = (errMess) => ({
+  type: ActionTypes.JWTTOKEN_FAILED,
+  payload: errMess,
+});
+
+export const tokenValid = (token) => ({
+  type: ActionTypes.JWTTOKEN_OK,
+  payload: token,
+});
+
+export const checkJWTToken = () => (dispatch) =>  {
+  dispatch(tokenChecking(true));
+
+  return fetch(expressURL + 'users/checkJWTToken', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+  })
+    .then((response) => {
+        if (response.ok) return response;
+        const error = new Error(`Error ${response.status}: ${response.statusText}`);
+        error.response = response;
+        throw error;
+      },
+      (error) => {
+        throw new Error(error.message);
+      })
+    .then((response) => response.json())
+    .then((tkn) => dispatch(tokenValid(tkn)))
+    .catch((error) => dispatch(tokenFailed(error.message)));
+};
+

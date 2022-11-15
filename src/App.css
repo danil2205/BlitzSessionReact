@@ -107,7 +107,7 @@ span {
   margin-top: 20px;
 }
 
-.login-button {
+.login-button, .logout-button {
   position: absolute;
   right: 30px;
   top: 20px;
@@ -152,7 +152,7 @@ span {
   line-height: 1.5;
 }
 
-.primary-button, .login-button {
+.primary-button, .login-button, .logout-button {
   background: transparent;
   border: 2px solid #0061eb;
   padding: 10px;
@@ -169,7 +169,7 @@ span {
   text-decoration: none;
 }
 
-.primary-button:hover, .login-button:hover {
+.primary-button:hover, .login-button:hover, .logout-button:hover {
   background:#0061eb;
   color:#fff;
   text-decoration:none;

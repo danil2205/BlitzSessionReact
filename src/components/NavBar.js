@@ -7,6 +7,21 @@ import logo from "../logo/blitz.png";
 import { Button, Col, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row } from "reactstrap";
 import { Control, LocalForm } from "react-redux-form";
 
+const authorizationButton = (toggleModal) => {
+  if (localStorage.getItem('token') === null) {
+    return (
+      <Button className="login-button" outline onClick={toggleModal}>
+        Login<span className="fa fa-sign-in fa-lg"></span>
+      </Button>
+    );
+  } else {
+    return (
+      <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
+        Logout<span className="fa fa-sign-in fa-lg"></span>
+      </Button>
+    );
+  }
+};
 
 class RenderLoginForm extends Component {
   constructor(props) {
@@ -36,9 +51,7 @@ class RenderLoginForm extends Component {
       <>
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <Button className="login-button" outline onClick={this.toggleModal}>
-              Login<span className="fa fa-sign-in fa-lg"></span>
-            </Button>
+            {authorizationButton(this.toggleModal)}
           </NavItem>
         </Nav>
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
