@@ -1,11 +1,11 @@
-import React, {Component, useState} from "react";
+import React, { Component, useState } from "react";
 import { Link } from "react-router-dom";
 import { SidebarData } from "../shared/SidebarData";
 import * as FaIcons from "react-icons/fa";
 import { IconContext } from "react-icons";
 import logo from "../logo/blitz.png";
-import {Button, Col, Form, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row} from "reactstrap";
-import {Control, LocalForm} from "react-redux-form";
+import { Button, Col, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row } from "reactstrap";
+import { Control, LocalForm } from "react-redux-form";
 
 
 class RenderLoginForm extends Component {

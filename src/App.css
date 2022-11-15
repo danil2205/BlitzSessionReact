@@ -44,7 +44,6 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px 0px 8px 16px;
   list-style: none;
   height: 60px;
 }
@@ -85,7 +84,7 @@ span {
 }
 
 .titleSidebar {
-  font-size: 25px;
+  font-size: 21px;
   color: #ffffff;
   font-weight: 400;
   text-align: center;
@@ -102,7 +101,6 @@ span {
   display: flex;
   padding: 20px;
   justify-content: center;
-  align-items: center;
   background: #031b4d;
   outline: none;
   margin-bottom: 40px;
@@ -111,7 +109,7 @@ span {
 
 .login-button {
   position: absolute;
-  right: 60px;
+  right: 30px;
   top: 20px;
 }
 

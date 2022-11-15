@@ -108,6 +108,7 @@ export const postUser = (username, password) => (dispatch) =>  {
     .then((response) => {
       localStorage.setItem('token', response.token);
       dispatch(addAccount(response))
+      window.location.reload();
     })
     .catch((error) => {
       console.log('Post Account ', error.message);

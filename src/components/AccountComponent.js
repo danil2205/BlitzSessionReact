@@ -2,6 +2,26 @@ import React from "react";
 import { Loading } from "./LoadingComponent";
 import { wargamingLink } from "../shared/wargaming";
 
+const addAccount = (props) => {
+  if (!props.accounts[0]) return <tbody></tbody>
+  return (
+    <tbody>
+      {props.accounts[0].userAccounts.map((account, index) => {
+          return (
+            <tr key={index}>
+              <td>{account.nickname}</td>
+              <td>eu</td>
+              <td>
+                delete icon
+              </td>
+            </tr>
+          );
+        })}
+    </tbody>
+  );
+};
+
+
 const Accounts = (props) => {
   if (props.isLoading) {
     return (
@@ -21,8 +41,6 @@ const Accounts = (props) => {
       </div>
     );
   }
-
-  if (!props.accounts[0]) return <div></div>
 
   return (
     <div className="content">
@@ -45,19 +63,7 @@ const Accounts = (props) => {
                 <th></th>
               </tr>
               </thead>
-              <tbody>
-              {props.accounts[0].userAccounts.map((account, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{account.nickname}</td>
-                    <td>eu</td>
-                    <td>
-                      delete icon
-                    </td>
-                  </tr>
-                );
-              })}
-              </tbody>
+              {addAccount(props)}
             </table>
           </div>
         </div>
