@@ -7,9 +7,6 @@ export const Accounts = (state = {
   switch(action.type) {
     case ActionTypes.ADD_ACCOUNTS:
       return {...state, isLoading: false, errMess: null, accounts: action.payload};
-    case ActionTypes.ADD_ACCOUNT:
-      const account = action.payload;
-      return {...state, accounts: state.accounts.concat(account)};
     case ActionTypes.ACCOUNTS_LOADING:
       return {...state, isLoading: true, errMess: null, accounts: []};
     case ActionTypes.ACCOUNTS_FAILED:

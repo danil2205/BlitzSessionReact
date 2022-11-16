@@ -76,20 +76,15 @@ export const addAccounts = (accounts) => ({
   payload: accounts,
 });
 
-export const addAccount = (accounts) => ({
-  type: ActionTypes.ADD_ACCOUNT,
-  payload: accounts,
-});
-
 export const loginUser = (username, password) => (dispatch) =>  {
-  const newAccount = {
+  const credentials = {
     username: username,
     password: password,
   }
 
   return fetch(expressURL + 'users/login', {
     method: 'POST',
-    body: JSON.stringify(newAccount),
+    body: JSON.stringify(credentials),
     headers: {
       'Content-Type': 'application/json'
     },
@@ -104,16 +99,33 @@ export const loginUser = (username, password) => (dispatch) =>  {
       (error) => {
         throw new Error(error.message);
       })
-    .then((response) => response.json() )
+    .then((response) => response.json())
     .then((response) => {
       localStorage.setItem('token', response.token);
-      dispatch(addAccount(response))
       window.location.reload();
     })
     .catch((error) => {
-      console.log('Post Account ', error.message);
-      alert('Your account cannot be added\nError: ' + error.message);
+      console.log('Error Login: ', error.message);
+      alert('You cannot login\nError: ' + error.message);
     });
+};
+
+export const signupUser = (username, password) => (dispatch) => {
+  const credentials = {
+    username: username,
+    password: password,
+  };
+
+  return fetch(expressURL + 'users/signup', {
+    method: 'POST',
+    body: JSON.stringify(credentials),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => response.json())
+    .then((response) => { window.location.reload(); })
+    .catch((err) => { console.log(`Error SignUp: ${err.message}`) });
 };
 
 export const tokenChecking = () => ({
