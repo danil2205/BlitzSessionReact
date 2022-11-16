@@ -47,172 +47,153 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo) => 
   }
 };
 
-class RenderLoginForm extends Component {
-  constructor(props) {
-    super(props);
+const RenderLoginForm = (props) => {
+  const [loginModal, setLoginModal] = useState(false);
+  const [signupModal, setSignupModal] = useState(false);
+  const [pwd, setPwd] = useState('');
+  const toggleLogin = () => setLoginModal(!loginModal);
+  const toggleSignup = () => setSignupModal(!signupModal);
+  const handleChangePwd = (event) => { setPwd(event.target.value); };
 
-    this.state = {
-      isLoginModalOpen: false,
-      isSignupModalOpen: false,
-    };
-
-    this.toggleLoginModal = this.toggleLoginModal.bind(this);
-    this.toggleSignupModal = this.toggleSignupModal.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleRegistration = this.handleRegistration.bind(this);
-  }
-  toggleLoginModal() {
-    this.setState({
-      isLoginModalOpen: !this.state.isLoginModalOpen
-    })
+  const handleSubmit = (values) => {
+    props.loginUser(values.username, values.password);
+    toggleLogin();
   }
 
-  toggleSignupModal() {
-    this.setState({
-      isSignupModalOpen: !this.state.isSignupModalOpen
-    })
+  const handleRegistration = (values) => {
+    props.signupUser(values.username, values.password);
+    toggleSignup();
   }
 
-  handleSubmit(values) {
-    this.props.loginUser(values.username, values.password);
-    this.toggleLoginModal();
-  }
+  return (
+    <>
+      <Nav className="ml-auto" navbar>
+        <NavItem>
+          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo)}
+        </NavItem>
+      </Nav>
+      <Modal isOpen={loginModal} toggle={toggleLogin}>
+        <ModalHeader toggle={toggleLogin}>Login</ModalHeader>
+        <ModalBody>
+          <LocalForm model="login" onSubmit={(values) => handleSubmit(values)}>
 
-  handleRegistration(values) {
-    this.props.signupUser(values.username, values.password);
-    this.toggleSignupModal();
-  }
+            <Row className="form-group">
+              <Label htmlFor="username" md={12}>Username</Label>
+              <Col md={12}>
+                <Control.text model=".username" id="username" name="username" placeholder="Your Username"
+                              className="form-control"
+                              validators={{
+                                required, minLength: minLength(6), maxLength: maxLength(20)
+                              }} />
+                <Errors
+                  className="text-danger"
+                  model=".username"
+                  show="touched"
+                  messages={{
+                    required: 'Required',
+                    minLength: 'Must be greater than 5 characters',
+                    maxLength: 'Must be 20 characters or less'
+                  }}
+                />
+              </Col>
+            </Row>
 
-  render() {
-    return (
-      <>
-        <Nav className="ml-auto" navbar>
-          <NavItem>
-            {authorizationButton(this.toggleLoginModal, this.toggleSignupModal, this.props.tokenInfo)}
-          </NavItem>
-        </Nav>
-        <Modal isOpen={this.state.isLoginModalOpen} toggle={this.toggleLoginModal}>
-          <ModalHeader toggle={this.toggleLoginModal}>Login</ModalHeader>
-          <ModalBody>
-            <LocalForm model="login" onSubmit={(values) => this.handleSubmit(values)}>
+            <Row className="form-group">
+              <Label htmlFor="password" md={12}>Password</Label>
+              <Col md={12}>
+                <Control type="password" value={pwd} onChange={handleChangePwd} model=".password" id="password"
+                         name="password"
+                         placeholder="Your Password"
+                         className="form-control"
+                         validators={{
+                  required, minLength: minLength(3), maxLength: maxLength(20)
+                }} />
+                <Errors
+                  className="text-danger"
+                  model=".password"
+                  show="touched"
+                  messages={{
+                    required: 'Required',
+                    minLength: 'Must be greater than 2 characters',
+                    maxLength: 'Must be 20 characters or less'
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Label md={12}> </Label>
+            </Row>
+            <Row className="form-group">
+              <Col>
+                <Button type="submit" value="submit" color="primary">Submit</Button>
+              </Col>
+            </Row>
+          </LocalForm>
+        </ModalBody>
+      </Modal>
 
-              <Row className="form-group">
-                <Label htmlFor="username" md={12}>Username</Label>
-                <Col md={12}>
-                  <Control.text model=".username" id="username" name="username" placeholder="Your Username"
-                                className="form-control"
-                                validators={{
-                                  required, minLength: minLength(6), maxLength: maxLength(20)
-                                }} />
-                  <Errors
-                    className="text-danger"
-                    model=".username"
-                    show="touched"
-                    messages={{
-                      required: 'Required',
-                      minLength: 'Must be greater than 5 characters',
-                      maxLength: 'Must be 20 characters or less'
-                    }}
-                  />
-                </Col>
-              </Row>
+      <Modal isOpen={signupModal} toggle={toggleSignup}>
+        <ModalHeader toggle={toggleSignup}>Register</ModalHeader>
+        <ModalBody>
+          <LocalForm model="register" onSubmit={(values) => handleRegistration(values)}>
+            <Row className="form-group">
+              <Label htmlFor="username" md={12}>Username</Label>
+              <Col md={12}>
+                <Control.text model=".username" id="username" name="username" placeholder="Your Username"
+                              className="form-control"
+                              validators={{
+                  required, minLength: minLength(6), maxLength: maxLength(20)
+                }} />
+                <Errors
+                  className="text-danger"
+                  model=".username"
+                  show="touched"
+                  messages={{
+                    required: 'Required',
+                    minLength: 'Must be greater than 5 characters',
+                    maxLength: 'Must be 20 characters or less'
+                  }}
+                />
+              </Col>
+            </Row>
 
-              <Row className="form-group">
-                <Label htmlFor="password" md={12}>Password</Label>
-                <Col md={12}>
-                  <Control type="password" model=".password" id="password" name="password" placeholder="Your Password"
-                           className="form-control"
-                           validators={{
-                    required, minLength: minLength(3), maxLength: maxLength(20)
-                  }} />
-                  <Errors
-                    className="text-danger"
-                    model=".password"
-                    show="touched"
-                    messages={{
-                      required: 'Required',
-                      minLength: 'Must be greater than 2 characters',
-                      maxLength: 'Must be 20 characters or less'
-                    }}
-                  />
-                </Col>
-              </Row>
+            <Row className="form-group">
+              <Label htmlFor="password" md={12}>Password</Label>
+              <Col md={12}>
+                <Control type="password" value={pwd} onChange={handleChangePwd} model=".password" id="password"
+                         name="password"
+                         placeholder="Your Password"
+                         className="form-control"
+                         validators={{
+                  required, minLength: minLength(6), maxLength: maxLength(20)
+                }} />
+                <Errors
+                  className="text-danger"
+                  model=".password"
+                  show="touched"
+                  messages={{
+                    required: 'Required',
+                    minLength: 'Must be greater than 5 characters',
+                    maxLength: 'Must be 20 characters or less'
+                  }}
+                />
+              </Col>
+            </Row>
 
-              <Row>
-                <Label md={12}> </Label>
-              </Row>
+            <Row>
+              <Label md={12}> </Label>
+            </Row>
 
-              <Row className="form-group">
-                <Col>
-                  <Button type="submit" value="submit" color="primary">Submit</Button>
-                </Col>
-              </Row>
-            </LocalForm>
-          </ModalBody>
-        </Modal>
-
-        <Modal isOpen={this.state.isSignupModalOpen} toggle={this.toggleSignupModal}>
-          <ModalHeader toggle={this.toggleSignupModal}>Register</ModalHeader>
-          <ModalBody>
-            <LocalForm model="register" onSubmit={(values) => this.handleRegistration(values)}>
-
-              <Row className="form-group">
-                <Label htmlFor="username" md={12}>Username</Label>
-                <Col md={12}>
-                  <Control.text model=".username" id="username" name="username" placeholder="Your Username"
-                                className="form-control"
-                                validators={{
-                    required, minLength: minLength(6), maxLength: maxLength(20)
-                  }} />
-                  <Errors
-                    className="text-danger"
-                    model=".username"
-                    show="touched"
-                    messages={{
-                      required: 'Required',
-                      minLength: 'Must be greater than 5 characters',
-                      maxLength: 'Must be 20 characters or less'
-                    }}
-                  />
-                </Col>
-              </Row>
-
-              <Row className="form-group">
-                <Label htmlFor="password" md={12}>Password</Label>
-                <Col md={12}>
-                  <Control type="password" model=".password" id="password" name="password" placeholder="Your Password"
-                           className="form-control"
-                           validators={{
-                    required, minLength: minLength(6), maxLength: maxLength(20)
-                  }} />
-                  <Errors
-                    className="text-danger"
-                    model=".password"
-                    show="touched"
-                    messages={{
-                      required: 'Required',
-                      minLength: 'Must be greater than 5 characters',
-                      maxLength: 'Must be 20 characters or less'
-                    }}
-                  />
-                </Col>
-              </Row>
-
-              <Row>
-                <Label md={12}> </Label>
-              </Row>
-
-              <Row className="form-group">
-                <Col>
-                  <Button type="submit" value="submit" color="primary">Submit</Button>
-                </Col>
-              </Row>
-            </LocalForm>
-          </ModalBody>
-        </Modal>
-      </>
-    );
-  }
+            <Row className="form-group">
+              <Col>
+                <Button type="submit" value="submit" color="primary">Submit</Button>
+              </Col>
+            </Row>
+          </LocalForm>
+        </ModalBody>
+      </Modal>
+    </>
+  );
 }
 
 const Navbar = (props) => {
