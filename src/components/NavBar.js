@@ -13,8 +13,8 @@ const required = (value) => value && value.length;
 const maxLength = (length) => (value) => !(value) || (value.length <= length);
 const minLength = (length) => (value) => value && (value.length >= length);
 
-const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo) => {
-  if (tokenInfo.isLoading) {
+const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
+  if (props.tokenInfo.isLoading) {
     return (
       <div className="container">
         <div className="row">
@@ -24,7 +24,7 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo) => 
     );
   }
 
-  if (!tokenInfo.jwttoken.success) {
+  if (!props.tokenInfo.jwttoken.success) {
     return (
       <div>
         <Button className="login-button" outline onClick={toggleLoginModal}>
@@ -38,7 +38,7 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo) => 
   } else {
     return (
       <div className="username-logout">
-        <span className="username-text-logout">{tokenInfo.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
+        <span className="username-text-logout">{props.tokenInfo.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
         <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
           Logout<span className="fa fa-sign-out fa-lg"></span>
         </Button>
@@ -65,11 +65,13 @@ const RenderLoginForm = (props) => {
     toggleSignup();
   }
 
+  if (props.tokenInfo.jwttoken.success) props.postAccount();
+
   return (
     <>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo)}
+          {authorizationButton(toggleLogin, toggleSignup, props)}
         </NavItem>
       </Nav>
       <Modal isOpen={loginModal} toggle={toggleLogin}>
@@ -232,6 +234,7 @@ const Navbar = (props) => {
       <RenderLoginForm loginUser={props.loginUser}
                        signupUser={props.signupUser}
                        tokenInfo={props.tokenInfo}
+                       postAccount={props.postAccount}
       />
     </>
   );

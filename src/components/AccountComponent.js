@@ -1,6 +1,7 @@
 import React from "react";
 import { Loading } from "./LoadingComponent";
 import { wargamingLink } from "../shared/wargaming";
+import * as AiIcons from "react-icons/ai";
 
 const addAccount = (props) => {
   if (!props.accounts[0]) return <tbody></tbody>
@@ -10,9 +11,9 @@ const addAccount = (props) => {
           return (
             <tr key={index}>
               <td>{account.nickname}</td>
-              <td>eu</td>
+              <td>EU</td>
               <td>
-                delete icon
+                <AiIcons.AiFillDelete />
               </td>
             </tr>
           );
@@ -49,7 +50,7 @@ const Accounts = (props) => {
           <div className="headerAccount">
             <h2>Linked Accounts WoT Blitz</h2>
             <div className="server">
-              <a href={wargamingLink} target="_blank" rel="noreferrer">
+              <a href={wargamingLink} rel="noreferrer">
                 <button className="primary-button add-account icon"><span>Add Account</span></button>
               </a>
             </div>

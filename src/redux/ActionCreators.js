@@ -1,19 +1,23 @@
 import * as ActionTypes from './ActionTypes'
-import {expressURL} from "../shared/expressURL";
+import { expressURL } from "../shared/expressURL";
 
-export const postAccount = (access_token, nickname, account_id, expires_at) => (dispatch) => {
+export const postAccount = () => (dispatch) => {
+  if (!window.location.search) return;
+  const query = window.location.search;
+  const urlSearchParams = new URLSearchParams(query);
+
   const newAccount = {
-    access_token: access_token,
-    nickname: nickname,
-    account_id: account_id,
-    expires_at: expires_at,
+    account_id: urlSearchParams.get('account_id'),
+    nickname: urlSearchParams.get('nickname'),
+    access_token: urlSearchParams.get('access_token'),
+    expires_at: urlSearchParams.get('expires_at'),
   }
 
   return fetch(expressURL + 'accounts/', {
     method: 'POST',
+    body: JSON.stringify(newAccount),
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'body': JSON.stringify(newAccount),
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin'
@@ -23,18 +27,17 @@ export const postAccount = (access_token, nickname, account_id, expires_at) => (
         const error = new Error(`Error ${response.status}: ${response.statusText}`);
         error.response = response;
         throw error;
-      },
-      (error) => {
-        throw new Error(error.message);
-      })
+      }, (error) => { throw new Error(error.message); })
     .then((response) => response.json())
-    .then((response) => {
-      console.log(response);
-      alert(`Your Account: ${JSON.stringify(response)}`);
+    .then((account) => {
+      window.history.pushState('', '', window.location.origin + '/accounts');
+      dispatch(addAccount(account));
+      window.location.reload();
     })
     .catch((error) => {
+      window.history.pushState('', '', window.location.origin + '/accounts');
       console.log('Post account ', error.message);
-      alert('Your account could not be added\nError: ' + error.message);
+      alert('Error: You have already added this account!');
     });
 };
 
@@ -75,6 +78,12 @@ export const addAccounts = (accounts) => ({
   type: ActionTypes.ADD_ACCOUNTS,
   payload: accounts,
 });
+
+export const addAccount = (accounts) => ({
+  type: ActionTypes.ADD_ACCOUNT,
+  payload: accounts,
+});
+
 
 export const loginUser = (username, password) => (dispatch) =>  {
   const credentials = {

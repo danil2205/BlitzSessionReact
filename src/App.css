@@ -241,3 +241,8 @@ table tbody tr td {
   font-weight: 400;
 }
 
+svg {
+  height: 24px;
+  width: 24px;
+}
+

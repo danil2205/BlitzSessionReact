@@ -33,10 +33,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
-  // postAccount: () => {dispatch(postAccount())},
   loginUser: (username, password) => {dispatch(loginUser(username, password))},
   signupUser: (username, password) => {dispatch(signupUser(username, password))},
   checkJWTToken: () => {dispatch(checkJWTToken())},
+  postAccount: () => {dispatch(postAccount())},
 });
 
 class Main extends Component {
@@ -44,7 +44,6 @@ class Main extends Component {
   componentDidMount() {
     this.props.fetchAccounts();
     this.props.checkJWTToken();
-    // this.props.postAccount();
   }
 
   render() {
@@ -53,13 +52,13 @@ class Main extends Component {
         <Navbar loginUser={this.props.loginUser}
                 signupUser={this.props.signupUser}
                 tokenInfo={this.props.jwttoken}
+                postAccount={this.props.postAccount}
         />
         <Routes>
           <Route path="/home" element={<Home />}/>
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}
                                                            isLoading={this.props.accounts.isLoading}
                                                            errMess={this.props.accounts.errMess}
-                                                           // postAccount={this.props.postAccount}
           />}
           />
           <Route exact path="/session" element={<Session />}/>
