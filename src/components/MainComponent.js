@@ -8,6 +8,7 @@ import Home from "./HomeComponent";
 import Navbar from "./NavBar";
 import Session from "./SessionComponent";
 import SearchUser from "./SearchUserComponent";
+import { actions } from "react-redux-form";
 
 const withRouter = (Component) => {
   function ComponentWithRouterProp(props) {

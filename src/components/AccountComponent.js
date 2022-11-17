@@ -2,6 +2,8 @@ import React from "react";
 import { Loading } from "./LoadingComponent";
 import { wargamingLink } from "../shared/wargaming";
 import * as AiIcons from "react-icons/ai";
+import { Breadcrumb, BreadcrumbItem } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const addAccount = (props) => {
   if (!props.accounts[0]) return <tbody></tbody>
@@ -45,6 +47,16 @@ const Accounts = (props) => {
 
   return (
     <div className="content">
+      <div className="row">
+        <Breadcrumb>
+          <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+          <BreadcrumbItem active>Accounts</BreadcrumbItem>
+        </Breadcrumb>
+        <div className="col-12">
+          <h3>Accounts</h3>
+          <hr />
+        </div>
+      </div>
       <div className="profile-container">
         <div className="table">
           <div className="headerAccount">

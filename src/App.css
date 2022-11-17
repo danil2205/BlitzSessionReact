@@ -246,3 +246,14 @@ svg {
   width: 24px;
 }
 
+form input {
+  margin-bottom: 10px;
+}
+
+form button {
+  margin-top: 20px;
+}
+
+form select {
+  margin-bottom: 10px;
+}
