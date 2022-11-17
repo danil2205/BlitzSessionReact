@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { checkJWTToken, fetchAccounts, postAccount, loginUser, signupUser } from "../redux/ActionCreators";
+import { checkJWTToken, fetchAccounts, postAccount, loginUser, signupUser, deleteAccount } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -37,6 +37,7 @@ const mapDispatchToProps = (dispatch) => ({
   signupUser: (username, password) => {dispatch(signupUser(username, password))},
   checkJWTToken: () => {dispatch(checkJWTToken())},
   postAccount: () => {dispatch(postAccount())},
+  deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},
 });
 
 class Main extends Component {
@@ -59,6 +60,7 @@ class Main extends Component {
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}
                                                            isLoading={this.props.accounts.isLoading}
                                                            errMess={this.props.accounts.errMess}
+                                                           deleteAccount={this.props.deleteAccount}
           />}
           />
           <Route exact path="/session" element={<Session />}/>

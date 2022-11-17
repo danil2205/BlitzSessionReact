@@ -13,7 +13,7 @@ const addAccount = (props) => {
               <td>{account.nickname}</td>
               <td>EU</td>
               <td>
-                <AiIcons.AiFillDelete />
+                <AiIcons.AiFillDelete onClick={() => props.deleteAccount(account.account_id)} />
               </td>
             </tr>
           );

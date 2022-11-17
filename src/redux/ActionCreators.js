@@ -20,14 +20,11 @@ export const postAccount = () => (dispatch) => {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
-    credentials: 'same-origin'
   })
     .then((response) => {
-        if (response.ok) return response;
-        const error = new Error(`Error ${response.status}: ${response.statusText}`);
-        error.response = response;
-        throw error;
-      }, (error) => { throw new Error(error.message); })
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`)
+      })
     .then((response) => response.json())
     .then((account) => {
       window.history.pushState('', '', window.location.origin + '/accounts');
@@ -36,9 +33,25 @@ export const postAccount = () => (dispatch) => {
     })
     .catch((error) => {
       window.history.pushState('', '', window.location.origin + '/accounts');
-      console.log('Post account ', error.message);
       alert('Error: You have already added this account!');
     });
+};
+
+export const deleteAccount = (account_id) => (dispatch) => {
+  return fetch(`${expressURL}accounts/${account_id}`, {
+    method: 'DELETE',
+    body: JSON.stringify({ account_id }),
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`)
+    })
+    .then((response) => response.json())
+    .then(() => window.location.reload())
+    .catch(() => alert('Error while deleting account. Try again!'));
 };
 
 export const fetchAccounts = () => (dispatch) => {
@@ -49,17 +62,11 @@ export const fetchAccounts = () => (dispatch) => {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    credentials: 'same-origin'
   })
     .then((response) => {
         if (response.ok) return response;
-        const error = new Error(`Error ${response.status}: ${response.statusText}`);
-        error.response = response;
-        throw error;
-      },
-      (error) => {
-        throw new Error(error.message);
-      })
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+    })
     .then((response) => response.json())
     .then((accounts) => dispatch(addAccounts(accounts)))
     .catch((error) => dispatch(accountsFailed(error.message)));
@@ -97,26 +104,17 @@ export const loginUser = (username, password) => (dispatch) =>  {
     headers: {
       'Content-Type': 'application/json'
     },
-    credentials: 'same-origin'
   })
     .then((response) => {
         if (response.ok) return response;
-        const error = new Error(`Error ${response.status}: ${response.statusText}`);
-        error.response = response;
-        throw error;
-      },
-      (error) => {
-        throw new Error(error.message);
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       })
     .then((response) => response.json())
     .then((response) => {
       localStorage.setItem('token', response.token);
       window.location.reload();
     })
-    .catch((error) => {
-      console.log('Error Login: ', error.message);
-      alert('You cannot login\nError: ' + error.message);
-    });
+    .catch((error) => { alert('You cannot login\nError: ' + error.message); });
 };
 
 export const signupUser = (username, password) => (dispatch) => {
@@ -133,8 +131,8 @@ export const signupUser = (username, password) => (dispatch) => {
     },
   })
     .then((response) => response.json())
-    .then((response) => { window.location.reload(); })
-    .catch((err) => { console.log(`Error SignUp: ${err.message}`) });
+    .then(() => { window.location.reload(); })
+    .catch((err) => { alert(`Error while creating account: ${err.message}`) });
 };
 
 export const tokenChecking = () => ({
@@ -162,12 +160,8 @@ export const checkJWTToken = () => (dispatch) =>  {
   })
     .then((response) => {
         if (response.ok) return response;
-        const error = new Error(`Error ${response.status}: ${response.statusText}`);
-        error.response = response;
-        throw error;
-      },
-      (error) => {
-        throw new Error(error.message);
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+
       })
     .then((response) => response.json())
     .then((tkn) => dispatch(tokenValid(tkn)))
