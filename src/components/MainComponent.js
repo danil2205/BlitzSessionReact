@@ -39,6 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
   checkJWTToken: () => {dispatch(checkJWTToken())},
   postAccount: () => {dispatch(postAccount())},
   deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},
+  resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
 });
 
 class Main extends Component {
@@ -66,7 +67,7 @@ class Main extends Component {
           />
           <Route exact path="/session" element={<Session />}/>
           <Route exact path="/user-search" element={<SearchUser />}/>
-          <Route exact path="/contactus" element={<Contact />}/>
+          <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm} />}/>
         </Routes>
       </div>
     );
