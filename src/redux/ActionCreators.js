@@ -132,7 +132,7 @@ export const signupUser = (username, password) => (dispatch) => {
   })
     .then((response) => response.json())
     .then(() => { window.location.reload(); })
-    .catch((err) => { alert(`Error while creating account: ${err.message}`) });
+    .catch((err) => { alert(`Error while creating account: ${err.message}`); });
 };
 
 export const tokenChecking = () => ({
@@ -161,9 +161,25 @@ export const checkJWTToken = () => (dispatch) =>  {
     .then((response) => {
         if (response.ok) return response;
         throw new Error(`Error ${response.status}: ${response.statusText}`);
-
       })
     .then((response) => response.json())
     .then((tkn) => dispatch(tokenValid(tkn)))
     .catch((error) => dispatch(tokenFailed(error.message)));
+};
+
+export const postFeedback = (feedback) => (dispatch) =>  {
+
+  return fetch(expressURL + 'contact', {
+    method: 'POST',
+    body: JSON.stringify(feedback),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => {
+        if (response.ok) return response;
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      })
+    .then((response) => response.json())
+    .catch((error) => { alert('Your feedback could not be posted\nError: ' + error.message); });
 };

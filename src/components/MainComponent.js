@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { checkJWTToken, fetchAccounts, postAccount, loginUser, signupUser, deleteAccount } from "../redux/ActionCreators";
+import { checkJWTToken, fetchAccounts, postAccount, loginUser, signupUser, deleteAccount, postFeedback } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -40,6 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
   postAccount: () => {dispatch(postAccount())},
   deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},
   resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
+  postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
 });
 
 class Main extends Component {
@@ -67,7 +68,10 @@ class Main extends Component {
           />
           <Route exact path="/session" element={<Session />}/>
           <Route exact path="/user-search" element={<SearchUser />}/>
-          <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm} />}/>
+          <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}
+                                                           postFeedback={this.props.postFeedback}
+          />}
+          />
         </Routes>
       </div>
     );
