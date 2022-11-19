@@ -54,7 +54,7 @@ export const deleteAccount = (account_id) => (dispatch) => {
 };
 
 export const fetchAccounts = () => (dispatch) => {
-  dispatch(accountsLoading(true));
+  dispatch(accountsLoading());
 
   return fetch(expressURL + 'accounts', {
     method: 'GET',
@@ -130,7 +130,6 @@ export const signupUser = (username, password) => (dispatch) => {
     },
   })
     .then((response) => response.json())
-    .then(() => { window.location.reload(); })
     .catch((err) => { alert(`Error while creating account: ${err.message}`); });
 };
 
@@ -149,7 +148,7 @@ export const tokenValid = (token) => ({
 });
 
 export const checkJWTToken = () => (dispatch) =>  {
-  dispatch(tokenChecking(true));
+  dispatch(tokenChecking());
 
   return fetch(expressURL + 'users/checkJWTToken', {
     method: 'GET',
@@ -198,5 +197,41 @@ export const postSettings = (settings) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
+    .then(() => {
+      window.history.pushState('', '', window.location.origin + '/session');
+      window.location.reload();
+    })
     .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
 }
+
+export const fetchSettings = () => (dispatch) => {
+  dispatch(settingsLoading());
+
+  return fetch(expressURL + 'settings', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    })
+    .then((response) => response.json())
+    .then((settings) => dispatch(addSettings(settings)))
+    .catch((error) => dispatch(settingsFailed(error.message)));
+};
+
+export const settingsLoading = () => ({
+  type: ActionTypes.SETTINGS_LOADING,
+});
+
+export const settingsFailed = (errMess) => ({
+  type: ActionTypes.SETTINGS_FAILED,
+  payload: errMess,
+});
+
+export const addSettings = (settings) => ({
+  type: ActionTypes.ADD_SETTINGS,
+  payload: settings,
+});

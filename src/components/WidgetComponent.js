@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Col, Label, Row } from "reactstrap";
+import {Button, Col, Label, Row} from "reactstrap";
 import { Control, Form } from "react-redux-form";
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
@@ -12,7 +12,6 @@ class Widget extends Component {
   }
 
   handleSubmit(values) {
-    alert(`Widget Settings: ${JSON.stringify(values)}`);
     this.props.postSettings(values);
   }
 
@@ -103,7 +102,6 @@ class Widget extends Component {
                                                       backgroundColor: this.props.widget.backgroundColor,
                                                       color: this.props.widget.textColor,
                                                       fontSize: this.props.widget.fontSize + 'px'
-
             }}>
               <div className="battles">
                 <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.battleText}: 0</span>

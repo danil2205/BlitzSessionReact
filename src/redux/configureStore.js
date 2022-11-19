@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Accounts } from './accounts';
 import { Jwttoken } from "./jwttoken";
+import { Settings } from "./settings";
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 import { createForms } from "react-redux-form";
@@ -11,6 +12,7 @@ export const ConfigureStore = () => {
     combineReducers({
       accounts: Accounts,
       jwttoken: Jwttoken,
+      settings: Settings,
       ...createForms({
         feedback: InitialFeedback,
         widget: InitialWidgetSettings,

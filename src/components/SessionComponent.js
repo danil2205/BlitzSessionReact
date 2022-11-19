@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
+import { Loading } from "./LoadingComponent";
 
 class Dropdown extends Component {
   constructor(props) {
@@ -58,6 +59,27 @@ class Dropdown extends Component {
 }
 
 const Session = (props) => {
+  if (props.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  }
+  if (props.errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.errMess}</h4>
+        </div>
+      </div>
+    );
+  }
+
+  if (!props.settings[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
+  const widgetSettings = props.settings[0];
   return (
     <div className="container">
       <div className="content">
@@ -75,15 +97,19 @@ const Session = (props) => {
           <Dropdown accounts={props.accounts} />
           <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
         </div>
-        <div className="user-information">
+        <div className="user-information" style={{flexDirection: widgetSettings.alignment,
+          backgroundColor: widgetSettings.backgroundColor,
+          color: widgetSettings.textColor,
+          fontSize: widgetSettings.fontSize + 'px'
+        }}>
           <div className="battles">
-            <span>Battles: 0</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: 0</span>
           </div>
           <div className="damage">
-            <span>Damage: 0</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: 0</span>
           </div>
           <div className="winrate">
-            <span>Winrate: 0</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: 0%</span>
           </div>
         </div>
         <div className="reset-button">

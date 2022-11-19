@@ -9,7 +9,8 @@ import {
   signupUser,
   deleteAccount,
   postFeedback,
-  postSettings
+  postSettings,
+  fetchSettings,
 } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
@@ -40,6 +41,7 @@ const mapStateToProps = (state) => {
     accounts: state.accounts,
     jwttoken: state.jwttoken,
     widget: state.widget,
+    settings: state.settings,
   }
 };
 
@@ -53,6 +55,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
   postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
   postSettings: (settings) => {dispatch(postSettings(settings))},
+  fetchSettings: () => {dispatch(fetchSettings())},
 });
 
 class Main extends Component {
@@ -60,6 +63,7 @@ class Main extends Component {
   componentDidMount() {
     this.props.fetchAccounts();
     this.props.checkJWTToken();
+    this.props.fetchSettings();
   }
 
   render() {
@@ -79,6 +83,9 @@ class Main extends Component {
           />}
           />
           <Route exact path="/session" element={<Session accounts={this.props.accounts.accounts}
+                                                         settings={this.props.settings.settings}
+                                                         isLoading={this.props.settings.isLoading}
+                                                         errMess={this.props.settings.errMess}
           />}
           />
           <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}
