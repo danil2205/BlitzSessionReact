@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import  { Route, Routes, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { connect } from 'react-redux'
-import { checkJWTToken, fetchAccounts, postAccount, loginUser, signupUser, deleteAccount, postFeedback } from "../redux/ActionCreators";
+import {
+  checkJWTToken,
+  fetchAccounts,
+  postAccount,
+  loginUser,
+  signupUser,
+  deleteAccount,
+  postFeedback,
+  postSettings
+} from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
@@ -43,6 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},
   resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
   postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
+  postSettings: (settings) => {dispatch(postSettings(settings))},
 });
 
 class Main extends Component {
@@ -71,7 +81,9 @@ class Main extends Component {
           <Route exact path="/session" element={<Session accounts={this.props.accounts.accounts}
           />}
           />
-          <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget} />}
+          <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}
+                                                                         postSettings={this.props.postSettings}
+          />}
           />
           <Route exact path="/user-search" element={<SearchUser />}/>
           <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}

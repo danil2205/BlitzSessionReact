@@ -182,3 +182,21 @@ export const postFeedback = (feedback) => (dispatch) =>  {
     .then((response) => response.json())
     .catch((error) => { alert('Your feedback could not be posted\nError: ' + error.message); });
 };
+
+export const postSettings = (settings) => (dispatch) => {
+
+  return fetch(expressURL + 'settings', {
+    method: 'POST',
+    body: JSON.stringify(settings),
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    })
+    .then((response) => response.json())
+    .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
+}

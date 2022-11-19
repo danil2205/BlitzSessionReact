@@ -13,6 +13,7 @@ class Widget extends Component {
 
   handleSubmit(values) {
     alert(`Widget Settings: ${JSON.stringify(values)}`);
+    this.props.postSettings(values);
   }
 
   render() {
