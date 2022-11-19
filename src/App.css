@@ -258,7 +258,7 @@ form select {
   margin-bottom: 10px;
 }
 
-div {
+.main-div {
   background: #f1f1f1;
 }
 
@@ -284,11 +284,8 @@ div {
 }
 
 .user-information > div {
-  color: black;
-  font-size: 30px;
   margin-right: 20px;
   font-weight: 100;
-  background: orange;
 }
 
 .reset-button {
@@ -298,4 +295,61 @@ div {
   align-items: center;
   padding: 10px;
   margin-top: 10em;
+}
+
+.widget-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.return-button {
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.widget-settings {
+  width: 80%;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 3em;
+}
+
+div.widget-settings > form > div {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+div.widget-settings label {
+  width: 20%;
+  margin-right: 20px;
+  font-size: 18px;
+}
+
+div.widget-settings > form > div > div {
+  position: relative;
+  height: 2em;
+  width: 210px;
+}
+
+div.widget-settings input, select {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  outline: none;
+  border: 1px solid #0061eb;
+  width: 210px;
+  height: 40px;
+}
+
+.widget-bottom-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }

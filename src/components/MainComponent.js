@@ -8,6 +8,7 @@ import Home from "./HomeComponent";
 import Navbar from "./NavBar";
 import Session from "./SessionComponent";
 import SearchUser from "./SearchUserComponent";
+import Widget from "./WidgetComponent";
 import { actions } from "react-redux-form";
 
 const withRouter = (Component) => {
@@ -29,6 +30,7 @@ const mapStateToProps = (state) => {
   return {
     accounts: state.accounts,
     jwttoken: state.jwttoken,
+    widget: state.widget,
   }
 };
 
@@ -52,7 +54,7 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
+      <div className="main-div">
         <Navbar loginUser={this.props.loginUser}
                 signupUser={this.props.signupUser}
                 tokenInfo={this.props.jwttoken}
@@ -68,6 +70,8 @@ class Main extends Component {
           />
           <Route exact path="/session" element={<Session accounts={this.props.accounts.accounts}
           />}
+          />
+          <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget} />}
           />
           <Route exact path="/user-search" element={<SearchUser />}/>
           <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}

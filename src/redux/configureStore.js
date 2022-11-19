@@ -4,7 +4,7 @@ import { Jwttoken } from "./jwttoken";
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 import { createForms } from "react-redux-form";
-import { InitialFeedback } from "./forms";
+import { InitialFeedback, InitialWidgetSettings } from "./forms";
 
 export const ConfigureStore = () => {
   const store = createStore(
@@ -12,7 +12,8 @@ export const ConfigureStore = () => {
       accounts: Accounts,
       jwttoken: Jwttoken,
       ...createForms({
-        feedback: InitialFeedback
+        feedback: InitialFeedback,
+        widget: InitialWidgetSettings,
       })
     }),
     applyMiddleware(thunk, logger)

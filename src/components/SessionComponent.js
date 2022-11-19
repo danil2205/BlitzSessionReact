@@ -73,7 +73,7 @@ const Session = (props) => {
         </div>
         <div className="session-buttons">
           <Dropdown accounts={props.accounts} />
-          <Link to="/accounts" className="primary-button">Configure Widget</Link>
+          <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
         </div>
         <div className="user-information">
           <div className="battles">
