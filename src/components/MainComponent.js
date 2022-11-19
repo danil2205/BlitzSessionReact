@@ -66,7 +66,9 @@ class Main extends Component {
                                                            deleteAccount={this.props.deleteAccount}
           />}
           />
-          <Route exact path="/session" element={<Session />}/>
+          <Route exact path="/session" element={<Session accounts={this.props.accounts.accounts}
+          />}
+          />
           <Route exact path="/user-search" element={<SearchUser />}/>
           <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}
                                                            postFeedback={this.props.postFeedback}

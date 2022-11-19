@@ -2,7 +2,6 @@ import * as ActionTypes from './ActionTypes'
 import { expressURL } from "../shared/expressURL";
 
 export const postAccount = () => (dispatch) => {
-  if (!window.location.search) return;
   const query = window.location.search;
   const urlSearchParams = new URLSearchParams(query);
 

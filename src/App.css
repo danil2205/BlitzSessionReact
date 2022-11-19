@@ -257,3 +257,45 @@ form button {
 form select {
   margin-bottom: 10px;
 }
+
+div {
+  background: #f1f1f1;
+}
+
+.session-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.session-buttons a {
+  margin-left: 20px;
+}
+
+.user-information {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: orange;
+  color: black;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+.user-information > div {
+  color: black;
+  font-size: 30px;
+  margin-right: 20px;
+  font-weight: 100;
+  background: orange;
+}
+
+.reset-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top: 10em;
+}

@@ -65,7 +65,7 @@ const RenderLoginForm = (props) => {
     toggleSignup();
   }
 
-  if (props.tokenInfo.jwttoken.success) props.postAccount();
+  if (props.tokenInfo.jwttoken.success && window.location.search) props.postAccount();
 
   return (
     <>

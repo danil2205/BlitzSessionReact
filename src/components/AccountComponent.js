@@ -46,38 +46,40 @@ const Accounts = (props) => {
   }
 
   return (
-    <div className="content">
-      <div className="row">
-        <Breadcrumb>
-          <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
-          <BreadcrumbItem active>Accounts</BreadcrumbItem>
-        </Breadcrumb>
-        <div className="col-12">
-          <h3>Accounts</h3>
-          <hr />
-        </div>
-      </div>
-      <div className="profile-container">
-        <div className="table">
-          <div className="headerAccount">
-            <h2>Linked Accounts WoT Blitz</h2>
-            <div className="server">
-              <a href={wargamingLink} rel="noreferrer">
-                <button className="primary-button add-account icon"><span>Add Account</span></button>
-              </a>
-            </div>
+    <div className="container">
+      <div className="content">
+        <div className="row">
+          <Breadcrumb>
+            <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+            <BreadcrumbItem active>Accounts</BreadcrumbItem>
+          </Breadcrumb>
+          <div className="col-12">
+            <h3>Accounts</h3>
+            <hr />
           </div>
-          <div className="accounts-table-container">
-            <table>
-              <thead>
-              <tr>
-                <th>Account</th>
-                <th>Server</th>
-                <th></th>
-              </tr>
-              </thead>
-              {addAccount(props)}
-            </table>
+        </div>
+        <div className="profile-container">
+          <div className="table">
+            <div className="headerAccount">
+              <h2>Linked Accounts WoT Blitz</h2>
+              <div className="server">
+                <a href={wargamingLink} rel="noreferrer">
+                  <button className="primary-button add-account icon"><span>Add Account</span></button>
+                </a>
+              </div>
+            </div>
+            <div className="accounts-table-container">
+              <table>
+                <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Server</th>
+                  <th></th>
+                </tr>
+                </thead>
+                {addAccount(props)}
+              </table>
+            </div>
           </div>
         </div>
       </div>
