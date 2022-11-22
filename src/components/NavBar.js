@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, {Component, useState} from "react";
 import { Link } from "react-router-dom";
 import { SidebarData } from "../shared/SidebarData";
 import * as FaIcons from "react-icons/fa";
@@ -14,7 +14,7 @@ const maxLength = (length) => (value) => !(value) || (value.length <= length);
 const minLength = (length) => (value) => value && (value.length >= length);
 
 const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
-  if (props.tokenInfo.isLoading) {
+  if (props.isLoading) {
     return (
       <div className="container">
         <div className="row">
@@ -24,7 +24,7 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
     );
   }
 
-  if (!props.tokenInfo.jwttoken.success) {
+  if (!props.jwttoken.success) {
     return (
       <div>
         <Button className="login-button" outline onClick={toggleLoginModal}>
@@ -38,7 +38,7 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
   } else {
     return (
       <div className="username-logout">
-        <span className="username-text-logout">{props.tokenInfo.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
+        <span className="username-text-logout">{props.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
         <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
           Logout<span className="fa fa-sign-out fa-lg"></span>
         </Button>
@@ -47,13 +47,15 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
   }
 };
 
-const RenderLoginForm = (props) => {
+const RenderForms = (props) => {
   const [loginModal, setLoginModal] = useState(false);
   const [signupModal, setSignupModal] = useState(false);
   const [pwd, setPwd] = useState('');
+  const [pwdReg, setPwdReg] = useState('');
   const toggleLogin = () => setLoginModal(!loginModal);
   const toggleSignup = () => setSignupModal(!signupModal);
   const handleChangePwd = (event) => { setPwd(event.target.value); };
+  const handleChangePwdReg = (event) => { setPwdReg(event.target.value); };
 
   const handleSubmit = (values) => {
     props.loginUser(values.username, values.password);
@@ -65,13 +67,16 @@ const RenderLoginForm = (props) => {
     toggleSignup();
   }
 
-  if (props.tokenInfo.jwttoken.success && window.location.search) props.postAccount();
+  if (props.tokenInfo.jwttoken.success && window.location.search) {
+    props.postAccount();
+    window.history.pushState('', '', window.location.origin + '/accounts');
+  }
 
   return (
     <>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {authorizationButton(toggleLogin, toggleSignup, props)}
+          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo)}
         </NavItem>
       </Nav>
       <Modal isOpen={loginModal} toggle={toggleLogin}>
@@ -162,7 +167,7 @@ const RenderLoginForm = (props) => {
             <Row className="form-group">
               <Label htmlFor="password" md={12}>Password</Label>
               <Col md={12}>
-                <Control type="password" value={pwd} onChange={handleChangePwd} model=".password" id="password"
+                <Control type="password" value={pwdReg} onChange={handleChangePwdReg} model=".password" id="password"
                          name="password"
                          placeholder="Your Password"
                          className="form-control"
@@ -231,10 +236,10 @@ const Navbar = (props) => {
           </ul>
         </nav>
       </IconContext.Provider>
-      <RenderLoginForm loginUser={props.loginUser}
-                       signupUser={props.signupUser}
-                       tokenInfo={props.tokenInfo}
-                       postAccount={props.postAccount}
+      <RenderForms loginUser={props.loginUser}
+                   signupUser={props.signupUser}
+                   tokenInfo={props.tokenInfo}
+                   postAccount={props.postAccount}
       />
     </>
   );

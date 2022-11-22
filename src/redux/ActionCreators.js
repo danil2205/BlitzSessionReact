@@ -26,14 +26,10 @@ export const postAccount = () => (dispatch) => {
       })
     .then((response) => response.json())
     .then((account) => {
-      window.history.pushState('', '', window.location.origin + '/accounts');
       dispatch(addAccount(account));
       window.location.reload();
     })
-    .catch((error) => {
-      window.history.pushState('', '', window.location.origin + '/accounts');
-      alert('Error: You have already added this account!');
-    });
+    .catch((error) => alert(error));
 };
 
 export const deleteAccount = (account_id) => (dispatch) => {
@@ -235,3 +231,19 @@ export const addSettings = (settings) => ({
   type: ActionTypes.ADD_SETTINGS,
   payload: settings,
 });
+
+export const postUserStats = (stats) => (dispatch) => {
+  return fetch(expressURL + 'session', {
+    method: 'POST',
+    body: JSON.stringify(stats),
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    })
+    .then((response) => response.json())
+    .catch((error) => { alert('Your stats could not saved\nError: ' + error.message); });
+}

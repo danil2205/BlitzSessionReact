@@ -11,6 +11,7 @@ import {
   postFeedback,
   postSettings,
   fetchSettings,
+  postUserStats,
 } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
@@ -56,6 +57,7 @@ const mapDispatchToProps = (dispatch) => ({
   postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
   postSettings: (settings) => {dispatch(postSettings(settings))},
   fetchSettings: () => {dispatch(fetchSettings())},
+  postUserStats: () => {dispatch(postUserStats())},
 });
 
 class Main extends Component {
@@ -86,6 +88,7 @@ class Main extends Component {
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
                                                          errMess={this.props.settings.errMess}
+                                                         postUserStats={this.props.postUserStats}
           />}
           />
           <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,35 +11,80 @@ import {
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { Loading } from "./LoadingComponent";
+import { wargamingUserData }  from "../shared/wargaming";
 
 class Dropdown extends Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
+    this.toggleDropdown = this.toggleDropdown.bind(this);
     this.state = {
       dropdownOpen: false,
       dropdownValue: "Choose account",
+      account_id: null,
+      playerInfo: {
+        battles: null,
+        damage: null,
+        wins: null,
+      },
     };
   }
 
-  toggle() {
+  toggleDropdown() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     });
   }
 
-  changeValue(nickname) {
+  changeValue = async (nickname) => {
+    const playerInfo = await this.getPlayerStats(nickname);
+    await this.fetchingStats();
     this.setState({
       dropdownValue: nickname,
+      account_id: this.getAccountId(nickname),
+      playerInfo: { ...playerInfo },
     });
+  }
+
+
+  getAccountId = (nickname) => {
+    const userAccounts = this.props.accounts[0].userAccounts;
+    return userAccounts.find((account) => account.nickname === nickname).account_id;
+  }
+
+  getPlayerStats = async (nickname) => {
+    const account_id = this.getAccountId(nickname);
+    const res = await fetch(wargamingUserData(account_id))
+      .then((res) => res.json())
+    const playerStats = res.data[account_id]?.statistics;
+    const playerBattles = playerStats?.all.battles + playerStats?.rating.battles;
+    const playerDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt;
+    const playerWins = playerStats?.all.wins + playerStats?.rating.wins
+
+    return {
+      battles: playerBattles,
+      damage: playerDamage,         // body: JSON.stringify(playerInfo)
+      wins: playerWins,
+    };
+  }
+
+  fetchingStats = () => {
+    setTimeout(async () => {
+      const { battles, damage, wins } = await this.getPlayerStats(this.state.dropdownValue);
+      const currBattles = battles - this.state.playerInfo.battles;
+      const currDamage = ((damage - this.state.playerInfo.damage) / currBattles).toFixed(0);
+      const currWinRate = (((wins - this.state.playerInfo.wins) / currBattles) * 100).toFixed(2);
+
+      this.fetchingStats();
+      this.props.handleSessionStats({currBattles, currDamage, currWinRate});
+    }, 5000)
   }
 
   render() {
     if (!this.props.accounts[0]) return <div></div>
     return (
       <div className="dropdown">
-        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
           <DropdownToggle caret className="primary-button">
             {this.state.dropdownValue}
           </DropdownToggle>
@@ -59,6 +104,9 @@ class Dropdown extends Component {
 }
 
 const Session = (props) => {
+  const [sessionStats, setSessionStats] = useState({});
+  const handleSessionStats = (stats) => setSessionStats(stats);
+
   if (props.isLoading) {
     return (
       <div className="container">
@@ -78,7 +126,7 @@ const Session = (props) => {
     );
   }
 
-  if (!props.settings[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
+  if (!props.accounts[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
   const widgetSettings = props.settings[0];
   return (
     <div className="container">
@@ -94,26 +142,29 @@ const Session = (props) => {
           </div>
         </div>
         <div className="session-buttons">
-          <Dropdown accounts={props.accounts} />
+          <Dropdown accounts={props.accounts}
+                    handleSessionStats={handleSessionStats}
+          />
           <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
         </div>
-        <div className="user-information" style={{flexDirection: widgetSettings.alignment,
+        <div className="user-information" style={{
+          flexDirection: widgetSettings.alignment,
           backgroundColor: widgetSettings.backgroundColor,
           color: widgetSettings.textColor,
           fontSize: widgetSettings.fontSize + 'px'
         }}>
           <div className="battles">
-            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: 0</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: {sessionStats.currBattles}</span>
           </div>
           <div className="damage">
-            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: 0</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: {sessionStats.currDamage}</span>
           </div>
           <div className="winrate">
-            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: 0%</span>
+            <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: {sessionStats.currWinRate}%</span>
           </div>
         </div>
         <div className="reset-button">
-          <Button className="primary-button">Reset Stats</Button>
+          <Button className="primary-button" onClick={() => console.log(this.changeValue)}>Reset Stats</Button>
         </div>
       </div>
     </div>
