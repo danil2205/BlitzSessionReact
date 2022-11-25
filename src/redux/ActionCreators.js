@@ -25,10 +25,7 @@ export const postAccount = () => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
       })
     .then((response) => response.json())
-    .then((account) => {
-      dispatch(addAccount(account));
-      window.location.reload();
-    })
+    .then((account) => dispatch(addAccount(account)))
     .catch((error) => alert(error));
 };
 
@@ -45,7 +42,7 @@ export const deleteAccount = (account_id) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
     })
     .then((response) => response.json())
-    .then(() => window.location.reload())
+    .then((accounts) => dispatch(delAccount(accounts)))
     .catch(() => alert('Error while deleting account. Try again!'));
 };
 
@@ -83,6 +80,11 @@ export const addAccounts = (accounts) => ({
 
 export const addAccount = (accounts) => ({
   type: ActionTypes.ADD_ACCOUNT,
+  payload: accounts,
+});
+
+export const delAccount = (accounts) => ({
+  type: ActionTypes.DEL_ACCOUNT,
   payload: accounts,
 });
 
@@ -193,10 +195,7 @@ export const postSettings = (settings) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
-    .then(() => {
-      window.history.pushState('', '', window.location.origin + '/session');
-      window.location.reload();
-    })
+    .then(() => {window.history.pushState('', '', window.location.origin + '/session'); })
     .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
 }
 

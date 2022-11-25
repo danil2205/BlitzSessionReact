@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { Loading } from "./LoadingComponent";
 import { wargamingUserData }  from "../shared/wargaming";
+import {fetchSettings} from "../redux/ActionCreators";
 
 class Dropdown extends Component {
   constructor(props) {
@@ -74,7 +75,7 @@ class Session extends Component  {
 
   startPlayerSession = async (nickname) => {
     const playerInfo = await this.getPlayerStats(nickname);
-    await this.fetchingStats(nickname);
+    await this.getSessionStats(nickname);
     this.setState({
       dropdown: nickname,
       account_id: this.getAccountId(nickname),
@@ -109,14 +110,14 @@ class Session extends Component  {
     };
   }
 
-  fetchingStats = (nickname) => {
+  getSessionStats = (nickname) => {
     setTimeout(async () => {
       const { battles, damage, wins } = await this.getPlayerStats(nickname);
       const sessionBattles = battles - this.state.playerInfo.battles;
       const sessionDamage = ((damage - this.state.playerInfo.damage) / sessionBattles).toFixed(0);
       const sessionWinRate = (((wins - this.state.playerInfo.wins) / sessionBattles) * 100).toFixed(2);
 
-      this.fetchingStats(nickname);
+      this.getSessionStats(nickname);
       this.handleSessionStats({sessionBattles, sessionDamage, sessionWinRate});
     }, 5000)
   }
@@ -142,7 +143,6 @@ class Session extends Component  {
     }
 
     if (!this.props.accounts[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
-    const widgetSettings = this.props.settings[0];
     return (
       <div className="container">
         <div className="content">
@@ -164,19 +164,19 @@ class Session extends Component  {
             <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
           </div>
           <div className="user-information" style={{
-            flexDirection: widgetSettings.alignment,
-            backgroundColor: widgetSettings.backgroundColor,
-            color: widgetSettings.textColor,
-            fontSize: widgetSettings.fontSize + 'px'
+            flexDirection: this.props.widget.alignment,
+            backgroundColor: this.props.widget.backgroundColor,
+            color: this.props.widget.textColor,
+            fontSize: this.props.widget.fontSize + 'px'
           }}>
             <div className="battles">
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
+              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.battleText}: {this.state.sessionStats.sessionBattles}</span>
             </div>
             <div className="damage">
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
+              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.damageText}: {this.state.sessionStats.sessionDamage}</span>
             </div>
             <div className="winrate">
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
+              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
             </div>
           </div>
           <div className="reset-button">

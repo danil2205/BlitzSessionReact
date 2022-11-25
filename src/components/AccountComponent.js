@@ -9,7 +9,7 @@ const addAccount = (props) => {
   if (!props.accounts[0]) return <tbody></tbody>
   return (
     <tbody>
-      {props.accounts[0].userAccounts.map((account, index) => {
+      {props.accounts.at(-1).userAccounts.map((account, index) => {
           return (
             <tr key={index}>
               <td>{account.nickname}</td>

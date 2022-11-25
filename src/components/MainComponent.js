@@ -89,6 +89,7 @@ class Main extends Component {
                                                          isLoading={this.props.settings.isLoading}
                                                          errMess={this.props.settings.errMess}
                                                          postUserStats={this.props.postUserStats}
+                                                         widget={this.props.widget}
           />}
           />
           <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}
