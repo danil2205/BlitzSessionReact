@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {Button, Col, Label, Row} from "reactstrap";
 import { Control, Form } from "react-redux-form";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 
 class Widget extends Component {

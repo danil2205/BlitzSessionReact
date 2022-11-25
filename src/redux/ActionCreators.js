@@ -1,5 +1,5 @@
 import * as ActionTypes from './ActionTypes'
-import { expressURL } from "../shared/expressURL";
+import {expressURL} from "../shared/expressURL";
 
 export const postAccount = () => (dispatch) => {
   const query = window.location.search;
@@ -88,12 +88,22 @@ export const delAccount = (accounts) => ({
   payload: accounts,
 });
 
+export const requestLogin = () => ({
+  type: ActionTypes.LOGIN_REQUEST
+});
 
-export const loginUser = (username, password) => (dispatch) =>  {
-  const credentials = {
-    username: username,
-    password: password,
-  }
+export const receiveLogin = (user) => ({
+  type: ActionTypes.LOGIN_SUCCESS,
+  user,
+});
+
+export const loginError = (message) => ({
+  type: ActionTypes.LOGIN_FAILURE,
+  message,
+});
+
+export const loginUser = (credentials) => (dispatch) =>  {
+  dispatch(requestLogin(credentials));
 
   return fetch(expressURL + 'users/login', {
     method: 'POST',
@@ -109,17 +119,12 @@ export const loginUser = (username, password) => (dispatch) =>  {
     .then((response) => response.json())
     .then((response) => {
       localStorage.setItem('token', response.token);
-      window.location.reload();
+      dispatch(receiveLogin(response));
     })
-    .catch((error) => { alert('You cannot login\nError: ' + error.message); });
+    .catch((error) => dispatch(loginError(error.message)));
 };
 
-export const signupUser = (username, password) => (dispatch) => {
-  const credentials = {
-    username: username,
-    password: password,
-  };
-
+export const signupUser = (credentials) => (dispatch) => {
   return fetch(expressURL + 'users/signup', {
     method: 'POST',
     body: JSON.stringify(credentials),
@@ -180,8 +185,12 @@ export const postFeedback = (feedback) => (dispatch) =>  {
     .catch((error) => { alert('Your feedback could not be posted\nError: ' + error.message); });
 };
 
-export const postSettings = (settings) => (dispatch) => {
+export const addSetting = (settings) => ({
+  type: ActionTypes.ADD_SETTING,
+  payload: settings,
+});
 
+export const postSettings = (settings) => (dispatch) => {
   return fetch(expressURL + 'settings', {
     method: 'POST',
     body: JSON.stringify(settings),
@@ -195,7 +204,7 @@ export const postSettings = (settings) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
-    .then(() => {window.history.pushState('', '', window.location.origin + '/session'); })
+    .then((res) => dispatch(addSetting(settings)))
     .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
 }
 

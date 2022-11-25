@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { Loading } from "./LoadingComponent";
 import { wargamingUserData }  from "../shared/wargaming";
+import {InitialWidgetSettings} from "../redux/forms";
 import {fetchSettings} from "../redux/ActionCreators";
 
 class Dropdown extends Component {
@@ -122,6 +123,11 @@ class Session extends Component  {
     }, 5000)
   }
 
+  getWidgetSettings = () => {
+    if (this.props.settings.at(-1)) return this.props.settings.at(-1);
+    return InitialWidgetSettings;
+  }
+
   render() {
     if (this.props.isLoading) {
       return (
@@ -143,6 +149,7 @@ class Session extends Component  {
     }
 
     if (!this.props.accounts[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
+    const widgetSettings = this.getWidgetSettings();
     return (
       <div className="container">
         <div className="content">
@@ -164,19 +171,19 @@ class Session extends Component  {
             <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
           </div>
           <div className="user-information" style={{
-            flexDirection: this.props.widget.alignment,
-            backgroundColor: this.props.widget.backgroundColor,
-            color: this.props.widget.textColor,
-            fontSize: this.props.widget.fontSize + 'px'
+            flexDirection: widgetSettings.alignment,
+            backgroundColor: widgetSettings.backgroundColor,
+            color: widgetSettings.textColor,
+            fontSize: widgetSettings.fontSize + 'px'
           }}>
             <div className="battles">
-              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.battleText}: {this.state.sessionStats.sessionBattles}</span>
+              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
             </div>
             <div className="damage">
-              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.damageText}: {this.state.sessionStats.sessionDamage}</span>
+              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
             </div>
             <div className="winrate">
-              <span style={{fontFamily: this.props.widget.fontFamily}}>{this.props.widget.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
+              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
             </div>
           </div>
           <div className="reset-button">

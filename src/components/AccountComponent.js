@@ -10,16 +10,16 @@ const addAccount = (props) => {
   return (
     <tbody>
       {props.accounts.at(-1).userAccounts.map((account, index) => {
-          return (
-            <tr key={index}>
-              <td>{account.nickname}</td>
-              <td>EU</td>
-              <td>
-                <AiIcons.AiFillDelete onClick={() => props.deleteAccount(account.account_id)} />
-              </td>
-            </tr>
-          );
-        })}
+        return (
+          <tr key={index}>
+            <td>{account.nickname}</td>
+            <td>EU</td>
+            <td>
+              <AiIcons.AiFillDelete onClick={() => props.deleteAccount(account.account_id)} />
+            </td>
+          </tr>
+        );
+      })}
     </tbody>
   );
 };

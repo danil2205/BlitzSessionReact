@@ -43,13 +43,14 @@ const mapStateToProps = (state) => {
     jwttoken: state.jwttoken,
     widget: state.widget,
     settings: state.settings,
+    auth: state.auth,
   }
 };
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
-  loginUser: (username, password) => {dispatch(loginUser(username, password))},
-  signupUser: (username, password) => {dispatch(signupUser(username, password))},
+  loginUser: (credentials) => {dispatch(loginUser(credentials))},
+  signupUser: (credentials) => {dispatch(signupUser(credentials))},
   checkJWTToken: () => {dispatch(checkJWTToken())},
   postAccount: () => {dispatch(postAccount())},
   deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},

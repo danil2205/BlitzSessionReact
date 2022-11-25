@@ -58,12 +58,12 @@ const RenderForms = (props) => {
   const handleChangePwdReg = (event) => { setPwdReg(event.target.value); };
 
   const handleSubmit = (values) => {
-    props.loginUser(values.username, values.password);
+    props.loginUser(values);
     toggleLogin();
   }
 
   const handleRegistration = (values) => {
-    props.signupUser(values.username, values.password);
+    props.signupUser(values);
     toggleSignup();
   }
 
