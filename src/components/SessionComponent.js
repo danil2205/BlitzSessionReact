@@ -124,7 +124,7 @@ class Session extends Component  {
   }
 
   getWidgetSettings = () => {
-    if (this.props.settings.at(-1)) return this.props.settings.at(-1);
+    if (this.props.settings[0]) return this.props.settings.at(-1);
     return InitialWidgetSettings;
   }
 
