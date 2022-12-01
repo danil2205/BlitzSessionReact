@@ -4,15 +4,47 @@ import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { listOfPlayers } from "../shared/wargaming";
 
-const SearchPlayer = (props) => {
-  const [playerNick, setPlayerNick] = useState('')
-  const handleChangeNick = async (event) => {
-    setPlayerNick(event.target.value);
+const DisplayPlayers = ({ players, setPlayerNick, fetchListOfPlayers }) => {
+  if (!players) return;
+  if (!players.length) {
+    return (
+      <div className="no-players">
+          {'No matching results found'}
+      </div>
+    );
+  } else {
+    return (
+      <div className="dropdown-content">
+        {players.slice(0, 10).map((account, index) => {
+          return (
+            <a onClick={() => {
+              setPlayerNick(account.nickname);
+              fetchListOfPlayers(account.nickname);
+            }}>
+              {account.nickname}
+            </a>
+          )
+        })}
+      </div>
+    );
+  }
+};
 
-    const res = await fetch(listOfPlayers(event.target.value))
+const SearchPlayer = (props) => {
+  const [playerNick, setPlayerNick] = useState('');
+  const [players, setPlayers] = useState([]);
+
+  const handleChangeNick = (event) => {
+    setPlayerNick(event.target.value);
+    fetchListOfPlayers(event.target.value);
+  };
+
+  const fetchListOfPlayers = (nickname) => {
+    fetch(listOfPlayers(nickname))
       .then((res) => res.json())
-    console.log(event.target.value)
-    console.log(res);
+      .then((players) => {
+        setPlayers(players.data);
+      });
   };
 
   return (
@@ -35,15 +67,14 @@ const SearchPlayer = (props) => {
               <Input type="text" name="search-player" id="input-search-player" placeholder="Search Player" style={{
                 border: 0, borderRadius: '12px 0 0 12px', boxShadow: "none", padding: 15}}
                      value={playerNick} onChange={handleChangeNick} />
+
               <div className="icon-search-user">
                 <IoIcons.IoIosSearch />
               </div>
-
             </div>
           </div>
-
         </div>
-
+        <DisplayPlayers players={players} setPlayerNick={setPlayerNick} fetchListOfPlayers={fetchListOfPlayers} />
       </div>
     </div>
   );

@@ -365,8 +365,7 @@ div.widget-settings input, select {
   flex-direction: column;
   align-items: center;
   border-radius: 12px;
-  height: 100%;
-  padding: 10px!important;
+  padding: 10px;
 }
 
 .search-container {
@@ -385,14 +384,14 @@ div.widget-settings input, select {
 }
 
 .input-search-player {
-  border: 0 !important;
+  border: 0;
   background: white;
   color: #000;
   padding: 15px;
   font-size: 16px;
   height: 100%;
   width: 100%;
-  border-radius: 12px 0 0 12px !important;
+  border-radius: 12px 0 0 12px;
   outline-style: none;
 }
 
@@ -404,3 +403,53 @@ div.widget-settings input, select {
   background: white;
   border-radius: 0 12px 12px 0;
 }
+
+.no-players {
+  width: 100%;
+  margin-top: 40px;
+  background: white;
+  box-shadow: 3px 2px 4px #c5c5c5;
+  border-radius: 12px;
+  text-align: center;
+  padding: 20px 10px;
+  max-width: 800px;
+}
+
+.search-account-nickname {
+  width: 100%;
+  margin-top: 40px;
+  text-align: center;
+  box-shadow: 3px 2px 4px #c5c5c5;
+  background: white;
+  padding: 15px;
+  font-size: 16px;
+  height: 100%;
+  border-radius: 12px;
+}
+
+
+/*after typing nickname*/
+.dropdown-content {
+  position: absolute;
+  background-color: #f6f6f6;
+  min-width: 230px;
+  border: 1px solid #ddd;
+  text-align:center;
+  margin: auto;
+  left: 0;
+  right: 0;
+  width: 100px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+/**/
