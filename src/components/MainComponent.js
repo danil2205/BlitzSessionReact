@@ -18,7 +18,7 @@ import Contact from "./ContactComponent";
 import Home from "./HomeComponent";
 import Navbar from "./NavBar";
 import Session from "./SessionComponent";
-import SearchUser from "./SearchUserComponent";
+import SearchPlayer from "./SearchUserComponent";
 import Widget from "./WidgetComponent";
 import { actions } from "react-redux-form";
 
@@ -97,7 +97,7 @@ class Main extends Component {
                                                                          postSettings={this.props.postSettings}
           />}
           />
-          <Route exact path="/user-search" element={<SearchUser />}/>
+          <Route exact path="/user-search" element={<SearchPlayer />}/>
           <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}
                                                            postFeedback={this.props.postFeedback}
           />}

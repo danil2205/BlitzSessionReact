@@ -11,9 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { Loading } from "./LoadingComponent";
-import { wargamingUserData }  from "../shared/wargaming";
+import { playerStatsURL }  from "../shared/wargaming";
 import {InitialWidgetSettings} from "../redux/forms";
-import {fetchSettings} from "../redux/ActionCreators";
 
 class Dropdown extends Component {
   constructor(props) {
@@ -97,7 +96,7 @@ class Session extends Component  {
 
   getPlayerStats = async (nickname) => {
     const account_id = this.getAccountId(nickname);
-    const res = await fetch(wargamingUserData(account_id))
+    const res = await fetch(playerStatsURL(account_id))
       .then((res) => res.json())
     const playerStats = res.data[account_id]?.statistics;
     const playerBattles = playerStats?.all.battles + playerStats?.rating.battles;

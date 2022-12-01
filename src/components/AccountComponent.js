@@ -1,6 +1,6 @@
 import React from "react";
 import { Loading } from "./LoadingComponent";
-import { wargamingAuthorization } from "../shared/wargaming";
+import { AuthURL } from "../shared/wargaming";
 import * as AiIcons from "react-icons/ai";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
@@ -63,7 +63,7 @@ const Accounts = (props) => {
             <div className="headerAccount">
               <h2>Linked Accounts WoT Blitz</h2>
               <div className="server">
-                <a href={wargamingAuthorization} rel="noreferrer">
+                <a href={AuthURL} rel="noreferrer">
                   <button className="primary-button add-account icon"><span>Add Account</span></button>
                 </a>
               </div>

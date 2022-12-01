@@ -120,6 +120,7 @@ export const loginUser = (credentials) => (dispatch) =>  {
     .then((response) => {
       localStorage.setItem('token', response.token);
       dispatch(receiveLogin(response));
+      window.location.reload();
     })
     .catch((error) => dispatch(loginError(error.message)));
 };
