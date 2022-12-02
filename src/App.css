@@ -123,7 +123,10 @@ span {
   padding: 40px;
   background: #f1f1f1;
   height: calc(100vh - 90px);
+  left: 10px; right: 10px;
   overflow-y: auto;
+  z-index: -1;
+  position: absolute;
 }
 
 .table {
@@ -412,8 +415,6 @@ div.widget-settings input, select {
   text-align: center;
   padding: 20px 10px;
   margin: auto;
-  left: 0;
-  right: 0;
 }
 
 .search-account-nickname {
@@ -433,29 +434,33 @@ div.widget-settings input, select {
 .dropdown-content {
   position: absolute;
   background-color: #f6f6f6;
-  min-width: 230px;
   border: 1px solid #ddd;
-  text-align:center;
   margin: auto;
   left: 0;
   right: 0;
-  width: 100px;
   display: block;
+  box-shadow: 3px 2px 4px #c5c5c5;
+  border-radius: 12px;
+  width: fit-content;
 }
 
-.dropdown-content a {
+.dropdown-content button {
+  display: block;
+  margin: 10px auto;
+  background: transparent;
+  padding: 10px;
   color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  width: fit-content;
+  padding-inline: 25px;
 }
 
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
+.dropdown-content button:hover {
+  background-color: gray;
 }
 /**/
-
 
 
 /*Render Stats*/
@@ -481,16 +486,54 @@ div.widget-settings input, select {
   width: 25%;
 }
 
-.text-center > .row > div > div {
+.text-center > .row > div  {
   text-align: center;
   border: 1px solid #e3e3e3;
   min-height: 20px;
   border-radius: 3px;
   padding: 9px;
-  background-color: #D3D3D3;
+  background-color: #e5e5e5;
+}
+
+.medals-span {
+  color: black;
+  font-size: 9pt;
 }
 
 .text-center > div > div > img {
   width: 80px;
   height: 80px;
+}
+
+.text-center > div > div > ul {
+  text-align: left;
+  border-radius: 4px;
+
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+}
+
+.text-center > div > div > ul > li {
+  font-size: 14px;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  display: block;
+  text-decoration: none;
+}
+
+.table-span {
+  background-color: #777;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 3px 7px;
+  float: right;
+}
+
+.text-center > .row.text-left > div {
+  width: 33.33%;
 }
