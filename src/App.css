@@ -405,14 +405,15 @@ div.widget-settings input, select {
 }
 
 .no-players {
-  width: 100%;
-  margin-top: 40px;
+  width: 50%;
   background: white;
   box-shadow: 3px 2px 4px #c5c5c5;
   border-radius: 12px;
   text-align: center;
   padding: 20px 10px;
-  max-width: 800px;
+  margin: auto;
+  left: 0;
+  right: 0;
 }
 
 .search-account-nickname {
@@ -439,6 +440,7 @@ div.widget-settings input, select {
   left: 0;
   right: 0;
   width: 100px;
+  display: block;
 }
 
 .dropdown-content a {
@@ -453,3 +455,42 @@ div.widget-settings input, select {
   background-color: #f1f1f1;
 }
 /**/
+
+
+
+/*Render Stats*/
+
+.wg-id {
+  font-size: 8pt;
+  color: #808080;
+  margin-top: -10px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-center > .row {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.text-center > .row > div {
+  width: 25%;
+}
+
+.text-center > .row > div > div {
+  text-align: center;
+  border: 1px solid #e3e3e3;
+  min-height: 20px;
+  border-radius: 3px;
+  padding: 9px;
+  background-color: #D3D3D3;
+}
+
+.text-center > div > div > img {
+  width: 80px;
+  height: 80px;
+}

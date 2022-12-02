@@ -6,4 +6,7 @@ export const playerStatsURL = (account_id) => {
 };
 export const listOfPlayers = (nickname) => {
   return `https://api.wotblitz.eu/wotb/account/list/?application_id=${applicationId}&search=${nickname}`
-}
+};
+export const medalsOfPlayer = (account_id) => {
+  return `https://api.wotblitz.eu/wotb/account/achievements/?application_id=${applicationId}&account_id=${account_id}`;
+};
