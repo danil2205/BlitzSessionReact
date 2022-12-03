@@ -13,8 +13,8 @@ const required = (value) => value && value.length;
 const maxLength = (length) => (value) => !(value) || (value.length <= length);
 const minLength = (length) => (value) => value && (value.length >= length);
 
-const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
-  if (props.isLoading) {
+const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, auth) => {
+  if (tokenInfo.isLoading) {
     return (
       <div className="container">
         <div className="row">
@@ -24,7 +24,8 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
     );
   }
 
-  if (!props.jwttoken.success) {
+  const authSuccess = auth.user ? auth.user.success : tokenInfo.jwttoken.success;
+  if (!authSuccess) {
     return (
       <div>
         <Button className="login-button" outline onClick={toggleLoginModal}>
@@ -38,8 +39,10 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, props) => {
   } else {
     return (
       <div className="username-logout">
-        <span className="username-text-logout">{props.jwttoken.user.username} <IoIcons.IoMdPerson /> </span>
-        <Button className="logout-button" outline onClick={() => { localStorage.clear(); window.location.reload(); } }>
+        <span className="username-text-logout">
+          {auth.user ? auth.user.username : tokenInfo.jwttoken.user?.username} <IoIcons.IoMdPerson />
+        </span>
+        <Button className="logout-button" outline onClick={() => { localStorage.clear();  } }>
           Logout<span className="fa fa-sign-out fa-lg"></span>
         </Button>
       </div>
@@ -76,7 +79,7 @@ const RenderForms = (props) => {
     <>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo)}
+          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo, props.auth)}
         </NavItem>
       </Nav>
       <Modal isOpen={loginModal} toggle={toggleLogin}>
@@ -238,6 +241,7 @@ const Navbar = (props) => {
       </IconContext.Provider>
       <RenderForms loginUser={props.loginUser}
                    signupUser={props.signupUser}
+                   auth={props.auth}
                    tokenInfo={props.tokenInfo}
                    postAccount={props.postAccount}
       />

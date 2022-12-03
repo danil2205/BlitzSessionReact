@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes'
 import {expressURL} from "../shared/expressURL";
+import {useNavigate} from "react-router-dom";
 
 export const postAccount = () => (dispatch) => {
   const query = window.location.search;
@@ -103,7 +104,7 @@ export const loginError = (message) => ({
 });
 
 export const loginUser = (credentials) => (dispatch) =>  {
-  dispatch(requestLogin(credentials));
+  dispatch(requestLogin());
 
   return fetch(expressURL + 'users/login', {
     method: 'POST',
@@ -120,7 +121,6 @@ export const loginUser = (credentials) => (dispatch) =>  {
     .then((response) => {
       localStorage.setItem('token', response.token);
       dispatch(receiveLogin(response));
-      window.location.reload();
     })
     .catch((error) => dispatch(loginError(error.message)));
 };

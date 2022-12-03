@@ -17,7 +17,7 @@ export const imagesMedals = {
   },
   medalKolobanov: {
     image: require("../images/medals/medalKolobanov.png"),
-    description: "Kolobanov's Medal/ win alone vs 3 enemies",
+    description: "Kolobanov's Medal / win alone vs 3 enemies",
   },
   supporter: {
     image: require("../images/medals/supporter.png"),

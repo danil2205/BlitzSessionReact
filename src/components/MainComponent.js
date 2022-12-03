@@ -69,11 +69,24 @@ class Main extends Component {
     this.props.fetchSettings();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { auth } = this.props;
+    console.log(prevProps)
+    if (auth.user?.success !== prevProps.auth.user?.success) {
+      this.setState({
+        auth: auth,
+      });
+      this.props.fetchAccounts();
+      this.props.fetchSettings();
+    }
+  }
+
   render() {
     return (
       <div className="main-div">
         <Navbar loginUser={this.props.loginUser}
                 signupUser={this.props.signupUser}
+                auth={this.props.auth}
                 tokenInfo={this.props.jwttoken}
                 postAccount={this.props.postAccount}
         />
