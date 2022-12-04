@@ -64,14 +64,13 @@ const mapDispatchToProps = (dispatch) => ({
 class Main extends Component {
 
   componentDidMount() {
-    this.props.fetchAccounts();
     this.props.checkJWTToken();
+    this.props.fetchAccounts();
     this.props.fetchSettings();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { auth } = this.props;
-    console.log(prevProps)
     if (auth.user?.success !== prevProps.auth.user?.success) {
       this.setState({
         auth: auth,

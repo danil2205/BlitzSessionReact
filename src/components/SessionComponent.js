@@ -141,7 +141,7 @@ class Session extends Component  {
       return (
         <div className="container">
           <div className="row">
-            <h4>{this.props.errMess}</h4>
+            <h2 className="text-center">{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
           </div>
         </div>
       );

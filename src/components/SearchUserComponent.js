@@ -22,7 +22,7 @@ const RenderStats = ({ players }) => {
     };
     getStats();
   }, [])
-  if (!stats) return <div></div>
+  if (!stats) return <div></div> // NEED TO FIX: CRASHING PAGE, UNDEFINED PLAYERSTATS
   const playerStats = stats.data[account_id].statistics.all;
   const statsDisplay = statsToDisplay(playerStats);
   const playerMedals = medals.data[account_id].achievements;

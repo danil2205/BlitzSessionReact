@@ -66,7 +66,11 @@ const RenderForms = (props) => {
   }
 
   const handleRegistration = (values) => {
-    props.signupUser(values);
+    props.signupUser(values)
+    console.log('reg')
+    setTimeout(() => {
+      props.loginUser(values); // temporary variant for authorization automatic
+    }, 1000);
     toggleSignup();
   }
 

@@ -115,7 +115,7 @@ export const loginUser = (credentials) => (dispatch) =>  {
   })
     .then((response) => {
         if (response.ok) return response;
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        throw new Error(`Password or username is incorrect`);
       })
     .then((response) => response.json())
     .then((response) => {
@@ -134,7 +134,8 @@ export const signupUser = (credentials) => (dispatch) => {
     },
   })
     .then((response) => response.json())
-    .catch((err) => { alert(`Error while creating account: ${err.message}`); });
+    .then((response) => response)
+    .catch((err) => alert(`Error while creating account: ${err.message}`));
 };
 
 export const tokenChecking = () => ({
