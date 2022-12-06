@@ -125,7 +125,23 @@ export const loginUser = (credentials) => (dispatch) =>  {
     .catch((error) => dispatch(loginError(error.message)));
 };
 
+export const requestRegister = () => ({
+  type: ActionTypes.REGISTER_REQUEST
+});
+
+export const receiveRegister = (user) => ({
+  type: ActionTypes.REGISTER_SUCCESS,
+  user,
+});
+
+export const registerError = (message) => ({
+  type: ActionTypes.REGISTER_FAILURE,
+  message,
+});
+
 export const signupUser = (credentials) => (dispatch) => {
+  dispatch(requestRegister());
+
   return fetch(expressURL + 'users/signup', {
     method: 'POST',
     body: JSON.stringify(credentials),
@@ -134,8 +150,11 @@ export const signupUser = (credentials) => (dispatch) => {
     },
   })
     .then((response) => response.json())
-    .then((response) => response)
-    .catch((err) => alert(`Error while creating account: ${err.message}`));
+    .then((response) => {
+      localStorage.setItem('token', response.token);
+      dispatch(receiveRegister(response));
+    })
+    .catch((err) => dispatch(registerError(err.message)));
 };
 
 export const tokenChecking = () => ({
@@ -167,7 +186,10 @@ export const checkJWTToken = () => (dispatch) =>  {
       })
     .then((response) => response.json())
     .then((tkn) => dispatch(tokenValid(tkn)))
-    .catch((error) => dispatch(tokenFailed(error.message)));
+    .catch((error) => {
+      localStorage.removeItem('token');
+      dispatch(tokenFailed(error.message))
+    });
 };
 
 export const postFeedback = (feedback) => (dispatch) =>  {

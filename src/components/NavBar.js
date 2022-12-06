@@ -13,7 +13,7 @@ const required = (value) => value && value.length;
 const maxLength = (length) => (value) => !(value) || (value.length <= length);
 const minLength = (length) => (value) => value && (value.length >= length);
 
-const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, auth) => {
+const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, auth, handleLogout) => {
   if (tokenInfo.isLoading) {
     return (
       <div className="container">
@@ -42,7 +42,10 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, aut
         <span className="username-text-logout">
           {auth.user ? auth.user.username : tokenInfo.jwttoken.user?.username} <IoIcons.IoMdPerson />
         </span>
-        <Button className="logout-button" outline onClick={() => { localStorage.clear();  } }>
+        <Button className="logout-button" outline onClick={() => {
+          localStorage.clear();
+          handleLogout();
+        } }>
           Logout<span className="fa fa-sign-out fa-lg"></span>
         </Button>
       </div>
@@ -67,14 +70,10 @@ const RenderForms = (props) => {
 
   const handleRegistration = (values) => {
     props.signupUser(values)
-    console.log('reg')
-    setTimeout(() => {
-      props.loginUser(values); // temporary variant for authorization automatic
-    }, 1000);
     toggleSignup();
   }
 
-  if (props.tokenInfo.jwttoken.success && window.location.search) {
+  if (props.tokenInfo.jwttoken?.success && window.location.search) {
     props.postAccount();
     window.history.pushState('', '', window.location.origin + '/accounts');
   }
@@ -83,7 +82,7 @@ const RenderForms = (props) => {
     <>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo, props.auth)}
+          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo, props.auth, props.handleLogout)}
         </NavItem>
       </Nav>
       <Modal isOpen={loginModal} toggle={toggleLogin}>
@@ -248,6 +247,7 @@ const Navbar = (props) => {
                    auth={props.auth}
                    tokenInfo={props.tokenInfo}
                    postAccount={props.postAccount}
+                   handleLogout={props.handleLogout}
       />
     </>
   );

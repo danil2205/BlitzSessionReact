@@ -62,6 +62,11 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+
+    // this.handleLogout = this.handleLogout.bind(this);
+  }
 
   componentDidMount() {
     this.props.checkJWTToken();
@@ -70,14 +75,17 @@ class Main extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { auth } = this.props;
+    const { auth, jwttoken } = this.props;
+
     if (auth.user?.success !== prevProps.auth.user?.success) {
       this.setState({
         auth: auth,
       });
+      this.props.checkJWTToken();
       this.props.fetchAccounts();
       this.props.fetchSettings();
     }
+
   }
 
   render() {
@@ -88,6 +96,7 @@ class Main extends Component {
                 auth={this.props.auth}
                 tokenInfo={this.props.jwttoken}
                 postAccount={this.props.postAccount}
+                handleLogout={this.handleLogout}
         />
         <Routes>
           <Route path="/home" element={<Home />}/>
