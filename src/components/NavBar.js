@@ -1,11 +1,11 @@
-import React, {Component, useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { SidebarData } from "../shared/SidebarData";
 import * as FaIcons from "react-icons/fa";
 import { IconContext } from "react-icons";
 import logo from "../logo/blitz.png";
 import { Button, Col, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row } from "reactstrap";
-import { Control, LocalForm, Errors } from "react-redux-form";
+import {Control, Errors, Form} from "react-redux-form";
 import { Loading } from "./LoadingComponent";
 import * as IoIcons from "react-icons/io";
 
@@ -13,7 +13,7 @@ const required = (value) => value && value.length;
 const maxLength = (length) => (value) => !(value) || (value.length <= length);
 const minLength = (length) => (value) => value && (value.length >= length);
 
-const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, auth, handleLogout) => {
+const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, auth, logoutUser) => {
   if (tokenInfo.isLoading) {
     return (
       <div className="container">
@@ -42,10 +42,7 @@ const authorizationButton = (toggleLoginModal, toggleSignupModal, tokenInfo, aut
         <span className="username-text-logout">
           {auth.user ? auth.user.username : tokenInfo.jwttoken.user?.username} <IoIcons.IoMdPerson />
         </span>
-        <Button className="logout-button" outline onClick={() => {
-          localStorage.clear();
-          handleLogout();
-        } }>
+        <Button className="logout-button" outline onClick={logoutUser}>
           Logout<span className="fa fa-sign-out fa-lg"></span>
         </Button>
       </div>
@@ -58,8 +55,17 @@ const RenderForms = (props) => {
   const [signupModal, setSignupModal] = useState(false);
   const [pwd, setPwd] = useState('');
   const [pwdReg, setPwdReg] = useState('');
-  const toggleLogin = () => setLoginModal(!loginModal);
-  const toggleSignup = () => setSignupModal(!signupModal);
+  const toggleLogin = () => {
+    setLoginModal(!loginModal);
+    props.resetForm('login');
+    setPwd('');
+  };
+  const toggleSignup = () => {
+    setSignupModal(!signupModal);
+    props.resetForm('register');
+    setPwdReg('');
+  };
+
   const handleChangePwd = (event) => { setPwd(event.target.value); };
   const handleChangePwdReg = (event) => { setPwdReg(event.target.value); };
 
@@ -82,13 +88,13 @@ const RenderForms = (props) => {
     <>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo, props.auth, props.handleLogout)}
+          {authorizationButton(toggleLogin, toggleSignup, props.tokenInfo, props.auth, props.logoutUser)}
         </NavItem>
       </Nav>
       <Modal isOpen={loginModal} toggle={toggleLogin}>
         <ModalHeader toggle={toggleLogin}>Login</ModalHeader>
         <ModalBody>
-          <LocalForm model="login" onSubmit={(values) => handleSubmit(values)}>
+          <Form model="login" onSubmit={(values) => handleSubmit(values)}>
 
             <Row className="form-group">
               <Label htmlFor="username" md={12}>Username</Label>
@@ -119,7 +125,7 @@ const RenderForms = (props) => {
                          placeholder="Your Password"
                          className="form-control"
                          validators={{
-                  required, minLength: minLength(3), maxLength: maxLength(20)
+                  required, minLength: minLength(6), maxLength: maxLength(20)
                 }} />
                 <Errors
                   className="text-danger"
@@ -127,7 +133,7 @@ const RenderForms = (props) => {
                   show="touched"
                   messages={{
                     required: 'Required',
-                    minLength: 'Must be greater than 2 characters',
+                    minLength: 'Must be greater than 5 characters',
                     maxLength: 'Must be 20 characters or less'
                   }}
                 />
@@ -141,14 +147,14 @@ const RenderForms = (props) => {
                 <Button type="submit" value="submit" color="primary">Submit</Button>
               </Col>
             </Row>
-          </LocalForm>
+          </Form>
         </ModalBody>
       </Modal>
 
       <Modal isOpen={signupModal} toggle={toggleSignup}>
         <ModalHeader toggle={toggleSignup}>Register</ModalHeader>
         <ModalBody>
-          <LocalForm model="register" onSubmit={(values) => handleRegistration(values)}>
+          <Form model="register" onSubmit={(values) => handleRegistration(values)}>
             <Row className="form-group">
               <Label htmlFor="username" md={12}>Username</Label>
               <Col md={12}>
@@ -202,7 +208,7 @@ const RenderForms = (props) => {
                 <Button type="submit" value="submit" color="primary">Submit</Button>
               </Col>
             </Row>
-          </LocalForm>
+          </Form>
         </ModalBody>
       </Modal>
     </>
@@ -248,6 +254,8 @@ const Navbar = (props) => {
                    tokenInfo={props.tokenInfo}
                    postAccount={props.postAccount}
                    handleLogout={props.handleLogout}
+                   logoutUser={props.logoutUser}
+                   resetForm={props.resetForm}
       />
     </>
   );

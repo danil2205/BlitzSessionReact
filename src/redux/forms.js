@@ -18,3 +18,8 @@ export const InitialWidgetSettings = {
   winrateText: 'Winrate',
   fontFamily: 'Arial',
 };
+
+export const InitialAuth = {
+  username: '',
+  password: '',
+};

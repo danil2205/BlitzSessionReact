@@ -103,7 +103,7 @@ export const loginError = (message) => ({
   message,
 });
 
-export const loginUser = (credentials) => (dispatch) =>  {
+export const loginUser = (credentials) => (dispatch) => {
   dispatch(requestLogin());
 
   return fetch(expressURL + 'users/login', {
@@ -123,6 +123,15 @@ export const loginUser = (credentials) => (dispatch) =>  {
       dispatch(receiveLogin(response));
     })
     .catch((error) => dispatch(loginError(error.message)));
+};
+
+export const receiveLogout = () => ({
+  type: ActionTypes.LOGOUT_SUCCESS,
+});
+
+export const logoutUser = () => (dispatch) => {
+  localStorage.removeItem('token');
+  dispatch(receiveLogout());
 };
 
 export const requestRegister = () => ({

@@ -6,7 +6,7 @@ import { Auth } from "./auth";
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 import { createForms } from "react-redux-form";
-import { InitialFeedback, InitialWidgetSettings } from "./forms";
+import { InitialAuth, InitialFeedback, InitialWidgetSettings } from "./forms";
 
 export const ConfigureStore = () => {
   const store = createStore(
@@ -18,6 +18,8 @@ export const ConfigureStore = () => {
       ...createForms({
         feedback: InitialFeedback,
         widget: InitialWidgetSettings,
+        login: InitialAuth,
+        register: InitialAuth,
       })
     }),
     applyMiddleware(thunk, logger)

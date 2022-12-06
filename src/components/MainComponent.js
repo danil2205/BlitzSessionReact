@@ -12,6 +12,7 @@ import {
   postSettings,
   fetchSettings,
   postUserStats,
+  logoutUser,
 } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
@@ -50,11 +51,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   fetchAccounts: () => {dispatch(fetchAccounts())},
   loginUser: (credentials) => {dispatch(loginUser(credentials))},
+  logoutUser: () => {dispatch(logoutUser())},
   signupUser: (credentials) => {dispatch(signupUser(credentials))},
   checkJWTToken: () => {dispatch(checkJWTToken())},
   postAccount: () => {dispatch(postAccount())},
   deleteAccount: (account_id) => {dispatch(deleteAccount(account_id))},
-  resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
+  resetForm: (name) => {dispatch(actions.reset(name))},
   postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
   postSettings: (settings) => {dispatch(postSettings(settings))},
   fetchSettings: () => {dispatch(fetchSettings())},
@@ -62,11 +64,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    // this.handleLogout = this.handleLogout.bind(this);
-  }
 
   componentDidMount() {
     this.props.checkJWTToken();
@@ -75,9 +72,9 @@ class Main extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { auth, jwttoken } = this.props;
+    const { auth } = this.props;
 
-    if (auth.user?.success !== prevProps.auth.user?.success) {
+    if (auth.user !== prevProps.auth.user) {
       this.setState({
         auth: auth,
       });
@@ -85,7 +82,6 @@ class Main extends Component {
       this.props.fetchAccounts();
       this.props.fetchSettings();
     }
-
   }
 
   render() {
@@ -93,10 +89,11 @@ class Main extends Component {
       <div className="main-div">
         <Navbar loginUser={this.props.loginUser}
                 signupUser={this.props.signupUser}
+                logoutUser={this.props.logoutUser}
                 auth={this.props.auth}
                 tokenInfo={this.props.jwttoken}
                 postAccount={this.props.postAccount}
-                handleLogout={this.handleLogout}
+                resetForm={this.props.resetForm}
         />
         <Routes>
           <Route path="/home" element={<Home />}/>
@@ -119,7 +116,7 @@ class Main extends Component {
           />}
           />
           <Route exact path="/user-search" element={<SearchPlayer />}/>
-          <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}
+          <Route exact path="/contactus" element={<Contact resetForm={this.props.resetForm}
                                                            postFeedback={this.props.postFeedback}
           />}
           />
