@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
 import { Loading } from "./LoadingComponent";
 import { playerStatsURL }  from "../shared/wargaming";
-import {InitialWidgetSettings} from "../redux/forms";
+import { InitialWidgetSettings } from "../redux/forms";
 
 class Dropdown extends Component {
   constructor(props) {
@@ -36,12 +36,14 @@ class Dropdown extends Component {
       <div className="dropdown">
         <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
           <DropdownToggle caret className="primary-button">
-            {this.props.dropdown}
+            {this.props.session[0]?.inGameNickname || this.props.dropdown}
           </DropdownToggle>
           <DropdownMenu>
             {this.props.accounts[0].userAccounts.map((account, index) => {
               return (
-                <DropdownItem key={index} onClick={(e) => this.props.startPlayerSession(e.target.textContent.trim())}>
+                <DropdownItem key={index} onClick={(e) => {
+                  this.props.startPlayerSession(e.target.textContent.trim());
+                }}>
                   <IoIcons.IoMdPerson /> {account.nickname}
                 </DropdownItem>
               );
@@ -59,12 +61,6 @@ class Session extends Component  {
 
     this.state = {
       dropdown: 'Choose account',
-      account_id: null,
-      playerInfo: {
-        battles: null,
-        damage: null,
-        wins: null,
-      },
       sessionStats: {
         sessionBattles: null,
         sessionDamage: null,
@@ -73,13 +69,35 @@ class Session extends Component  {
     };
   }
 
+  async componentDidMount() {
+    const nickname = this.props.session[0]?.inGameNickname;
+    if (nickname) await this.startPlayerSession(nickname); // works only if user came from another tab
+  }
+
   startPlayerSession = async (nickname) => {
+    const sessionInfo = this.props.session[0];
     const playerInfo = await this.getPlayerStats(nickname);
     await this.getSessionStats(nickname);
-    this.setState({
-      dropdown: nickname,
+    this.setState({ dropdown: nickname });
+
+    if (sessionInfo.inGameNickname === nickname) return;
+    this.props.postSessionData({
+      inGameNickname: nickname,
       account_id: this.getAccountId(nickname),
-      playerInfo: {...playerInfo},
+      battles: playerInfo.currBattles,
+      damage: playerInfo.currDamage,
+      wins: playerInfo.currWins,
+    });
+  }
+
+  clearPlayerSession = async (nickname) => {
+    const playerInfo = await this.getPlayerStats(nickname);
+    await this.getSessionStats(nickname);
+
+    this.props.postSessionData({
+      battles: playerInfo.currBattles,
+      damage: playerInfo.currDamage,
+      wins: playerInfo.currWins,
     });
   }
 
@@ -97,28 +115,25 @@ class Session extends Component  {
   getPlayerStats = async (nickname) => {
     const account_id = this.getAccountId(nickname);
     const res = await fetch(playerStatsURL(account_id))
-      .then((res) => res.json())
+      .then((res) => res.json());
     const playerStats = res.data[account_id]?.statistics;
-    const playerBattles = playerStats?.all.battles + playerStats?.rating.battles;
-    const playerDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt;
-    const playerWins = playerStats?.all.wins + playerStats?.rating.wins
+    const currBattles = playerStats?.all.battles + playerStats?.rating.battles;
+    const currDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt;
+    const currWins = playerStats?.all.wins + playerStats?.rating.wins
 
-    return {
-      battles: playerBattles,
-      damage: playerDamage,
-      wins: playerWins,
-    };
+    return { currBattles, currDamage, currWins };
   }
 
   getSessionStats = (nickname) => {
     setTimeout(async () => {
-      const { battles, damage, wins } = await this.getPlayerStats(nickname);
-      const sessionBattles = battles - this.state.playerInfo.battles;
-      const sessionDamage = ((damage - this.state.playerInfo.damage) / sessionBattles).toFixed(0);
-      const sessionWinRate = (((wins - this.state.playerInfo.wins) / sessionBattles) * 100).toFixed(2);
+      const { currBattles, currDamage, currWins } = await this.getPlayerStats(nickname);
+      const { battles, damage, wins } = this.props.session[0];
+      const sessionBattles = currBattles - battles;
+      const sessionDamage = ((currDamage - damage) / sessionBattles).toFixed(0);
+      const sessionWinRate = (((currWins - wins) / sessionBattles) * 100).toFixed(2);
 
+      this.handleSessionStats({ sessionBattles, sessionDamage, sessionWinRate });
       this.getSessionStats(nickname);
-      this.handleSessionStats({sessionBattles, sessionDamage, sessionWinRate});
     }, 5000)
   }
 
@@ -165,6 +180,7 @@ class Session extends Component  {
           <div className="session-buttons">
             <Dropdown accounts={this.props.accounts}
                       dropdown={this.state.dropdown}
+                      session={this.props.session}
                       startPlayerSession={this.startPlayerSession}
             />
             <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
@@ -190,7 +206,7 @@ class Session extends Component  {
               const clearAllTimeouts = setTimeout(() => {
                 for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
               })
-              await this.startPlayerSession(this.state.dropdown);
+              await this.clearPlayerSession(this.props.session[0].inGameNickname);
             }}>Reset Stats</Button>
           </div>
         </div>

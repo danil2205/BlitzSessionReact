@@ -11,8 +11,9 @@ import {
   postFeedback,
   postSettings,
   fetchSettings,
-  postUserStats,
   logoutUser,
+  postSessionData,
+  fetchSessionData,
 } from "../redux/ActionCreators";
 import Accounts from "./AccountComponent";
 import Contact from "./ContactComponent";
@@ -45,6 +46,7 @@ const mapStateToProps = (state) => {
     widget: state.widget,
     settings: state.settings,
     auth: state.auth,
+    session: state.session,
   }
 };
 
@@ -60,7 +62,8 @@ const mapDispatchToProps = (dispatch) => ({
   postFeedback: (feedback) => {dispatch(postFeedback(feedback))},
   postSettings: (settings) => {dispatch(postSettings(settings))},
   fetchSettings: () => {dispatch(fetchSettings())},
-  postUserStats: () => {dispatch(postUserStats())},
+  postSessionData: (data) => {dispatch(postSessionData(data))},
+  fetchSessionData: () => {dispatch(fetchSessionData())},
 });
 
 class Main extends Component {
@@ -69,11 +72,11 @@ class Main extends Component {
     this.props.checkJWTToken();
     this.props.fetchAccounts();
     this.props.fetchSettings();
+    this.props.fetchSessionData();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { auth } = this.props;
-
+    const { auth, session } = this.props;
     if (auth.user !== prevProps.auth.user) {
       this.setState({
         auth: auth,
@@ -107,8 +110,8 @@ class Main extends Component {
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
                                                          errMess={this.props.settings.errMess}
-                                                         postUserStats={this.props.postUserStats}
-                                                         widget={this.props.widget}
+                                                         session={this.props.session.session}
+                                                         postSessionData={this.props.postSessionData}
           />}
           />
           <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}

@@ -1,6 +1,5 @@
 import * as ActionTypes from './ActionTypes'
-import {expressURL} from "../shared/expressURL";
-import {useNavigate} from "react-router-dom";
+import { expressURL } from "../shared/expressURL";
 
 export const postAccount = () => (dispatch) => {
   const query = window.location.search;
@@ -237,7 +236,7 @@ export const postSettings = (settings) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
-    .then((res) => dispatch(addSetting(settings)))
+    .then(() => dispatch(addSetting(settings)))
     .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
 }
 
@@ -273,10 +272,24 @@ export const addSettings = (settings) => ({
   payload: settings,
 });
 
-export const postUserStats = (stats) => (dispatch) => {
+export const sessionLoading = () => ({
+  type: ActionTypes.SESSION_LOADING,
+});
+
+export const sessionFailed = (errMess) => ({
+  type: ActionTypes.SESSION_FAILED,
+  payload: errMess,
+});
+
+export const addSession = (settings) => ({
+  type: ActionTypes.ADD_SESSION,
+  payload: settings,
+});
+
+export const fetchSessionData = () => (dispatch) => {
+  dispatch(sessionLoading());
   return fetch(expressURL + 'session', {
-    method: 'POST',
-    body: JSON.stringify(stats),
+    method: 'GET',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
@@ -286,5 +299,24 @@ export const postUserStats = (stats) => (dispatch) => {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
-    .catch((error) => { alert('Your stats could not saved\nError: ' + error.message); });
+    .then((sessionData) => dispatch(addSession(sessionData)))
+    .catch((error) => dispatch(sessionFailed(error.message)));
+};
+
+export const postSessionData = (data) => (dispatch) => {
+  return fetch(expressURL + 'session', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    })
+    .then((response) => response.json())
+    .then((sessionData) => dispatch(addSession(sessionData)))
+    .catch((error) => alert(error.message));
 }
