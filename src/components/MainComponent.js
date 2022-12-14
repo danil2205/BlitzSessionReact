@@ -76,7 +76,7 @@ class Main extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { auth, session } = this.props;
+    const { auth } = this.props;
     if (auth.user !== prevProps.auth.user) {
       this.setState({
         auth: auth,
@@ -99,6 +99,7 @@ class Main extends Component {
                 resetForm={this.props.resetForm}
         />
         <Routes>
+          <Route path="/" element={<Home />}/>
           <Route path="/home" element={<Home />}/>
           <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}
                                                            isLoading={this.props.accounts.isLoading}
