@@ -4,9 +4,9 @@ export const AuthURL = `https://api.worldoftanks.eu/wot/auth/login/?application_
 export const playerStatsURL = (account_id) => {
   return `https://api.wotblitz.eu/wotb/account/info/?application_id=${applicationId}&account_id=${account_id}&extra=statistics.rating`
 };
-export const listOfPlayers = (nickname) => {
+export const listOfPlayersURL = (nickname) => {
   return `https://api.wotblitz.eu/wotb/account/list/?application_id=${applicationId}&search=${nickname}`
 };
-export const medalsOfPlayer = (account_id) => {
+export const playerMedalsURL = (account_id) => {
   return `https://api.wotblitz.eu/wotb/account/achievements/?application_id=${applicationId}&account_id=${account_id}`;
 };

@@ -33,6 +33,8 @@ export const imagesMedals = {
   },
 };
 
+const getPercentNum = (val) => ~~(val * 100) + '%';
+
 export const statsToDisplay = (playerStats) => {
   return {
     main: {
@@ -48,18 +50,18 @@ export const statsToDisplay = (playerStats) => {
           title: "Maximum frags",
         },
         survived_win: {
-          value: `${~~((playerStats.win_and_survived  / playerStats.battles) * 100)}%`,
+          value: getPercentNum(playerStats.win_and_survived  / playerStats.battles),
           title: "Survived wins",
         },
         survived: {
-          value: `${~~((playerStats.survived_battles / playerStats.battles) * 100)}%`,
+          value: getPercentNum(playerStats.survived_battles / playerStats.battles),
           title: "Survived",
         },
       },
 
       column2: {
         accuracy: {
-          value: `${~~((playerStats.hits / playerStats.shots) * 100)}%`,
+          value: getPercentNum(playerStats.hits / playerStats.shots),
           title: "Accuracy",
         },
         avg_kills: {

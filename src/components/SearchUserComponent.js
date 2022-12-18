@@ -2,7 +2,7 @@ import React, { useEffect, useState} from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Input } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
-import { listOfPlayers, medalsOfPlayer, playerStatsURL } from "../shared/wargaming";
+import { listOfPlayersURL, playerMedalsURL, playerStatsURL } from "../shared/wargaming";
 import { imagesMedals, statsToDisplay } from "../shared/StatsData";
 
 const RenderStats = ({ players }) => {
@@ -10,17 +10,16 @@ const RenderStats = ({ players }) => {
   const [stats, setStats] = useState(null);
   const [medals, setMedals] = useState(null);
   useEffect(() => {
-    const getStats = async () => {
+    (async () => {
       const stats = await fetch(playerStatsURL(account_id))
         .then((res) => res.json());
 
-      const medals = await fetch(medalsOfPlayer(account_id))
+      const medals = await fetch(playerMedalsURL(account_id))
         .then((res) => res.json());
 
       setStats(stats);
       setMedals(medals)
-    };
-    getStats();
+    })();
   }, [])
   if (!stats) return <div></div> // NEED TO FIX: CRASHING PAGE, UNDEFINED PLAYERSTATS
   const playerStats = stats.data[account_id].statistics.all;
@@ -124,7 +123,7 @@ const SearchPlayer = (props) => {
   };
 
   const fetchListOfPlayers = (nickname) => {
-    fetch(listOfPlayers(nickname))
+    fetch(listOfPlayersURL(nickname))
       .then((res) => res.json())
       .then((players) => {
         setPlayers(players.data);
