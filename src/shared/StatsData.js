@@ -1,34 +1,36 @@
+const getImage = (img) => require(`../images/medals/${img}.png`);
+
 export const imagesMedals = {
   markOfMastery: {
-    image: require("../images/medals/medalMastery.png"),
+    image: getImage('markOfMastery'),
     description: "Ace Tanker / earn more xp in battle than 99% of players",
   },
   heroesOfRassenay: {
-    image: require("../images/medals/heroesOfRassenay.png"),
+    image: getImage('heroesOfRassenay'),
     description: "Raseiniai Heroes Medal / 7 kills per battle",
   },
   medalLafayettePool: {
-    image: require("../images/medals/medalLafayettePool.png"),
+    image: getImage('medalLafayettePool'),
     description: "Pool's Medal / 6 kills per battle",
   },
   medalRadleyWalters: {
-    image: require("../images/medals/medalRadleyWalters.png"),
+    image: getImage('medalRadleyWalters'),
     description: "Radley-Walters' Medal / 5 kills per battle",
   },
   medalKolobanov: {
-    image: require("../images/medals/medalKolobanov.png"),
+    image: getImage('medalKolobanov'),
     description: "Kolobanov's Medal / win alone vs 3 enemies",
   },
   supporter: {
-    image: require("../images/medals/supporter.png"),
+    image: getImage('supporter'),
     description: "Confederate / max support for allies",
   },
   warrior: {
-    image: require("../images/medals/warrior.png"),
+    image: getImage('warrior'),
     description: "Top Gun / 4 kills per battle",
   },
   steelwall: {
-    image: require("../images/medals/steelwall.png"),
+    image: getImage('steelwall'),
     description: "Steel Wall / Recieve at last 11 hits.",
   },
 };
