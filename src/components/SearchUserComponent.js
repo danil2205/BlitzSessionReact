@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Input } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as IoIcons from "react-icons/io";
@@ -22,9 +22,9 @@ const RenderStats = ({ players }) => {
     })();
   }, [])
   if (!stats) return <div></div> // NEED TO FIX: CRASHING PAGE, UNDEFINED PLAYERSTATS
-  const playerStats = stats.data[account_id].statistics.all;
-  const statsDisplay = statsToDisplay(playerStats);
-  const playerMedals = medals.data[account_id].achievements;
+  const playerStats = stats.data[account_id]?.statistics?.all;
+  const statsDisplay = playerStats ? statsToDisplay(playerStats) : undefined;
+  const playerMedals = medals.data[account_id]?.achievements;
 
   return (
     <div className="col-md-12">
@@ -32,7 +32,9 @@ const RenderStats = ({ players }) => {
       <div className="wg-id">{`WG.ID ${account_id}`}</div>
       <div className="text-center">
         <div className="row">
-          {Object.keys(statsDisplay.main).map((key, index) => {
+          {!statsDisplay ? <h3 className="text-center">
+            No Stats. Try type name again.
+          </h3> : Object.keys(statsDisplay.main).map((key, index) => {
             return (
               <div className="col-sm-3 col-xs-6" key={index}>
                 <div className="well well-sm">
@@ -45,7 +47,7 @@ const RenderStats = ({ players }) => {
           })}
         </div>
         <div className="row text-center">
-          {Object.keys(imagesMedals).map((key, index) => {
+          {!playerMedals ? null : Object.keys(imagesMedals).map((key, index) => {
             return (
               <div className="col-md-2 col-sm-4 col-xs-4" key={index}>
                 <img src={imagesMedals[key].image} alt={key} className="img-rounded"/>
@@ -57,14 +59,14 @@ const RenderStats = ({ players }) => {
         </div>
 
         <div className="row text-left">
-          {Object.keys(statsDisplay.table).map((key, index) => {
+          {!statsDisplay ? null : Object.keys(statsDisplay.table).map((key, index) => {
             return (
               <div className="col-sm-4 col-xs-12" key={index}>
                 <ul className="list-group">
                   {Object.keys(statsDisplay.table[key]).map((stats, index) => {
                     return (
                       <li className="list-group-item" key={index}>
-                        {statsDisplay.table[key][stats].title} <span className="table-span">{statsDisplay.table[key][stats].value}</span>
+                        {statsDisplay.table[key][stats].title} <span className="table-span">{playerStats ? statsDisplay.table[key][stats].value : 0}</span>
                       </li>
                     );
                   })}
@@ -92,7 +94,7 @@ const DisplayPlayers = ({ players, setPlayerNick, fetchListOfPlayers, dropdown, 
       <div className="dropdown-content" style={{display: dropdown ? "block" : "none"}}>
         {players.slice(0, 10).map((account, index) => {
           return (
-            <Button  key={index} onClick={() => {
+            <Button key={index} onClick={() => {
               setPlayerNick(account.nickname);
               fetchListOfPlayers(account.nickname);
               handleDropdown();

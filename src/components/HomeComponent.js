@@ -7,7 +7,6 @@ const Home = () => {
     'In Search User Tab: user can find absolutely any player of this game (only on EUROPE server) and get some stats about him. For example: battles, average damage, winrate, medals and so on.'
   ];
   return (
-
     <div className="container">
       <div className="content">
         <div className="row">
