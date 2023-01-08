@@ -117,9 +117,9 @@ class Session extends Component  {
     const res = await fetch(playerStatsURL(account_id))
       .then((res) => res.json());
     const playerStats = res.data[account_id]?.statistics;
-    const currBattles = playerStats?.all.battles + playerStats?.rating.battles;
-    const currDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt;
-    const currWins = playerStats?.all.wins + playerStats?.rating.wins
+    const currBattles = playerStats?.all.battles + playerStats?.rating.battles || 0;
+    const currDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt || 0;
+    const currWins = playerStats?.all.wins + playerStats?.rating.wins || 0;
 
     return { currBattles, currDamage, currWins };
   }
@@ -129,8 +129,8 @@ class Session extends Component  {
       const { currBattles, currDamage, currWins } = await this.getPlayerStats(nickname);
       const { battles, damage, wins } = this.props.session[0];
       const sessionBattles = currBattles - battles;
-      const sessionDamage = ((currDamage - damage) / sessionBattles).toFixed(0);
-      const sessionWinRate = (((currWins - wins) / sessionBattles) * 100).toFixed(2);
+      const sessionDamage = (((currDamage - damage) / sessionBattles) || 0).toFixed(0);
+      const sessionWinRate = (((currWins - wins) / sessionBattles) * 100 || 0).toFixed(2);
 
       this.handleSessionStats({ sessionBattles, sessionDamage, sessionWinRate });
       this.getSessionStats(nickname);

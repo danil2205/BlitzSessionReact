@@ -66,7 +66,7 @@ const RenderForms = (props) => {
     setPwdReg('');
   };
 
-  const handleChangePwd = (event) => { setPwd(event.target.value); };
+  const handleChangePwd = (event,) => { setPwd(event.target.value); };
   const handleChangePwdReg = (event) => { setPwdReg(event.target.value); };
 
   const handleSubmit = (values) => {
