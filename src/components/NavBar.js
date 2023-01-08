@@ -5,7 +5,7 @@ import * as FaIcons from "react-icons/fa";
 import { IconContext } from "react-icons";
 import logo from "../logo/blitz.png";
 import { Button, Col, Label, Modal, ModalBody, ModalHeader, Nav, NavItem, Row } from "reactstrap";
-import {Control, Errors, Form} from "react-redux-form";
+import { Control, Errors, Form } from "react-redux-form";
 import { Loading } from "./LoadingComponent";
 import * as IoIcons from "react-icons/io";
 
@@ -66,17 +66,11 @@ const RenderForms = (props) => {
     setPwdReg('');
   };
 
-  const handleChangePwd = (event,) => { setPwd(event.target.value); };
-  const handleChangePwdReg = (event) => { setPwdReg(event.target.value); };
+  const handleChangePwd = (event, setAuthField) => { setAuthField(event.target.value); };
 
-  const handleSubmit = (values) => {
-    props.loginUser(values);
-    toggleLogin();
-  }
-
-  const handleRegistration = (values) => {
-    props.signupUser(values)
-    toggleSignup();
+  const handleSubmit = (values, authUser, toggleAuth) => {
+    authUser(values);
+    toggleAuth();
   }
 
   if (props.tokenInfo.jwttoken?.success && window.location.search) {
@@ -94,7 +88,7 @@ const RenderForms = (props) => {
       <Modal isOpen={loginModal} toggle={toggleLogin}>
         <ModalHeader toggle={toggleLogin}>Login</ModalHeader>
         <ModalBody>
-          <Form model="login" onSubmit={(values) => handleSubmit(values)}>
+          <Form model="login" onSubmit={(values) => handleSubmit(values, props.loginUser, toggleLogin)}>
 
             <Row className="form-group">
               <Label htmlFor="username" md={12}>Username</Label>
@@ -120,7 +114,9 @@ const RenderForms = (props) => {
             <Row className="form-group">
               <Label htmlFor="password" md={12}>Password</Label>
               <Col md={12}>
-                <Control type="password" value={pwd} onChange={handleChangePwd} model=".password" id="password"
+                <Control type="password" value={pwd} onChange={(event) => handleChangePwd(event, setPwd)}
+                         model=".password"
+                         id="password"
                          name="password"
                          placeholder="Your Password"
                          className="form-control"
@@ -154,7 +150,7 @@ const RenderForms = (props) => {
       <Modal isOpen={signupModal} toggle={toggleSignup}>
         <ModalHeader toggle={toggleSignup}>Register</ModalHeader>
         <ModalBody>
-          <Form model="register" onSubmit={(values) => handleRegistration(values)}>
+          <Form model="register" onSubmit={(values) => handleSubmit(values, props.signupUser, toggleSignup)}>
             <Row className="form-group">
               <Label htmlFor="username" md={12}>Username</Label>
               <Col md={12}>
@@ -179,7 +175,9 @@ const RenderForms = (props) => {
             <Row className="form-group">
               <Label htmlFor="password" md={12}>Password</Label>
               <Col md={12}>
-                <Control type="password" value={pwdReg} onChange={handleChangePwdReg} model=".password" id="password"
+                <Control type="password" value={pwdReg} onChange={(event) => handleChangePwd(event, setPwdReg)}
+                         model=".password"
+                         id="password"
                          name="password"
                          placeholder="Your Password"
                          className="form-control"

@@ -74,6 +74,12 @@ class Session extends Component  {
     if (nickname) await this.startPlayerSession(nickname); // works only if user came from another tab
   }
 
+  componentWillUnmount() {
+    const clearAllTimeouts = setTimeout(() => {
+      for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
+    });
+  }
+
   startPlayerSession = async (nickname) => {
     const sessionInfo = this.props.session[0];
     const playerInfo = await this.getPlayerStats(nickname);
@@ -205,7 +211,7 @@ class Session extends Component  {
             <Button className="primary-button" onClick={async () => {
               const clearAllTimeouts = setTimeout(() => {
                 for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
-              })
+              });
               await this.clearPlayerSession(this.props.session[0].inGameNickname);
             }}>Reset Stats</Button>
           </div>
