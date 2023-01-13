@@ -1,6 +1,31 @@
 import * as ActionTypes from './ActionTypes'
 import { expressURL } from "../shared/expressURL";
 
+const fetchData = ({ link, method, data, dispatch, actions }) => {
+  const [ addData, errData ] = actions;
+
+  return fetch(expressURL + link, {
+    method,
+    body: JSON.stringify(data),
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (response.ok) return response;
+      throw new Error(`Error ${response.status}: ${response.statusText}`)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (addData) dispatch(addData(data));
+    })
+    .catch((error) => {
+      if (errData) return dispatch(errData(error.message));
+      alert(error.message);
+    });
+};
+
 export const postAccount = () => (dispatch) => {
   const query = window.location.search;
   const urlSearchParams = new URLSearchParams(query);
@@ -12,56 +37,35 @@ export const postAccount = () => (dispatch) => {
     expires_at: urlSearchParams.get('expires_at'),
   }
 
-  return fetch(expressURL + 'accounts/', {
+  fetchData({
+    link: 'accounts',
     method: 'POST',
-    body: JSON.stringify(newAccount),
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`)
-      })
-    .then((response) => response.json())
-    .then((account) => dispatch(addAccount(account)))
-    .catch((error) => alert(error));
+    data: newAccount,
+    dispatch,
+    actions: [addAccount],
+  });
 };
 
 export const deleteAccount = (account_id) => (dispatch) => {
-  return fetch(`${expressURL}accounts/${account_id}`, {
+  fetchData({
+    link: `accounts/${account_id}`,
     method: 'DELETE',
-    body: JSON.stringify({ account_id }),
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`)
-    })
-    .then((response) => response.json())
-    .then((accounts) => dispatch(delAccount(accounts)))
-    .catch(() => alert('Error while deleting account. Try again!'));
+    data: { account_id },
+    dispatch,
+    actions: [delAccount],
+  });
 };
 
 export const fetchAccounts = () => (dispatch) => {
   dispatch(accountsLoading());
 
-  return fetch(expressURL + 'accounts', {
+  fetchData({
+    link: 'accounts',
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then((response) => {
-        if (response.ok) return response;
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then((accounts) => dispatch(addAccounts(accounts)))
-    .catch((error) => dispatch(accountsFailed(error.message)));
+    data: undefined,
+    dispatch,
+    actions: [addAccounts, accountsFailed],
+  });
 };
 
 export const accountsLoading = () => ({
@@ -92,10 +96,13 @@ export const requestLogin = () => ({
   type: ActionTypes.LOGIN_REQUEST
 });
 
-export const receiveLogin = (user) => ({
-  type: ActionTypes.LOGIN_SUCCESS,
-  user,
-});
+export const receiveLogin = (user) => {
+  localStorage.setItem('token', user.token);
+  return {
+    type: ActionTypes.LOGIN_SUCCESS,
+    user,
+  };
+};
 
 export const loginError = (message) => ({
   type: ActionTypes.LOGIN_FAILURE,
@@ -105,23 +112,13 @@ export const loginError = (message) => ({
 export const loginUser = (credentials) => (dispatch) => {
   dispatch(requestLogin());
 
-  return fetch(expressURL + 'users/login', {
+  fetchData({
+    link: 'users/login',
     method: 'POST',
-    body: JSON.stringify(credentials),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-    .then((response) => {
-        if (response.ok) return response;
-        throw new Error(`Password or username is incorrect`);
-      })
-    .then((response) => response.json())
-    .then((response) => {
-      localStorage.setItem('token', response.token);
-      dispatch(receiveLogin(response));
-    })
-    .catch((error) => dispatch(loginError(error.message)));
+    data: credentials,
+    dispatch,
+    actions: [receiveLogin, loginError],
+  });
 };
 
 export const receiveLogout = () => ({
@@ -137,10 +134,13 @@ export const requestRegister = () => ({
   type: ActionTypes.REGISTER_REQUEST
 });
 
-export const receiveRegister = (user) => ({
-  type: ActionTypes.REGISTER_SUCCESS,
-  user,
-});
+export const receiveRegister = (user) => {  // maybe temporary?
+  localStorage.setItem('token', user.token);
+  return {
+    type: ActionTypes.REGISTER_SUCCESS,
+    user,
+  };
+};
 
 export const registerError = (message) => ({
   type: ActionTypes.REGISTER_FAILURE,
@@ -150,29 +150,27 @@ export const registerError = (message) => ({
 export const signupUser = (credentials) => (dispatch) => {
   dispatch(requestRegister());
 
-  return fetch(expressURL + 'users/signup', {
+  fetchData({
+    link: 'users/signup',
     method: 'POST',
-    body: JSON.stringify(credentials),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      localStorage.setItem('token', response.token);
-      dispatch(receiveRegister(response));
-    })
-    .catch((err) => dispatch(registerError(err.message)));
+    data: credentials,
+    dispatch,
+    actions: [receiveRegister, registerError],
+  });
+
 };
 
 export const tokenChecking = () => ({
   type: ActionTypes.JWTTOKEN_LOADING,
 });
 
-export const tokenFailed = (errMess) => ({
-  type: ActionTypes.JWTTOKEN_FAILED,
-  payload: errMess,
-});
+export const tokenFailed = (errMess) => { // MAYBE TEMPORARY TOO
+  localStorage.removeItem('token');
+  return {
+    type: ActionTypes.JWTTOKEN_FAILED,
+    payload: errMess,
+  };
+};
 
 export const tokenValid = (token) => ({
   type: ActionTypes.JWTTOKEN_OK,
@@ -182,39 +180,23 @@ export const tokenValid = (token) => ({
 export const checkJWTToken = () => (dispatch) =>  {
   dispatch(tokenChecking());
 
-  return fetch(expressURL + 'users/checkJWTToken', {
+  fetchData({
+    link: 'users/checkJWTToken',
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-  })
-    .then((response) => {
-        if (response.ok) return response;
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      })
-    .then((response) => response.json())
-    .then((tkn) => dispatch(tokenValid(tkn)))
-    .catch((error) => {
-      localStorage.removeItem('token');
-      dispatch(tokenFailed(error.message))
-    });
+    data: undefined,
+    dispatch,
+    actions: [tokenValid, tokenFailed],
+  });
 };
 
 export const postFeedback = (feedback) => (dispatch) =>  {
-
-  return fetch(expressURL + 'contact', {
+  fetchData({
+    link: 'contact',
     method: 'POST',
-    body: JSON.stringify(feedback),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-    .then((response) => {
-        if (response.ok) return response;
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      })
-    .then((response) => response.json())
-    .catch((error) => { alert('Your feedback could not be posted\nError: ' + error.message); });
+    data: feedback,
+    dispatch,
+    actions: [],
+  });
 };
 
 export const addSetting = (settings) => ({
@@ -223,39 +205,25 @@ export const addSetting = (settings) => ({
 });
 
 export const postSettings = (settings) => (dispatch) => {
-  return fetch(expressURL + 'settings', {
+  fetchData({
+    link: 'settings',
     method: 'POST',
-    body: JSON.stringify(settings),
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then(() => dispatch(addSetting(settings)))
-    .catch((error) => { alert('Your settings could not saved\nError: ' + error.message); });
+    data: settings,
+    dispatch,
+    actions: [addSetting],
+  });
 }
 
 export const fetchSettings = () => (dispatch) => {
   dispatch(settingsLoading());
 
-  return fetch(expressURL + 'settings', {
+  fetchData({
+    link: 'settings',
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then((settings) => dispatch(addSettings(settings)))
-    .catch((error) => dispatch(settingsFailed(error.message)));
+    data: undefined,
+    dispatch,
+    actions: [addSettings, settingsFailed],
+  });
 };
 
 export const settingsLoading = () => ({
@@ -288,35 +256,22 @@ export const addSession = (settings) => ({
 
 export const fetchSessionData = () => (dispatch) => {
   dispatch(sessionLoading());
-  return fetch(expressURL + 'session', {
+
+  fetchData({
+    link: 'session',
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then((sessionData) => dispatch(addSession(sessionData)))
-    .catch((error) => dispatch(sessionFailed(error.message)));
+    data: undefined,
+    dispatch,
+    actions: [addSession, sessionFailed],
+  });
 };
 
 export const postSessionData = (data) => (dispatch) => {
-  return fetch(expressURL + 'session', {
+  fetchData({
+    link: 'session',
     method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json'
-    },
-  })
-    .then((response) => {
-      if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then((sessionData) => dispatch(addSession(sessionData)))
-    .catch((error) => alert(error.message));
+    data: data,
+    dispatch,
+    actions: [addSession],
+  });
 }

@@ -86,7 +86,7 @@ class Session extends Component  {
     await this.getSessionStats(nickname);
     this.setState({ dropdown: nickname });
 
-    if (sessionInfo.inGameNickname === nickname) return;
+    if (sessionInfo?.inGameNickname === nickname) return;
     this.props.postSessionData({
       inGameNickname: nickname,
       account_id: this.getAccountId(nickname),
