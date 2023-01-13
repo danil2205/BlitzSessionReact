@@ -3,6 +3,8 @@
 This project was done for the second course in the first semester.<br />
 This project is related to the game from the Wargaming company — World Of Tanks Blitz. The user can register (or log in if he already has an account). After that, he has access to several tabs — accounts and session. If the user does not want to register, he will only have access to the tabs — search for players and leave feedback.
 
+Link on backend: https://github.com/danil2205/BlitzSession
+
 ## Download & Run
 
 1. Install all necessary packages
