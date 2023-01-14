@@ -1,5 +1,11 @@
 import * as ActionTypes from './ActionTypes'
-import { expressURL } from "../shared/expressURL";
+import { expressURL } from '../shared/expressURL';
+
+const makeActionCreator = (type, argName = 'payload') => (arg) => {
+  const action = { type };
+  if (arg) action[argName] = arg;
+  return action;
+};
 
 const fetchData = ({ link, method, data, dispatch, actions }) => {
   const [ addData, errData ] = actions;
@@ -42,7 +48,7 @@ export const postAccount = () => (dispatch) => {
     method: 'POST',
     data: newAccount,
     dispatch,
-    actions: [addAccount],
+    actions: [makeActionCreator(ActionTypes.ADD_ACCOUNT)],
   });
 };
 
@@ -52,51 +58,25 @@ export const deleteAccount = (account_id) => (dispatch) => {
     method: 'DELETE',
     data: { account_id },
     dispatch,
-    actions: [delAccount],
+    actions: [makeActionCreator(ActionTypes.DEL_ACCOUNT)],
   });
 };
 
 export const fetchAccounts = () => (dispatch) => {
-  dispatch(accountsLoading());
-
+  dispatch(makeActionCreator(ActionTypes.ACCOUNTS_LOADING)());
   fetchData({
     link: 'accounts',
     method: 'GET',
     data: undefined,
     dispatch,
-    actions: [addAccounts, accountsFailed],
+    actions: [
+      makeActionCreator(ActionTypes.ADD_ACCOUNTS),
+      makeActionCreator(ActionTypes.ACCOUNTS_FAILED),
+    ],
   });
 };
 
-export const accountsLoading = () => ({
-  type: ActionTypes.ACCOUNTS_LOADING,
-});
-
-export const accountsFailed = (errMess) => ({
-  type: ActionTypes.ACCOUNTS_FAILED,
-  payload: errMess,
-});
-
-export const addAccounts = (accounts) => ({
-  type: ActionTypes.ADD_ACCOUNTS,
-  payload: accounts,
-});
-
-export const addAccount = (accounts) => ({
-  type: ActionTypes.ADD_ACCOUNT,
-  payload: accounts,
-});
-
-export const delAccount = (accounts) => ({
-  type: ActionTypes.DEL_ACCOUNT,
-  payload: accounts,
-});
-
-export const requestLogin = () => ({
-  type: ActionTypes.LOGIN_REQUEST
-});
-
-export const receiveLogin = (user) => {
+export const receiveLogin = (user) => { // temporary
   localStorage.setItem('token', user.token);
   return {
     type: ActionTypes.LOGIN_SUCCESS,
@@ -104,35 +84,24 @@ export const receiveLogin = (user) => {
   };
 };
 
-export const loginError = (message) => ({
-  type: ActionTypes.LOGIN_FAILURE,
-  message,
-});
-
 export const loginUser = (credentials) => (dispatch) => {
-  dispatch(requestLogin());
-
+  dispatch(makeActionCreator(ActionTypes.LOGIN_REQUEST)());
   fetchData({
     link: 'users/login',
     method: 'POST',
     data: credentials,
     dispatch,
-    actions: [receiveLogin, loginError],
+    actions: [
+      receiveLogin,
+      makeActionCreator(ActionTypes.LOGIN_FAILURE, 'message'),
+    ],
   });
 };
 
-export const receiveLogout = () => ({
-  type: ActionTypes.LOGOUT_SUCCESS,
-});
-
 export const logoutUser = () => (dispatch) => {
   localStorage.removeItem('token');
-  dispatch(receiveLogout());
+  dispatch(makeActionCreator(ActionTypes.LOGOUT_SUCCESS)());
 };
-
-export const requestRegister = () => ({
-  type: ActionTypes.REGISTER_REQUEST
-});
 
 export const receiveRegister = (user) => {  // maybe temporary?
   localStorage.setItem('token', user.token);
@@ -142,27 +111,19 @@ export const receiveRegister = (user) => {  // maybe temporary?
   };
 };
 
-export const registerError = (message) => ({
-  type: ActionTypes.REGISTER_FAILURE,
-  message,
-});
-
 export const signupUser = (credentials) => (dispatch) => {
-  dispatch(requestRegister());
-
+  dispatch(makeActionCreator(ActionTypes.REGISTER_REQUEST)());
   fetchData({
     link: 'users/signup',
     method: 'POST',
     data: credentials,
     dispatch,
-    actions: [receiveRegister, registerError],
+    actions: [
+      receiveRegister,
+      makeActionCreator(ActionTypes.REGISTER_FAILURE, 'message'),
+    ],
   });
-
 };
-
-export const tokenChecking = () => ({
-  type: ActionTypes.JWTTOKEN_LOADING,
-});
 
 export const tokenFailed = (errMess) => { // MAYBE TEMPORARY TOO
   localStorage.removeItem('token');
@@ -172,20 +133,17 @@ export const tokenFailed = (errMess) => { // MAYBE TEMPORARY TOO
   };
 };
 
-export const tokenValid = (token) => ({
-  type: ActionTypes.JWTTOKEN_OK,
-  payload: token,
-});
-
 export const checkJWTToken = () => (dispatch) =>  {
-  dispatch(tokenChecking());
-
+  dispatch(makeActionCreator(ActionTypes.JWTTOKEN_LOADING)());
   fetchData({
     link: 'users/checkJWTToken',
     method: 'GET',
     data: undefined,
     dispatch,
-    actions: [tokenValid, tokenFailed],
+    actions: [
+      makeActionCreator(ActionTypes.JWTTOKEN_OK),
+      tokenFailed,
+    ],
   });
 };
 
@@ -199,70 +157,43 @@ export const postFeedback = (feedback) => (dispatch) =>  {
   });
 };
 
-export const addSetting = (settings) => ({
-  type: ActionTypes.ADD_SETTING,
-  payload: settings,
-});
-
 export const postSettings = (settings) => (dispatch) => {
   fetchData({
     link: 'settings',
     method: 'POST',
     data: settings,
     dispatch,
-    actions: [addSetting],
+    actions: [makeActionCreator(ActionTypes.ADD_SETTING)],
   });
-}
+};
 
 export const fetchSettings = () => (dispatch) => {
-  dispatch(settingsLoading());
+  dispatch(makeActionCreator(ActionTypes.SETTINGS_LOADING)());
 
   fetchData({
     link: 'settings',
     method: 'GET',
     data: undefined,
     dispatch,
-    actions: [addSettings, settingsFailed],
+    actions: [
+      makeActionCreator(ActionTypes.ADD_SETTINGS),
+      makeActionCreator(ActionTypes.SETTINGS_FAILED),
+    ],
   });
 };
 
-export const settingsLoading = () => ({
-  type: ActionTypes.SETTINGS_LOADING,
-});
-
-export const settingsFailed = (errMess) => ({
-  type: ActionTypes.SETTINGS_FAILED,
-  payload: errMess,
-});
-
-export const addSettings = (settings) => ({
-  type: ActionTypes.ADD_SETTINGS,
-  payload: settings,
-});
-
-export const sessionLoading = () => ({
-  type: ActionTypes.SESSION_LOADING,
-});
-
-export const sessionFailed = (errMess) => ({
-  type: ActionTypes.SESSION_FAILED,
-  payload: errMess,
-});
-
-export const addSession = (settings) => ({
-  type: ActionTypes.ADD_SESSION,
-  payload: settings,
-});
-
 export const fetchSessionData = () => (dispatch) => {
-  dispatch(sessionLoading());
+  dispatch(makeActionCreator(ActionTypes.SESSION_LOADING)());
 
   fetchData({
     link: 'session',
     method: 'GET',
     data: undefined,
     dispatch,
-    actions: [addSession, sessionFailed],
+    actions: [
+      makeActionCreator(ActionTypes.ADD_SESSION),
+      makeActionCreator(ActionTypes.SESSION_FAILED),
+    ],
   });
 };
 
@@ -272,6 +203,6 @@ export const postSessionData = (data) => (dispatch) => {
     method: 'POST',
     data: data,
     dispatch,
-    actions: [addSession],
+    actions: [makeActionCreator(ActionTypes.ADD_SESSION)],
   });
-}
+};
