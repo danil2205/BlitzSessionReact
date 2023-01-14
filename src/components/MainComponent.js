@@ -14,14 +14,14 @@ import {
   logoutUser,
   postSessionData,
   fetchSessionData,
-} from "../redux/ActionCreators";
-import Accounts from "./AccountComponent";
-import Contact from "./ContactComponent";
-import Navbar from "./NavBar";
-import Session from "./SessionComponent";
-import SearchPlayer from "./SearchUserComponent";
-import Widget from "./WidgetComponent";
-import { actions } from "react-redux-form";
+} from '../redux/ActionCreators.js';
+import Accounts from './AccountComponent.js';
+import Contact from './ContactComponent.js';
+import Navbar from './NavBar.js';
+import Session from './SessionComponent.js';
+import SearchPlayer from './SearchUserComponent.js';
+import Widget from './WidgetComponent.js';
+import { actions } from 'react-redux-form';
 
 const withRouter = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -88,7 +88,7 @@ class Main extends Component {
 
   render() {
     return (
-      <div className="main-div">
+      <div className='main-div'>
         <Navbar loginUser={this.props.loginUser}
                 signupUser={this.props.signupUser}
                 logoutUser={this.props.logoutUser}
@@ -99,13 +99,13 @@ class Main extends Component {
         />
         <Routes>
           <Route path='*' element={<Navigate to='/accounts' />} />
-          <Route exact path="/accounts" element={<Accounts accounts={this.props.accounts.accounts}
+          <Route exact path='/accounts' element={<Accounts accounts={this.props.accounts.accounts}
                                                            isLoading={this.props.accounts.isLoading}
                                                            errMess={this.props.accounts.errMess}
                                                            deleteAccount={this.props.deleteAccount}
           />}
           />
-          <Route exact path="/session" element={<Session accounts={this.props.accounts.accounts}
+          <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
                                                          errMess={this.props.settings.errMess}
@@ -113,12 +113,12 @@ class Main extends Component {
                                                          postSessionData={this.props.postSessionData}
           />}
           />
-          <Route exact path="/session/configure-widget" element={<Widget widget={this.props.widget}
+          <Route exact path='/session/configure-widget' element={<Widget widget={this.props.widget}
                                                                          postSettings={this.props.postSettings}
           />}
           />
-          <Route exact path="/user-search" element={<SearchPlayer />}/>
-          <Route exact path="/contactus" element={<Contact resetForm={this.props.resetForm}
+          <Route exact path='/user-search' element={<SearchPlayer />}/>
+          <Route exact path='/contactus' element={<Contact resetForm={this.props.resetForm}
                                                            postFeedback={this.props.postFeedback}
           />}
           />

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,12 +7,12 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle
-} from "reactstrap";
-import { Link } from "react-router-dom";
-import * as IoIcons from "react-icons/io";
-import { Loading } from "./LoadingComponent";
-import { playerStatsURL }  from "../shared/wargaming";
-import { InitialWidgetSettings } from "../redux/forms";
+} from 'reactstrap';
+import { Link } from 'react-router-dom';
+import * as IoIcons from 'react-icons/io';
+import { Loading } from './LoadingComponent.js';
+import { playerStatsURL }  from '../shared/wargaming.js';
+import { InitialWidgetSettings } from '../redux/forms.js';
 
 class Dropdown extends Component {
   constructor(props) {
@@ -33,9 +33,9 @@ class Dropdown extends Component {
   render() {
     if (!this.props.accounts[0]) return <div></div>
     return (
-      <div className="dropdown">
+      <div className='dropdown'>
         <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-          <DropdownToggle caret className="primary-button">
+          <DropdownToggle caret className='primary-button'>
             {this.props.session[0]?.inGameNickname || this.props.dropdown}
           </DropdownToggle>
           <DropdownMenu>
@@ -151,8 +151,8 @@ class Session extends Component  {
   render() {
     if (this.props.isLoading) {
       return (
-        <div className="container">
-          <div className="row">
+        <div className='container'>
+          <div className='row'>
             <Loading />
           </div>
         </div>
@@ -160,55 +160,55 @@ class Session extends Component  {
     }
     if (this.props.errMess) {
       return (
-        <div className="container">
-          <div className="row">
-            <h2 className="text-center">{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
+        <div className='container'>
+          <div className='row'>
+            <h2 className='text-center'>{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
           </div>
         </div>
       );
     }
 
-    if (!this.props.accounts[0]) return <div><h3 style={{textAlign: "center"}}>Add Account in tab Accounts</h3></div>
+    if (!this.props.accounts[0]) return <div><h3 style={{textAlign: 'center'}}>Add Account in tab Accounts</h3></div>
     const widgetSettings = this.getWidgetSettings();
     return (
-      <div className="container">
-        <div className="content">
-          <div className="row">
+      <div className='container'>
+        <div className='content'>
+          <div className='row'>
             <Breadcrumb>
-              <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+              <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
               <BreadcrumbItem active>Session</BreadcrumbItem>
             </Breadcrumb>
-            <div className="col-12">
+            <div className='col-12'>
               <h3>Session</h3>
               <hr />
             </div>
           </div>
-          <div className="session-buttons">
+          <div className='session-buttons'>
             <Dropdown accounts={this.props.accounts}
                       dropdown={this.state.dropdown}
                       session={this.props.session}
                       startPlayerSession={this.startPlayerSession}
             />
-            <Link to="/session/configure-widget" className="primary-button">Configure Widget</Link>
+            <Link to='/session/configure-widget' className='primary-button'>Configure Widget</Link>
           </div>
-          <div className="user-information" style={{
+          <div className='user-information' style={{
             flexDirection: widgetSettings.alignment,
             backgroundColor: widgetSettings.backgroundColor,
             color: widgetSettings.textColor,
             fontSize: widgetSettings.fontSize + 'px'
           }}>
-            <div className="battles">
+            <div className='battles'>
               <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
             </div>
-            <div className="damage">
+            <div className='damage'>
               <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
             </div>
-            <div className="winrate">
+            <div className='winrate'>
               <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
             </div>
           </div>
-          <div className="reset-button">
-            <Button className="primary-button" onClick={async () => {
+          <div className='reset-button'>
+            <Button className='primary-button' onClick={async () => {
               const clearAllTimeouts = setTimeout(() => {
                 for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
               });

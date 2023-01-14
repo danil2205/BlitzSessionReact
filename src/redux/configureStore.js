@@ -1,13 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Accounts } from './accounts';
-import { Jwttoken } from "./jwttoken";
-import { Settings } from "./settings";
-import { Auth } from "./auth";
-import { Session } from "./session";
-import thunk from "redux-thunk";
-import logger from "redux-logger";
-import { createForms } from "react-redux-form";
-import { InitialAuth, InitialFeedback, InitialWidgetSettings } from "./forms";
+import { Accounts } from './accounts.js';
+import { Jwttoken } from './jwttoken.js';
+import { Settings } from './settings.js';
+import { Auth } from './auth.js';
+import { Session } from './session.js';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
+import { createForms } from 'react-redux-form';
+import { InitialAuth, InitialFeedback, InitialWidgetSettings } from './forms.js';
 
 export const ConfigureStore = () => {
   const store = createStore(

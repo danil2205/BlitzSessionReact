@@ -1,9 +1,9 @@
-import React from "react";
-import { Loading } from "./LoadingComponent";
-import { AuthURL } from "../shared/wargaming";
-import * as AiIcons from "react-icons/ai";
-import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Loading } from './LoadingComponent.js';
+import { AuthURL } from '../shared/wargaming.js';
+import * as AiIcons from 'react-icons/ai';
+import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 const addAccount = (props) => {
   if (!props.accounts[0]) return <tbody></tbody>
@@ -28,8 +28,8 @@ const addAccount = (props) => {
 const Accounts = (props) => {
   if (props.isLoading) {
     return (
-      <div className="container">
-        <div className="row">
+      <div className='container'>
+        <div className='row'>
           <Loading />
         </div>
       </div>
@@ -37,38 +37,38 @@ const Accounts = (props) => {
   }
   if (props.errMess) {
     return (
-      <div className="container">
-        <div className="row">
-          <h2 className="text-center">{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
+      <div className='container'>
+        <div className='row'>
+          <h2 className='text-center'>{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="content">
-        <div className="row">
+    <div className='container'>
+      <div className='content'>
+        <div className='row'>
           <Breadcrumb>
-            <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+            <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
             <BreadcrumbItem active>Accounts</BreadcrumbItem>
           </Breadcrumb>
-          <div className="col-12">
+          <div className='col-12'>
             <h3>Accounts</h3>
             <hr />
           </div>
         </div>
-        <div className="profile-container">
-          <div className="table">
-            <div className="headerAccount">
+        <div className='profile-container'>
+          <div className='table'>
+            <div className='headerAccount'>
               <h2>Linked Accounts WoT Blitz</h2>
-              <div className="server">
-                <a href={AuthURL} rel="noreferrer">
-                  <button className="primary-button add-account icon"><span>Add Account</span></button>
+              <div className='server'>
+                <a href={AuthURL} rel='noreferrer'>
+                  <button className='primary-button add-account icon'><span>Add Account</span></button>
                 </a>
               </div>
             </div>
-            <div className="accounts-table-container">
+            <div className='accounts-table-container'>
               <table>
                 <thead>
                 <tr>

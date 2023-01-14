@@ -1,38 +1,38 @@
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
-import * as IoIcons from "react-icons/io";
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
+import * as IoIcons from 'react-icons/io';
 
 export const SidebarData =
   [
     {
-      title: "Home",
-      path: "/home",
+      title: 'Home',
+      path: '/home',
       icons: <AiIcons.AiFillHome />,
-      cName: "nav-text"
+      cName: 'nav-text'
     },
     {
-      title: "Accounts",
-      path: "/accounts",
+      title: 'Accounts',
+      path: '/accounts',
       icons: <IoIcons.IoMdPerson />,
-      cName: "nav-text"
+      cName: 'nav-text'
     },
     {
-      title: "Session",
-      path: "/session",
+      title: 'Session',
+      path: '/session',
       icons: <AiIcons.AiOutlineLineChart />,
-      cName: "nav-text"
+      cName: 'nav-text'
     },
     {
-      title: "Search User",
-      path: "/user-search",
+      title: 'Search User',
+      path: '/user-search',
       icons: <IoIcons.IoMdSearch />,
-      cName: "nav-text"
+      cName: 'nav-text'
     },
     {
-      title: "Contact Us",
-      path: "/contactus",
+      title: 'Contact Us',
+      path: '/contactus',
       icons: <FaIcons.FaQuestionCircle />,
-      cName: "nav-text"
+      cName: 'nav-text'
     },
   ];
 

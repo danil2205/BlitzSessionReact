@@ -1,5 +1,5 @@
-import * as ActionTypes from './ActionTypes'
-import { expressURL } from '../shared/expressURL';
+import * as ActionTypes from './ActionTypes.js'
+import { expressURL } from '../shared/expressURL.js';
 
 const makeActionCreator = (type, argName = 'payload') => (arg) => {
   const action = { type };
