@@ -1,4 +1,4 @@
-import * as ActionTypes from './ActionTypes.js'
+import * as ActionTypes from './ActionTypes.js';
 import { expressURL } from '../shared/expressURL.js';
 
 const makeActionCreator = (type, argName = 'payload') => (arg) => {
@@ -20,7 +20,7 @@ const fetchData = ({ link, method, data, dispatch, actions }) => {
   })
     .then((response) => {
       if (response.ok) return response;
-      throw new Error(`Error ${response.status}: ${response.statusText}`)
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
     })
     .then((response) => response.json())
     .then((data) => {
@@ -41,7 +41,7 @@ export const postAccount = () => (dispatch) => {
     nickname: urlSearchParams.get('nickname'),
     access_token: urlSearchParams.get('access_token'),
     expires_at: urlSearchParams.get('expires_at'),
-  }
+  };
 
   fetchData({
     link: 'accounts',
@@ -201,7 +201,7 @@ export const postSessionData = (data) => (dispatch) => {
   fetchData({
     link: 'session',
     method: 'POST',
-    data: data,
+    data,
     dispatch,
     actions: [makeActionCreator(ActionTypes.ADD_SESSION)],
   });
