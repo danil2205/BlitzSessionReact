@@ -46,7 +46,7 @@ const mapStateToProps = (state) => {
     settings: state.settings,
     auth: state.auth,
     session: state.session,
-  }
+  };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -72,7 +72,7 @@ class Main extends Component {
     this.props.fetchAccounts();
     this.props.fetchSettings();
     this.props.fetchSessionData();
-  }
+  };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { auth } = this.props;
@@ -84,7 +84,7 @@ class Main extends Component {
       this.props.fetchAccounts();
       this.props.fetchSettings();
     }
-  }
+  };
 
   render() {
     return (
@@ -125,7 +125,7 @@ class Main extends Component {
         </Routes>
       </div>
     );
-  }
+  };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main))

@@ -18,10 +18,10 @@ const RenderStats = ({ players }) => {
         .then((res) => res.json());
 
       setStats(stats);
-      setMedals(medals)
+      setMedals(medals);
     })();
-  }, [])
-  if (!stats) return <div></div> // NEED TO FIX: CRASHING PAGE, UNDEFINED PLAYERSTATS
+  }, []);
+  if (!stats) return <div></div>; // NEED TO FIX: CRASHING PAGE, UNDEFINED PLAYERSTATS
   const playerStats = stats.data[account_id]?.statistics?.all;
   const statsDisplay = playerStats ? statsToDisplay(playerStats) : undefined;
   const playerMedals = medals.data[account_id]?.achievements;

@@ -14,6 +14,12 @@ import { Loading } from './LoadingComponent.js';
 import { playerStatsURL }  from '../shared/wargaming.js';
 import { InitialWidgetSettings } from '../redux/forms.js';
 
+const stopAllTimeouts = () => {
+  const timeout = setTimeout(() => {
+    for (let id = 1; id <= timeout; id++) window.clearTimeout(id);
+  });
+};
+
 class Dropdown extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +37,7 @@ class Dropdown extends Component {
   }
 
   render() {
-    if (!this.props.accounts[0]) return <div></div>
+    if (!this.props.accounts[0]) return <div></div>;
     return (
       <div className='dropdown'>
         <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
@@ -39,15 +45,15 @@ class Dropdown extends Component {
             {this.props.session[0]?.inGameNickname || this.props.dropdown}
           </DropdownToggle>
           <DropdownMenu>
-            {this.props.accounts[0].userAccounts.map((account, index) => {
-              return (
-                <DropdownItem key={index} onClick={(e) => {
-                  this.props.startPlayerSession(e.target.textContent.trim());
-                }}>
-                  <IoIcons.IoMdPerson /> {account.nickname}
-                </DropdownItem>
-              );
-            })}
+            {this.props.accounts[0].userAccounts.map((account, index) => (
+
+              <DropdownItem key={index} onClick={(e) => {
+                stopAllTimeouts();
+                this.props.startPlayerSession(e.target.textContent.trim());
+              }}>
+                <IoIcons.IoMdPerson /> {account.nickname}
+              </DropdownItem>
+            ))}
           </DropdownMenu>
         </ButtonDropdown>
       </div>
@@ -94,7 +100,7 @@ class Session extends Component  {
       damage: playerInfo.currDamage,
       wins: playerInfo.currWins,
     });
-  }
+  };
 
   clearPlayerSession = async (nickname) => {
     const playerInfo = await this.getPlayerStats(nickname);
@@ -105,18 +111,18 @@ class Session extends Component  {
       damage: playerInfo.currDamage,
       wins: playerInfo.currWins,
     });
-  }
+  };
 
   handleSessionStats = (sessionStats) => {
     this.setState({
-      sessionStats: {...sessionStats},
+      sessionStats: { ...sessionStats },
     });
-  }
+  };
 
   getAccountId = (nickname) => {
     const userAccounts = this.props.accounts[0].userAccounts;
     return userAccounts.find((account) => account.nickname === nickname).account_id;
-  }
+  };
 
   getPlayerStats = async (nickname) => {
     const account_id = this.getAccountId(nickname);
@@ -128,7 +134,7 @@ class Session extends Component  {
     const currWins = playerStats?.all.wins + playerStats?.rating.wins || 0;
 
     return { currBattles, currDamage, currWins };
-  }
+  };
 
   getSessionStats = (nickname) => {
     setTimeout(async () => {
@@ -140,13 +146,13 @@ class Session extends Component  {
 
       this.handleSessionStats({ sessionBattles, sessionDamage, sessionWinRate });
       this.getSessionStats(nickname);
-    }, 5000)
-  }
+    }, 5000);
+  };
 
   getWidgetSettings = () => {
     if (this.props.settings[0]) return this.props.settings.at(-1);
     return InitialWidgetSettings;
-  }
+  };
 
   render() {
     if (this.props.isLoading) {
@@ -162,13 +168,13 @@ class Session extends Component  {
       return (
         <div className='container'>
           <div className='row'>
-            <h2 className='text-center'>{`Oops... Something went wrong. Log in before access this tab or refresh page`}</h2>
+            <h2 className='text-center'>{'Oops... Something went wrong. Log in before access this tab or refresh page'}</h2>
           </div>
         </div>
       );
     }
 
-    if (!this.props.accounts[0]) return <div><h3 style={{textAlign: 'center'}}>Add Account in tab Accounts</h3></div>
+    if (!this.props.accounts[0]) return <div><h3 style={{ textAlign: 'center' }}>Add Account in tab Accounts</h3></div>;
     const widgetSettings = this.getWidgetSettings();
     return (
       <div className='container'>
@@ -198,20 +204,18 @@ class Session extends Component  {
             fontSize: widgetSettings.fontSize + 'px'
           }}>
             <div className='battles'>
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
+              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
             </div>
             <div className='damage'>
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
+              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
             </div>
             <div className='winrate'>
-              <span style={{fontFamily: widgetSettings.fontFamily}}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
+              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
             </div>
           </div>
           <div className='reset-button'>
             <Button className='primary-button' onClick={async () => {
-              const clearAllTimeouts = setTimeout(() => {
-                for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
-              });
+              stopAllTimeouts();
               await this.clearPlayerSession(this.props.session[0].inGameNickname);
             }}>Reset Stats</Button>
           </div>

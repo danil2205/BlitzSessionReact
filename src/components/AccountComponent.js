@@ -6,7 +6,7 @@ import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const addAccount = (props) => {
-  if (!props.accounts[0]) return <tbody></tbody>
+  if (!props.accounts[0]) return <tbody></tbody>;
   return (
     <tbody>
       {props.accounts.at(-1).userAccounts.map((account, index) => {

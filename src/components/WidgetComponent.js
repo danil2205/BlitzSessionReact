@@ -101,13 +101,13 @@ const Widget = (props) => {
             fontSize: props.widget.fontSize + 'px'
           }}>
             <div className='battles'>
-              <span style={{fontFamily: props.widget.fontFamily}}>{props.widget.battleText}: 0</span>
+              <span style={{ fontFamily: props.widget.fontFamily }}>{props.widget.battleText}: 0</span>
             </div>
             <div className='damage'>
-              <span style={{fontFamily: props.widget.fontFamily}}>{props.widget.damageText}: 0</span>
+              <span style={{ fontFamily: props.widget.fontFamily }}>{props.widget.damageText}: 0</span>
             </div>
             <div className='winrate'>
-              <span style={{fontFamily: props.widget.fontFamily}}>{props.widget.winrateText}: 0%</span>
+              <span style={{ fontFamily: props.widget.fontFamily }}>{props.widget.winrateText}: 0%</span>
             </div>
           </div>
         </div>
