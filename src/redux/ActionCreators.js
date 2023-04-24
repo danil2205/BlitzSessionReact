@@ -206,3 +206,18 @@ export const postSessionData = (data) => (dispatch) => {
     actions: [makeActionCreator(ActionTypes.ADD_SESSION)],
   });
 };
+
+export const getListOfTanks = () => (dispatch) => {
+  dispatch(makeActionCreator(ActionTypes.LIST_TANKS_LOADING)());
+
+  fetchData({
+    link: 'tanks',
+    method: 'GET',
+    data: undefined,
+    dispatch,
+    actions: [
+      makeActionCreator(ActionTypes.ADD_LIST_TANKS),
+      makeActionCreator(ActionTypes.LIST_TANKS_FAILED),
+    ],
+  });
+};

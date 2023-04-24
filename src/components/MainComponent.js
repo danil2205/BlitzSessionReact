@@ -14,8 +14,10 @@ import {
   logoutUser,
   postSessionData,
   fetchSessionData,
+  getListOfTanks,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
+import Hangar from './HangarComponent.js';
 import Contact from './ContactComponent.js';
 import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
@@ -46,6 +48,7 @@ const mapStateToProps = (state) => {
     settings: state.settings,
     auth: state.auth,
     session: state.session,
+    tanks: state.tanks,
   };
 };
 
@@ -63,6 +66,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchSettings: () => {dispatch(fetchSettings())},
   postSessionData: (data) => {dispatch(postSessionData(data))},
   fetchSessionData: () => {dispatch(fetchSessionData())},
+  getListOfTanks: () => {dispatch(getListOfTanks())},
 });
 
 class Main extends Component {
@@ -72,6 +76,7 @@ class Main extends Component {
     this.props.fetchAccounts();
     this.props.fetchSettings();
     this.props.fetchSessionData();
+    this.props.getListOfTanks();
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -105,6 +110,7 @@ class Main extends Component {
                                                            deleteAccount={this.props.deleteAccount}
           />}
           />
+          <Route exact path='/hangar' element={<Hangar tanks={this.props.tanks.tanks}/>} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
