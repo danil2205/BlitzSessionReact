@@ -3,7 +3,6 @@ import { Breadcrumb, BreadcrumbItem, Button, Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import { listOfPlayersURL, playerMedalsURL, playerStatsURL } from '../shared/wargaming.js';
-import { imagesMedals, statsToDisplay } from '../shared/StatsData.js';
 
 const RenderStats = ({ players }) => {
   const account_id = players[0].account_id;
