@@ -3,18 +3,17 @@ import { Button, Col, Label, Row, Table } from 'reactstrap';
 import { Stack } from 'react-bootstrap';
 import { StarFill } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
-import { expressURL } from '../shared/expressURL';
-import HeavyTankIcon from '../images/icons/Heavy_Tank_Icon.png';
-import MedTankIcon from '../images/icons/Medium_Tank_Icon.png';
-import LightTankIcon from '../images/icons/Light_Tank_Icon.png';
-import TdTankIcon from '../images/icons/Tank_Destroyer_Icon.png';
-
-
-
+import { expressURL } from '../../shared/expressURL';
+import HeavyTankIcon from '../../images/icons/Heavy_Tank_Icon.png';
+import MedTankIcon from '../../images/icons/Medium_Tank_Icon.png';
+import LightTankIcon from '../../images/icons/Light_Tank_Icon.png';
+import TdTankIcon from '../../images/icons/Tank_Destroyer_Icon.png';
+import { Filter } from './Filter.js';
 
 const Hangar = (props) => {
   const account_id = 594859325;
   const [playerStats, setPlayerStats] = useState([]);
+  const [statsForFilter, setStatsForFilter] = useState([]);
   const [isSortDesc, setSortDesc] = useState(false);
 
   const sortStats = (col) => {
@@ -33,6 +32,7 @@ const Hangar = (props) => {
     (async () => {
       const stats = await fetch(`${expressURL}tanks/${account_id}`).then((res) => res.json());
       setPlayerStats(stats);
+      setStatsForFilter(stats);
     })();
   }, []);
 
@@ -51,6 +51,9 @@ const Hangar = (props) => {
       <Row>
         <Col lg={2}>
           <h1 className="ps-3">Hangar</h1>
+        </Col>
+        <Col>
+          <Filter setPlayerStats={setPlayerStats} statsForFilter={statsForFilter}/>
         </Col>
       </Row>
       <Row>

@@ -530,3 +530,11 @@ div.widget-settings input, select {
 th > label {
   cursor: pointer;
 }
+
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+}

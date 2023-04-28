@@ -17,7 +17,7 @@ import {
   getListOfTanks,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
-import Hangar from './HangarComponent.js';
+import Hangar from './Hangar/HangarComponent.js';
 import Contact from './ContactComponent.js';
 import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
