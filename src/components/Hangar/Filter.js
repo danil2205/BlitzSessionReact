@@ -1,38 +1,33 @@
+import React, { useState } from 'react';
 import { Form, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import HeavyTankIcon from '../../images/icons/Heavy_Tank_Icon.png';
 import MedTankIcon from '../../images/icons/Medium_Tank_Icon.png';
 import LightTankIcon from '../../images/icons/Light_Tank_Icon.png';
 import TdTankIcon from '../../images/icons/Tank_Destroyer_Icon.png';
-import React from 'react';
 
 export const Filter = (props) => {
-  const filterStats = (filterStat, value) => {
-    const filteredStats = props.statsForFilter.data.filter((tankStats) => {
-      if (Array.isArray(value)) {
-        if (typeof value[0] === 'number') {
-          return value.includes(tankStats[filterStat]);
-        } else if (typeof value[0] === 'string') {
-          return value.some((v) => v === tankStats[filterStat]);
-        }
-      } else {
-        if (typeof value === 'number') {
-          return tankStats[filterStat] > value;
-        } else if (typeof value === 'string') {
-          return tankStats[filterStat] === value;
-        }
-      }
-    });
-    
+  const [filterValues, setFilterValues] = useState({});
+
+  const filterStats = (filterValues) => {
+    const filteredStats = props.statsForFilter.data.filter((tankStats) =>
+      (filterValues?.battles ?? 0) < tankStats.battles &&
+      (!filterValues?.tier?.length || filterValues.tier.includes(tankStats.tier)) &&
+      (!filterValues?.type?.length || filterValues.type.includes(tankStats.type))
+    );
     props.setPlayerStats({
       status: 'ok',
-      data: (!filteredStats.length && !value.length) ? props.statsForFilter.data : filteredStats,
+      data: (!filteredStats.length && !filterValues) ? props.statsForFilter.data : filteredStats,
     });
   };
 
   return (
     <div className='filter-container'>
       <div>
-        <Form.Select onChange={(event) => filterStats('battles', +event.target.value)}>
+        <Form.Select onChange={(event) => {
+          const data = {...filterValues, battles: +event.target.value };
+          setFilterValues(data);
+          filterStats(data);
+        }}>
           <option value="0">All Battles</option>
           <option value="100">>100 Battles</option>
           <option value="250">>250 Battles</option>
@@ -40,7 +35,11 @@ export const Filter = (props) => {
       </div>
 
       <div>
-        <ToggleButtonGroup type="checkbox" onChange={(event) => filterStats('tier', event)}>
+        <ToggleButtonGroup type="checkbox" onChange={(event) => {
+          const data = { ...filterValues, tier: event };
+          setFilterValues(data);
+          filterStats(data);
+        }}>
           <ToggleButton id="tbg-btn-3" value={3} variant="outline-secondary">
             <span className="filter-tank-tier">{'<'}III</span>
           </ToggleButton>
@@ -69,7 +68,11 @@ export const Filter = (props) => {
       </div>
 
       <div>
-        <ToggleButtonGroup type="checkbox" onChange={(event) => filterStats('type', event)}>
+        <ToggleButtonGroup type="checkbox" onChange={(event) => {
+          const data = { ...filterValues, type: event };
+          setFilterValues(data);
+          filterStats(data);
+        }}>
           <ToggleButton id="tbg-btn-at" value={'AT-SPG'} variant="outline-secondary">
             <img src={TdTankIcon} alt="AT-SPG" width="20" height="20" />
           </ToggleButton>
