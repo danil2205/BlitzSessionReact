@@ -14,10 +14,13 @@ export const Filter = (props) => {
       (!filterValues?.tier?.length || filterValues.tier.includes(tankStats.tier)) &&
       (!filterValues?.type?.length || filterValues.type.includes(tankStats.type))
     );
-    props.setPlayerStats({
-      status: 'ok',
-      data: (!filteredStats.length && !filterValues) ? props.statsForFilter.data : filteredStats,
-    });
+    if (filteredStats.length && filterValues) props.setStatsFromFilter(filteredStats);
+    else {
+      props.setPlayerStats({
+        status: 'ok',
+        data: [],
+      });
+    }
   };
 
   return (

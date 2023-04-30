@@ -10,23 +10,51 @@ import LightTankIcon from '../../images/icons/Light_Tank_Icon.png';
 import TdTankIcon from '../../images/icons/Tank_Destroyer_Icon.png';
 import { Filter } from './Filter.js';
 
-const Hangar = (props) => {
+const Hangar = () => {
   const account_id = 594859325;
   const [playerStats, setPlayerStats] = useState([]);
   const [statsForFilter, setStatsForFilter] = useState([]);
+  const [statsFromFilter, setStatsFromFilter] = useState([]);
   const [isSortDesc, setSortDesc] = useState(false);
+  const [lastSortCol, setLastSortCol] = useState('');
 
-  const sortStats = (col) => {
-    const data = playerStats.data.sort((tank1, tank2) => {
-      setSortDesc(!isSortDesc);
-      if (isSortDesc) return tank2[col] - tank1[col]
-      else return tank1[col] - tank2[col]
+  const sortStats = (stats, col) => {
+    if (col === '') {
+      setPlayerStats({
+        status: 'ok',
+        data: stats,
+      });
+      return;
+    }
+
+    const data = stats.sort((tank1, tank2) => {
+      if (col === 'name') {
+        if (isSortDesc) return tank2[col].localeCompare(tank1[col])
+        else return tank1[col].localeCompare(tank2[col])
+      } else {
+        if (isSortDesc) return tank2[col] - tank1[col]
+        else return tank1[col] - tank2[col]
+      }
     });
+
     setPlayerStats({
       status: 'ok',
       data,
     });
   };
+
+  const setFlagsForSort = (col) => {
+    setSortDesc(!isSortDesc);
+    setLastSortCol(col);
+  };
+
+  useEffect(() => {
+    if (playerStats.data) sortStats(playerStats.data, lastSortCol, isSortDesc);
+  }, [isSortDesc, lastSortCol]);
+
+  useEffect(() => {
+    if (statsFromFilter.length) sortStats(statsFromFilter, lastSortCol, isSortDesc);
+  }, [statsFromFilter, lastSortCol]);
 
   useEffect(() => {
     (async () => {
@@ -53,7 +81,11 @@ const Hangar = (props) => {
           <h1 className="ps-3">Hangar</h1>
         </Col>
         <Col>
-          <Filter setPlayerStats={setPlayerStats} statsForFilter={statsForFilter}/>
+          <Filter
+            setPlayerStats={setPlayerStats}
+            statsForFilter={statsForFilter}
+            setStatsFromFilter={setStatsFromFilter}
+          />
         </Col>
       </Row>
       <Row>
@@ -62,44 +94,34 @@ const Hangar = (props) => {
             <thead>
             <tr>
               <th>
-                <Label onClick={() => {
-                  const data = playerStats.data.sort((tank1, tank2) => {
-                    setSortDesc(!isSortDesc);
-                    if (isSortDesc) return tank2.name.localeCompare(tank1.name)
-                    else return tank1.name.localeCompare(tank2.name)
-                  });
-                  setPlayerStats({
-                    status: 'ok',
-                    data,
-                  });
-                }}>Tank</Label>
+                <Label onClick={() => setFlagsForSort('name')}>Tank</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('tier')}>Tier</Label>
+                <Label onClick={() => setFlagsForSort('tier')}>Tier</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('lastBattleTime')}>Last Battle</Label>
+                <Label onClick={() => setFlagsForSort('lastBattleTime')}>Last Battle</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('battles')}>Battles</Label>
+                <Label onClick={() => setFlagsForSort('battles')}>Battles</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('winrate')}>WinRate</Label>
+                <Label onClick={() => setFlagsForSort('winrate')}>WinRate</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('avgDmg')}>Average Damage</Label>
+                <Label onClick={() => setFlagsForSort('avgDmg')}>Average Damage</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('coefFrag')}>Frags Rate</Label>
+                <Label onClick={() => setFlagsForSort('coefFrag')}>Frags Rate</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('percentRemainHP')}>Remaining HP</Label>
+                <Label onClick={() => setFlagsForSort('percentRemainHP')}>Remaining HP</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('battlesForMaster')}>Battles for Master</Label>
+                <Label onClick={() => setFlagsForSort('battlesForMaster')}>Battles for Master</Label>
               </th>
               <th>
-                <Label onClick={() => sortStats('avgTimeInBattleForSort')}>Average Life Time</Label>
+                <Label onClick={() => setFlagsForSort('avgTimeInBattleForSort')}>Average Life Time</Label>
               </th>
             </tr>
             </thead>
