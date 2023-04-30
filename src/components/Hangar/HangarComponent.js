@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Label, Row, Table } from 'reactstrap';
+import { Button, Col, Input, Label, Row, Table } from 'reactstrap';
 import { Stack } from 'react-bootstrap';
 import { StarFill } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
@@ -9,9 +9,80 @@ import MedTankIcon from '../../images/icons/Medium_Tank_Icon.png';
 import LightTankIcon from '../../images/icons/Light_Tank_Icon.png';
 import TdTankIcon from '../../images/icons/Tank_Destroyer_Icon.png';
 import { Filter } from './Filter.js';
+import * as IoIcons from 'react-icons/io';
+import { listOfPlayersURL } from '../../shared/wargaming';
 
-const Hangar = () => {
-  const account_id = 594859325;
+const DisplayPlayers = ({ players, dropdown, handleDropdown }) => {
+  const [accountID, setAccountID] = useState('');
+  if (!players) return;
+  if (!players.data?.length) {
+    return (
+      <div className='no-players'>
+        {'No matching results found'}
+      </div>
+    );
+  }
+  if (dropdown) {
+    return (
+      <div className='dropdown-content' style={{display: dropdown ? 'block' : 'none'}}>
+        {players.data.slice(0, 10).map((account, index) => {
+          return (
+            <Button key={index} onClick={() => {
+              setAccountID(account.account_id);
+              handleDropdown();
+            }}>
+              {account.nickname}
+            </Button>
+          )
+        })}
+      </div>
+    );
+  }
+  else {
+    return (
+      <Hangar accountID={accountID} />
+    );
+  }
+};
+
+const SearchPlayer = () => {
+  const [playerNick, setPlayerNick] = useState('');
+  const [players, setPlayers] = useState([]);
+  const [dropdown, setDropdown] = useState(true);
+  const handleDropdown = () => setDropdown(!dropdown);
+
+  useEffect(() => {
+    (async () => {
+      const playersAccountID = await fetch(listOfPlayersURL(playerNick)).then((res) => res.json());
+      setPlayers(playersAccountID);
+    })();
+  }, [playerNick])
+
+
+  return (
+    <div className='container'>
+      <div className='wrapper'>
+        <div className='search-container'>
+          {dropdown ? (
+            <div className='user-search'>
+            <Input type='text' name='search-player' id='input-search-player' placeholder='Search Player' style={{
+              border: 0, borderRadius: '12px 0 0 12px', boxShadow: 'none', padding: 15}}
+                   value={playerNick} onChange={(event) => setPlayerNick(event.target.value)} />
+            <div className='icon-search-user'>
+              <IoIcons.IoIosSearch />
+            </div>
+          </div>
+          ) : <div></div>}
+        </div>
+      </div>
+      {playerNick === '' ? <div></div> : <DisplayPlayers players={players} dropdown={dropdown} handleDropdown={handleDropdown}
+      /> }
+    </div>
+
+  );
+};
+
+const Hangar = (props) => {
   const [playerStats, setPlayerStats] = useState([]);
   const [statsForFilter, setStatsForFilter] = useState([]);
   const [statsFromFilter, setStatsFromFilter] = useState([]);
@@ -58,11 +129,13 @@ const Hangar = () => {
 
   useEffect(() => {
     (async () => {
-      const stats = await fetch(`${expressURL}tanks/${account_id}`).then((res) => res.json());
+      if (props.accountID === '') return;
+      const stats = await fetch(`${expressURL}tanks/${props.accountID}`).then((res) => res.json());
+
       setPlayerStats(stats);
       setStatsForFilter(stats);
     })();
-  }, []);
+  }, [props.accountID]);
 
   if (playerStats.status !== 'ok') {
     return (
@@ -168,4 +241,4 @@ const Hangar = () => {
   );
 };
 
-export default Hangar;
+export default SearchPlayer;
