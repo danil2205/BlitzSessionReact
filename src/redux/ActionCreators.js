@@ -221,3 +221,8 @@ export const getListOfTanks = () => (dispatch) => {
     ],
   });
 };
+
+export const setTanksStatsData = (data) => (dispatch) => {
+  const action = makeActionCreator(ActionTypes.SET_TANKS_STATS_DATA)(data);
+  dispatch(action);
+};
