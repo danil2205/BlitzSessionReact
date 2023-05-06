@@ -5,8 +5,11 @@ import { Stack } from 'react-bootstrap';
 import { ArrowLeftCircle } from 'react-bootstrap-icons';
 import OverviewCard from './StatisticsCard/Overview';
 import Damage from './StatisticsCard/Damage';
+import Wins from './StatisticsCard/Wins';
+import Battles from './StatisticsCard/Battles';
 import { Filter } from './Hangar/Filter';
 import { expressURL } from '../shared/expressURL';
+import BattleStyle from './StatisticsCard/BattleStyle';
 
 const TankStats = (props) => {
   const [playerStats, setPlayerStats] = useState(props.tanksStats);
@@ -49,11 +52,12 @@ const TankStats = (props) => {
         </Col>
 
         <Col className="statistics-column">
-
+          <Wins />
+          <Battles />
         </Col>
 
         <Col className="statistics-column">
-
+          <BattleStyle />
         </Col>
       </Row>
     </div>
