@@ -1,13 +1,28 @@
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 import { Stack } from 'react-bootstrap';
 import { ArrowLeftCircle } from 'react-bootstrap-icons';
 import OverviewCard from './StatisticsCard/Overview';
+import Damage from './StatisticsCard/Damage';
+import { Filter } from './Hangar/Filter';
+import { expressURL } from '../shared/expressURL';
 
 const TankStats = (props) => {
+  const [playerStats, setPlayerStats] = useState(props.tanksStats);
   const { accountId, wotId } = useParams();
   const navigate = useNavigate();
-  const tankStats = props.tanksStats.data.find((tank) => tank.tank_id === Number(wotId));
+
+  useEffect(() => {
+    if (playerStats?.data) return;
+    (async () => {
+      const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
+      props.setTanksStatsData(stats);
+      setPlayerStats(stats);
+    })();
+  }, [accountId]);
+
+  const tankStats = playerStats.data ? playerStats.data.find((tank) => tank.tank_id === Number(wotId)) : [];
 
   return (
     <div className='content'>
@@ -18,18 +33,27 @@ const TankStats = (props) => {
               <ArrowLeftCircle size={35} />
             </Button>
             <h1 className='ms-3'>
-              {/*{tankStats.name}*/}
+              {tankStats.name}
             </h1>
           </Stack>
         </Col>
-        {/*<Col>*/}
-          {/*<Filter />*/}
-        {/*</Col>*/}
+        <Col>
+          <Filter />
+        </Col>
       </Row>
 
       <Row>
         <Col className='statistics-column'>
-          <OverviewCard />
+          <OverviewCard tankStats={tankStats} />
+          <Damage />
+        </Col>
+
+        <Col className="statistics-column">
+
+        </Col>
+
+        <Col className="statistics-column">
+
         </Col>
       </Row>
     </div>
