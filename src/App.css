@@ -538,3 +538,21 @@ th > label {
   gap: 1rem;
   justify-content: flex-end;
 }
+
+.chart-container {
+  display: block;
+  box-sizing: border-box;
+  height: 320px;
+  width: 330px;
+}
+
+.hstack > button > svg {
+  height: 35px;
+  width: 35px;
+  color: blue
+}
+
+.hstack > button:hover, .hstack > button {
+  background-color: transparent;
+  border-color: transparent;
+}

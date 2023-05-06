@@ -115,8 +115,10 @@ class Main extends Component {
           />}
           />
           <Route exact path='/hangar' element={<SearchPlayer />} />
-          <Route exact path='/hangar/:accountId' element={<Hangar tanks={this.props.tanks.tanks} setTanksStatsData={this.props.setTanksStatsData}/>} />
-          <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}/>} />
+          <Route exact path='/hangar/:accountId' element={<Hangar tanks={this.props.tanks.tanks}
+                                                                  setTanksStatsData={this.props.setTanksStatsData}
+                                                                  tanksStats={this.props.tanksStats} />} />
+          <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Label, Row, Table } from 'reactstrap';
+import { Button, Col, Label, Row, Table } from 'reactstrap';
 import { Stack } from 'react-bootstrap';
-import { StarFill } from 'react-bootstrap-icons';
-import { Link, useParams } from 'react-router-dom';
+import { ArrowLeftCircle, StarFill } from 'react-bootstrap-icons';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { expressURL } from '../../shared/expressURL';
 import HeavyTankIcon from '../../images/icons/Heavy_Tank_Icon.png';
 import MedTankIcon from '../../images/icons/Medium_Tank_Icon.png';
@@ -12,7 +12,8 @@ import { Filter } from './Filter.js';
 
 const Hangar = (props) => {
   const { accountId } = useParams();
-  const [playerStats, setPlayerStats] = useState([]);
+  const navigate = useNavigate();
+  const [playerStats, setPlayerStats] = useState(props.tanksStats);
   const [statsForFilter, setStatsForFilter] = useState([]);
   const [statsFromFilter, setStatsFromFilter] = useState([]);
   const [isSortDesc, setSortDesc] = useState(false);
@@ -58,7 +59,7 @@ const Hangar = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (accountId === '') return;
+      if (props.tanksStats?.data && props.tanksStats?.account_id === accountId) return;
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
       setPlayerStats(stats);
       setStatsForFilter(stats);
@@ -80,7 +81,12 @@ const Hangar = (props) => {
     <div className='content'>
       <Row>
         <Col lg={2}>
-          <h1 className="ps-3">Hangar</h1>
+          <Stack direction="horizontal">
+            <Button onClick={() => navigate(`/hangar`) } variant="link">
+              <ArrowLeftCircle size={35} />
+            </Button>
+            <h1 className="ps-3">Hangar</h1>
+          </Stack>
         </Col>
         <Col>
           <Filter

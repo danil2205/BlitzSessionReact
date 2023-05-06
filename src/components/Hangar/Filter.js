@@ -11,8 +11,8 @@ export const Filter = (props) => {
   const filterStats = (filterValues) => {
     const filteredStats = props.statsForFilter.data.filter((tankStats) =>
       (filterValues?.battles ?? 0) < tankStats.battles &&
-      (!filterValues?.tier?.length || filterValues.tier.includes(tankStats.tier)) &&
-      (!filterValues?.type?.length || filterValues.type.includes(tankStats.type))
+      (!filterValues.tier?.length || filterValues.tier.includes(tankStats?.tier)) &&
+      (!filterValues.type?.length || filterValues.type.includes(tankStats?.type))
     );
     if (filteredStats.length && filterValues) props.setStatsFromFilter(filteredStats);
     else {
@@ -27,7 +27,7 @@ export const Filter = (props) => {
     <div className='filter-container'>
       <div>
         <Form.Select onChange={(event) => {
-          const data = {...filterValues, battles: +event.target.value };
+          const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
           filterStats(data);
         }}>
