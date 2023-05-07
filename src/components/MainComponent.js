@@ -16,6 +16,7 @@ import {
   fetchSessionData,
   getListOfTanks,
   setTanksStatsData,
+  postPlayerStats,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
 import Hangar from './Hangar/HangarComponent.js';
@@ -71,6 +72,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchSessionData: () => {dispatch(fetchSessionData())},
   getListOfTanks: () => {dispatch(getListOfTanks())},
   setTanksStatsData: (data) => {dispatch(setTanksStatsData(data))},
+  postPlayerStats: (data) => {dispatch(postPlayerStats(data))},
 });
 
 class Main extends Component {
@@ -117,9 +119,11 @@ class Main extends Component {
           <Route exact path='/hangar' element={<SearchPlayer />} />
           <Route exact path='/hangar/:accountId' element={<Hangar tanks={this.props.tanks.tanks}
                                                                   setTanksStatsData={this.props.setTanksStatsData}
-                                                                  tanksStats={this.props.tanksStats} />} />
+                                                                  tanksStats={this.props.tanksStats}
+                                                                  postPlayerStats={this.props.postPlayerStats} />} />
           <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
-                                                                            setTanksStatsData={this.props.setTanksStatsData} />} />
+                                                                            setTanksStatsData={this.props.setTanksStatsData}
+                                                                            postPlayerStats={this.props.postPlayerStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
