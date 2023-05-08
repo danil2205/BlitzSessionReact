@@ -17,7 +17,6 @@ const TankStats = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    props.postPlayerStats(accountId);
     if (playerStats?.data) return;
     (async () => {
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());

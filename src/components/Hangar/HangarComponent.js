@@ -58,9 +58,9 @@ const Hangar = (props) => {
   }, [statsFromFilter, lastSortCol]);
 
   useEffect(() => {
-    props.postPlayerStats(accountId);
     (async () => {
       if (props.tanksStats?.data && props.tanksStats?.account_id === accountId) return;
+      props.postPlayerStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
       setPlayerStats(stats);
       setStatsForFilter(stats);
@@ -68,7 +68,7 @@ const Hangar = (props) => {
     })();
   }, [accountId]);
 
-  if (playerStats.status !== 'ok') {
+  if (!playerStats.status) {
     return (
       <div className='container'>
         <div className='row'>
