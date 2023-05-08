@@ -42,13 +42,14 @@ const TempAccount = (props) => {
       props.postPlayerStats(accountId)
   }, [accountId])
 
+
   return (
     <div className='content'>
       <Row>
         <Col>
           <Stack direction='horizontal'>
             <h1 className='ms-3'>
-              {props.tanksStats.data.name}
+              {props.tanksStats?.data?.name || 'Choose Account'}
             </h1>
             <Dropdown accounts={props.accounts} setAccountId={setAccountId} />
           </Stack>
@@ -57,22 +58,23 @@ const TempAccount = (props) => {
           <Filter />
         </Col>
       </Row>
+      {props.tanksStats.data &&
+        <Row>
+          <Col className='statistics-column'>
+            <OverviewCard tankStats={props.tanksStats}/>
+            <Damage tankStats={props.tanksStats}/>
+          </Col>
 
-      <Row>
-        <Col className='statistics-column'>
-          <OverviewCard tankStats={props.tanksStats} />
-          <Damage tankStats={props.tanksStats} />
-        </Col>
+          <Col className="statistics-column">
+            <Wins tankStats={props.tanksStats}/>
+            <Battles tankStats={props.tanksStats}/>
+          </Col>
 
-        <Col className="statistics-column">
-          <Wins tankStats={props.tanksStats} />
-          <Battles tankStats={props.tanksStats} />
-        </Col>
-
-        <Col className="statistics-column">
-          <BattleStyle tankStats={props.tanksStats} />
-        </Col>
-      </Row>
+          <Col className="statistics-column">
+            <BattleStyle tankStats={props.tanksStats}/>
+          </Col>
+        </Row>
+      }
     </div>
   );
 };
