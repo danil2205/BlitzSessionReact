@@ -17,6 +17,12 @@ export const SidebarData =
       cName: 'nav-text'
     },
     {
+      title: 'TempAccount',
+      path: '/tempAccount',
+      icons: <IoIcons.IoMdPerson />,
+      cName: 'nav-text'
+    },
+    {
       title: 'Session',
       path: '/session',
       icons: <AiIcons.AiOutlineLineChart />,
