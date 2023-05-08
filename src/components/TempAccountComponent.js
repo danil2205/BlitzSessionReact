@@ -36,20 +36,11 @@ const Dropdown = (props) => {
 
 const TempAccount = (props) => {
   const [accountId, setAccountId] = useState('');
-  const [playerStats, setPlayerStats] = useState(undefined);
-
 
   useEffect(() => {
-    if (accountId !== '') {
-      const res = props.postPlayerStats(accountId)
-      console.log(res)
-    }
+    if (accountId !== '')
+      props.postPlayerStats(accountId)
   }, [accountId])
-
-  useEffect(() => {
-    // console.log(playerStats)
-  }, [playerStats]);
-
 
   return (
     <div className='content'>
@@ -57,7 +48,7 @@ const TempAccount = (props) => {
         <Col>
           <Stack direction='horizontal'>
             <h1 className='ms-3'>
-              {}
+              {props.tanksStats.data.name}
             </h1>
             <Dropdown accounts={props.accounts} setAccountId={setAccountId} />
           </Stack>
@@ -69,17 +60,17 @@ const TempAccount = (props) => {
 
       <Row>
         <Col className='statistics-column'>
-          <OverviewCard />
-          <Damage />
+          <OverviewCard tankStats={props.tanksStats} />
+          <Damage tankStats={props.tanksStats} />
         </Col>
 
         <Col className="statistics-column">
-          <Wins />
-          <Battles />
+          <Wins tankStats={props.tanksStats} />
+          <Battles tankStats={props.tanksStats} />
         </Col>
 
         <Col className="statistics-column">
-          <BattleStyle />
+          <BattleStyle tankStats={props.tanksStats} />
         </Col>
       </Row>
     </div>

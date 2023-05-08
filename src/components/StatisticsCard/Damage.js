@@ -5,7 +5,12 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Damage = (props) => {
+  if (!props.tankStats) return;
 
+  const lastSnapshot = props.tankStats.data.snapshots.at(-1);
+  const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
+  const avgDamage = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles).toFixed(0);
+  const avgDamageReceived = (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles).toFixed(0);
 
   return (
     <Card className="mb-3">
@@ -38,19 +43,19 @@ const Damage = (props) => {
           <tbody>
           <tr>
             <td><strong>Damage ratio</strong></td>
-            <td><strong className="increase-font-size">1337</strong></td>
+            <td><strong className="increase-font-size">{damageRatio}</strong></td>
             <td>228</td>
             <td>123</td>
           </tr>
           <tr>
             <td><strong>Avg. damage</strong></td>
-            <td><strong className="increase-font-size">14.1</strong></td>
+            <td><strong className="increase-font-size">{avgDamage}</strong></td>
             <td>1</td>
             <td>2</td>
           </tr>
           <tr>
             <td><strong>Avg. damage received</strong></td>
-            <td><strong className="increase-font-size">3</strong></td>
+            <td><strong className="increase-font-size">{avgDamageReceived}</strong></td>
             <td>4</td>
             <td>5</td>
           </tr>
@@ -86,11 +91,11 @@ const Damage = (props) => {
               },
             }}
             data={{
-              labels: ['22.05.2022', '28.09.2022', '14.11.2022', '01.02.2023', '06.05.2023'],
+              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
               datasets: [
                 {
                   label: 'Damage ratio',
-                  data: [2.1, 1.45, 1.7, 1.1, 0.5],
+                  data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.damageDealt / snapshot.regular.damageReceived).toFixed(3)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
@@ -122,17 +127,17 @@ const Damage = (props) => {
             },
           }}
           data={{
-            labels: ['22.05.2022', '28.09.2022', '14.11.2022', '01.02.2023', '06.05.2023'],
+            labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
             datasets: [
               {
                 label: 'Average damage',
-                data: [3140, 2690, 3565, 1945, 3220],
+                data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.damageDealt / snapshot.regular.battles).toFixed(0)),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
               },
               {
                 label: 'Average received damage',
-                data: [1360, 1500, 1470, 1240, 1337],
+                data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.damageReceived / snapshot.regular.battles).toFixed(0)),
                 borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
               },
