@@ -5,8 +5,6 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Damage = (props) => {
-  if (!props.tankStats) return;
-
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
   const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
   const avgDamage = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles).toFixed(0);

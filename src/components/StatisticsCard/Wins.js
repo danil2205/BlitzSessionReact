@@ -6,8 +6,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Wins = (props) => {
-  if (!props.tankStats) return;
-
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
   const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`
 
