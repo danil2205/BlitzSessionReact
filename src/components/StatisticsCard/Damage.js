@@ -57,12 +57,12 @@ const Damage = (props) => {
             <td>4</td>
             <td>5</td>
           </tr>
-          <tr>
+          {!props.tankStats && <tr>
             <td><strong>Tank HP</strong></td>
             <td><strong className="increase-font-size">666</strong></td>
             <td>-</td>
             <td>-</td>
-          </tr>
+          </tr>}
           </tbody>
         </Table>
       </CardBody>

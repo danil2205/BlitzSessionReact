@@ -5,8 +5,11 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 
-const BattleStyle = () => {
-
+const BattleStyle = (props) => {
+  const lastSnapshot = props.tankStats.data.snapshots.at(-1);
+  const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
+  const spottedRate = (lastSnapshot.regular.spotted / lastSnapshot.regular.battles).toFixed(2);
+  const survRate = (lastSnapshot.regular.survivedBattles / lastSnapshot.regular.battles).toFixed(2);
 
   return (
     <Card className="mb-3">
@@ -39,27 +42,21 @@ const BattleStyle = () => {
           <tbody>
           <tr>
             <td><strong>Frags Rate</strong></td>
-            <td><strong className="increase-font-size">1337</strong></td>
+            <td><strong className="increase-font-size">{fragsRate}</strong></td>
             <td>228</td>
             <td>123</td>
           </tr>
           <tr>
             <td><strong>Spotted Rate</strong></td>
-            <td><strong className="increase-font-size">14.1</strong></td>
+            <td><strong className="increase-font-size">{spottedRate}</strong></td>
             <td>1</td>
             <td>2</td>
           </tr>
           <tr>
             <td><strong>Survival Rate</strong></td>
-            <td><strong className="increase-font-size">3</strong></td>
+            <td><strong className="increase-font-size">{survRate}</strong></td>
             <td>4</td>
             <td>5</td>
-          </tr>
-          <tr>
-            <td><strong>Remaining HP Rate</strong></td>
-            <td><strong className="increase-font-size">3</strong></td>
-            <td>6</td>
-            <td>7</td>
           </tr>
           </tbody>
         </Table>
@@ -86,17 +83,17 @@ const BattleStyle = () => {
               },
             }}
             data={{
-              labels: ['02.05.2023', '03.05.2023', '04.05.2023', '05.05.2023', '06.05.2023'],
+              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
               datasets: [
                 {
                   label: 'Frags Rate',
-                  data: [1.1, 1.5, 1.0, 2.2, 2.1],
+                  data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.frags / snapshot.regular.battles).toFixed(2)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
                 {
                   label: 'Spotted Rate',
-                  data: [3, 2.6, 2.1, 2.7, 3.2],
+                  data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.spotted / snapshot.regular.battles).toFixed(2)),
                   borderColor: 'rgb(53, 162, 235)',
                   backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 },
@@ -127,11 +124,11 @@ const BattleStyle = () => {
               },
             }}
             data={{
-              labels: ['02.05.2023', '03.05.2023', '04.05.2023', '05.05.2023', '06.05.2023'],
+              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
               datasets: [
                 {
                   label: 'Survival Rate',
-                  data: [48, 45, 36, 55, 60],
+                  data: props.tankStats.data.snapshots.map((snapshot) => ((snapshot.regular.survivedBattles / snapshot.regular.battles) * 100).toFixed(2)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },

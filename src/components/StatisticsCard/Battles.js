@@ -90,11 +90,15 @@ const Battles = (props) => {
               },
             }}
             data={{
-              labels: ['02.05.2023', '03.05.2023', '04.05.2023', '05.05.2023', '06.05.2023'],
+              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
               datasets: [
                 {
                   label: 'Battles Count',
-                  data: [11, 4, 22, 15, 2],
+                  data: props.tankStats.data.snapshots.map((snapshot, index) => {
+                    if (index > 0) {
+                      return snapshot.regular.battles - props.tankStats.data.snapshots[index - 1].regular.battles;
+                    }
+                  }),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
