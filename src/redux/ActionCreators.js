@@ -206,3 +206,33 @@ export const postSessionData = (data) => (dispatch) => {
     actions: [makeActionCreator(ActionTypes.ADD_SESSION)],
   });
 };
+
+export const getListOfTanks = () => (dispatch) => {
+  dispatch(makeActionCreator(ActionTypes.LIST_TANKS_LOADING)());
+
+  fetchData({
+    link: 'tanks',
+    method: 'GET',
+    data: undefined,
+    dispatch,
+    actions: [
+      makeActionCreator(ActionTypes.ADD_LIST_TANKS),
+      makeActionCreator(ActionTypes.LIST_TANKS_FAILED),
+    ],
+  });
+};
+
+export const setTanksStatsData = (data) => (dispatch) => {
+  const action = makeActionCreator(ActionTypes.SET_TANKS_STATS_DATA)(data);
+  dispatch(action);
+};
+
+export const postPlayerStats = (account_id) => (dispatch) => {
+  fetchData({
+    link: `tanks/${account_id}`,
+    method: 'POST',
+    data: undefined,
+    dispatch,
+    actions: [makeActionCreator(ActionTypes.ADD_PLAYER_STATS)],
+  });
+};

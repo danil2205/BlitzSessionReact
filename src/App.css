@@ -129,10 +129,6 @@ span {
   position: absolute;
 }
 
-.table {
-  margin-top: 20px;
-}
-
 .headerAccount {
   font-weight: 700;
   margin-bottom: 20px;
@@ -184,11 +180,19 @@ span {
   text-decoration:none;
 }
 
-table {
+.accounts-table-container > table {
   width: 100%;
   border: 2px solid #e5e8ed;
   border-collapse: collapse;
   border-radius: 3px;
+  /*border: 2px solid black !important;*/
+}
+
+.table-responsive > table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 3px;
+  border: 2px solid black !important;
 }
 
 th {
@@ -204,32 +208,32 @@ table thead {
   color: #031b4d;
 }
 
-table thead tr {
+.accounts-table-container > table thead tr {
   display: flex;
   padding: 10px 20px;
   vertical-align: middle;
 }
 
-table thead tr th {
+.accounts-table-container > table thead tr th {
   display: flex;
   align-items: center;
   flex: 2;
 }
 
-tbody {
+.accounts-table-container > tbody {
   display: table-row-group;
   vertical-align: middle;
   border-color: inherit;
 }
 
-table tbody tr {
+.accounts-table-container > table tbody tr {
   padding: 10px 20px;
   display: flex;
   border-top: 2px solid #e5e8ed;
   background: white;
 }
 
-table tbody tr td {
+.accounts-table-container > table tbody tr td {
   display: flex;
   align-items: center;
   flex: 2;
@@ -519,17 +523,41 @@ div.widget-settings input, select {
   text-decoration: none;
 }
 
-.table-span {
-  background-color: #777;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 3px 7px;
-  float: right;
-}
-
 .text-center > .row.text-left > div {
   width: 33.33%;
+}
+
+th > label {
+  cursor: pointer;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.chart-container {
+  height: 20rem;
+}
+
+.tankStatsImg {
+  width: 50%;
+  height: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hstack > button > svg {
+  height: 35px;
+  width: 35px;
+  color: blue
+}
+
+.hstack > button:hover, .hstack > button {
+  background-color: transparent;
+  border-color: transparent;
 }

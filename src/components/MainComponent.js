@@ -14,20 +14,26 @@ import {
   logoutUser,
   postSessionData,
   fetchSessionData,
+  getListOfTanks,
+  setTanksStatsData,
+  postPlayerStats,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
+import Hangar from './Hangar/HangarComponent.js';
+import TankStats from './TankStatsComponent';
 import Contact from './ContactComponent.js';
 import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
-import SearchPlayer from './SearchUserComponent.js';
+import SearchPlayer from './Hangar/SearchComponent';
 import Widget from './WidgetComponent.js';
+import TempAccount from './TempAccountComponent';
 import { actions } from 'react-redux-form';
 
 const withRouter = (Component) => {
   function ComponentWithRouterProp(props) {
-    let location = useLocation();
-    let navigate = useNavigate();
-    let params = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
     return (
       <Component
         {...props}
@@ -46,6 +52,8 @@ const mapStateToProps = (state) => {
     settings: state.settings,
     auth: state.auth,
     session: state.session,
+    tanks: state.tanks,
+    tanksStats: state.tanksStats,
   };
 };
 
@@ -63,6 +71,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchSettings: () => {dispatch(fetchSettings())},
   postSessionData: (data) => {dispatch(postSessionData(data))},
   fetchSessionData: () => {dispatch(fetchSessionData())},
+  getListOfTanks: () => {dispatch(getListOfTanks())},
+  setTanksStatsData: (data) => {dispatch(setTanksStatsData(data))},
+  postPlayerStats: (data) => {dispatch(postPlayerStats(data))},
 });
 
 class Main extends Component {
@@ -72,6 +83,7 @@ class Main extends Component {
     this.props.fetchAccounts();
     this.props.fetchSettings();
     this.props.fetchSessionData();
+    this.props.getListOfTanks();
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -105,6 +117,17 @@ class Main extends Component {
                                                            deleteAccount={this.props.deleteAccount}
           />}
           />
+          <Route exact path='/hangar' element={<SearchPlayer />} />
+          <Route exact path='/hangar/:accountId' element={<Hangar tanks={this.props.tanks.tanks}
+                                                                  setTanksStatsData={this.props.setTanksStatsData}
+                                                                  tanksStats={this.props.tanksStats}
+                                                                  postPlayerStats={this.props.postPlayerStats} />} />
+          <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
+                                                                            setTanksStatsData={this.props.setTanksStatsData}
+                                                                            postPlayerStats={this.props.postPlayerStats} />} />
+          <Route exact path='/tempAccount' element={<TempAccount accounts={this.props.accounts.accounts}
+                                                                 tanksStats={this.props.tanksStats}
+                                                                 postPlayerStats={this.props.postPlayerStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}
@@ -117,7 +140,6 @@ class Main extends Component {
                                                                          postSettings={this.props.postSettings}
           />}
           />
-          <Route exact path='/user-search' element={<SearchPlayer />}/>
           <Route exact path='/contactus' element={<Contact resetForm={this.props.resetForm}
                                                            postFeedback={this.props.postFeedback}
           />}

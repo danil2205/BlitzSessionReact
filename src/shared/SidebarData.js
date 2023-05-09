@@ -5,14 +5,20 @@ import * as IoIcons from 'react-icons/io';
 export const SidebarData =
   [
     {
-      title: 'Home',
-      path: '/home',
-      icons: <AiIcons.AiFillHome />,
+      title: 'Accounts',
+      path: '/accounts',
+      icons: <IoIcons.IoMdPerson />,
       cName: 'nav-text'
     },
     {
-      title: 'Accounts',
-      path: '/accounts',
+      title: 'Hangar',
+      path: '/hangar',
+      icons: <FaIcons.FaChartBar />,
+      cName: 'nav-text'
+    },
+    {
+      title: 'TempAccount',
+      path: '/tempAccount',
       icons: <IoIcons.IoMdPerson />,
       cName: 'nav-text'
     },
