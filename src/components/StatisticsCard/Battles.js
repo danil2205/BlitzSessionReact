@@ -10,7 +10,7 @@ const Battles = (props) => {
   const months = new Date().getMonth() - new Date(props.tankStats.data.createdAt * 1000).getMonth() +
     12 * (new Date().getFullYear() - new Date(props.tankStats.data.createdAt * 1000).getFullYear());
 
-  const battlesPerYear = ((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12;
+  const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12);
 
   return (
     <Card className="mb-3">

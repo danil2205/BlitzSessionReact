@@ -79,7 +79,7 @@
   align-items: center;
 }
 
-span {
+a > span {
   margin-left: 16px;
 }
 

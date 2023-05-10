@@ -5,12 +5,21 @@ import MedTankIcon from '../../images/icons/Medium_Tank_Icon.png';
 import LightTankIcon from '../../images/icons/Light_Tank_Icon.png';
 import TdTankIcon from '../../images/icons/Tank_Destroyer_Icon.png';
 
+const timeRange = {
+  '1w': new Date().setDate(new Date().getDate() - 7),
+  '2w': new Date().setDate(new Date().getDate() - 14),
+  '1m': new Date().setMonth(new Date().getMonth() - 1),
+  '3m': new Date().setMonth(new Date().getMonth() - 3),
+  '6m': new Date().setMonth(new Date().getMonth() - 6),
+  '1y': new Date().setMonth(new Date().getMonth() - 12),
+};
+
 export const Filter = (props) => {
-  const [filterValues, setFilterValues] = useState({});
+  const [filterValues, setFilterValues] = useState({ timeRange: '1w', battles: 0 });
 
   const filterStats = (filterValues) => {
     const filteredStats = props.statsForFilter.data.filter((tankStats) =>
-      (filterValues?.battles ?? 0) < tankStats.battles &&
+      filterValues.battles < tankStats.battles &&
       (!filterValues.tier?.length || filterValues.tier.includes(tankStats?.tier)) &&
       (!filterValues.type?.length || filterValues.type.includes(tankStats?.type))
     );
@@ -23,8 +32,47 @@ export const Filter = (props) => {
     }
   };
 
+  const filterAccStats = (filterValues) => {
+    const afterTimeRangeSnapshots = props.accountStats.data.snapshots.filter((accountStats) => (
+      timeRange[filterValues.timeRange] < accountStats.lastBattleTime*1000
+    ));
+    const beforeTimeRangeIndex = props.accountStats.data.snapshots.length !== afterTimeRangeSnapshots.length ?
+      props.accountStats.data.snapshots.indexOf(afterTimeRangeSnapshots[0]) - 1 :
+      null;
+    if (beforeTimeRangeIndex == null) return;
+    const beforeTimeRangeSnapshot = props.accountStats.data.snapshots[beforeTimeRangeIndex];
+    const filteredSnapshot = afterTimeRangeSnapshots.at(-1);
+
+    const diff = Object.keys(filteredSnapshot.regular).reduce((acc, key) => {
+      acc.regular[key] = filteredSnapshot.regular[key] - beforeTimeRangeSnapshot.regular[key];
+      return acc;
+    }, { regular: {}, rating: {} });
+    diff.rating.battles = filteredSnapshot.rating.battles - beforeTimeRangeSnapshot.rating.battles;
+
+    props.setFilteredAccountStats(diff);
+  };
+
   return (
     <div className='filter-container'>
+      { (
+        <div>
+          <Form.Select onChange={(event) => {
+            const data = { ...filterValues, timeRange: event.target.value };
+            setFilterValues(data);
+            if (props.accountStats) filterAccStats(data);
+            if (props.statsForFilter) filterStats(data);
+          }}>
+            <option value="1w">1 week</option>
+            <option value="2w">2 weeks</option>
+            <option value="1m">1 month</option>
+            <option value="3m">3 months</option>
+            <option value="6m">6 months</option>
+            <option value="1y">1 year</option>
+            <option value="all">All</option>
+          </Form.Select>
+        </div>
+      )}
+
       <div>
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };

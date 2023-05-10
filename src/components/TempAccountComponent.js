@@ -36,10 +36,13 @@ const Dropdown = (props) => {
 
 const TempAccount = (props) => {
   const [accountId, setAccountId] = useState('');
+  const [filteredAccountStats, setFilteredAccountStats] = useState(undefined);
 
   useEffect(() => {
-    if (accountId !== '')
-      props.postPlayerStats(accountId)
+    if (accountId !== '') {
+      props.postAccountStats(accountId);
+      props.postTankStats(accountId);
+    }
   }, [accountId])
 
 
@@ -49,29 +52,29 @@ const TempAccount = (props) => {
         <Col>
           <Stack direction='horizontal'>
             <h1 className='ms-3'>
-              {props.tanksStats?.data?.name || 'Choose Account'}
+              {props.accountStats?.data?.name || 'Choose Account'}
             </h1>
             <Dropdown accounts={props.accounts} setAccountId={setAccountId} />
           </Stack>
         </Col>
         <Col>
-          <Filter />
+          <Filter setFilteredAccountStats={setFilteredAccountStats} tanksStats={props.tanksStats} accountStats={props.accountStats}/>
         </Col>
       </Row>
-      {props.tanksStats.data &&
+      {props.accountStats.data &&
         <Row>
           <Col className='statistics-column'>
-            <OverviewCard tankStats={props.tanksStats}/>
-            <Damage tankStats={props.tanksStats}/>
+            <OverviewCard tankStats={props.accountStats}/>
+            <Damage accountStats={props.accountStats} filteredStats={filteredAccountStats} />
           </Col>
 
           <Col className="statistics-column">
-            <Wins tankStats={props.tanksStats}/>
-            <Battles tankStats={props.tanksStats}/>
+            <Wins tankStats={props.accountStats}/>
+            <Battles tankStats={props.accountStats}/>
           </Col>
 
           <Col className="statistics-column">
-            <BattleStyle tankStats={props.tanksStats}/>
+            <BattleStyle tankStats={props.accountStats}/>
           </Col>
         </Row>
       }

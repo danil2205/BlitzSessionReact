@@ -16,11 +16,12 @@ import {
   fetchSessionData,
   getListOfTanks,
   setTanksStatsData,
-  postPlayerStats,
+  postAccountStats,
+  postTankStats,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
 import Hangar from './Hangar/HangarComponent.js';
-import TankStats from './TankStatsComponent';
+import TankStats from './Hangar/TankStatsComponent';
 import Contact from './ContactComponent.js';
 import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
@@ -54,6 +55,7 @@ const mapStateToProps = (state) => {
     session: state.session,
     tanks: state.tanks,
     tanksStats: state.tanksStats,
+    accountStats: state.accountStats
   };
 };
 
@@ -73,7 +75,8 @@ const mapDispatchToProps = (dispatch) => ({
   fetchSessionData: () => {dispatch(fetchSessionData())},
   getListOfTanks: () => {dispatch(getListOfTanks())},
   setTanksStatsData: (data) => {dispatch(setTanksStatsData(data))},
-  postPlayerStats: (data) => {dispatch(postPlayerStats(data))},
+  postAccountStats: (account_id) => {dispatch(postAccountStats(account_id))},
+  postTankStats: (account_id) => {dispatch(postTankStats(account_id))}
 });
 
 class Main extends Component {
@@ -121,13 +124,15 @@ class Main extends Component {
           <Route exact path='/hangar/:accountId' element={<Hangar tanks={this.props.tanks.tanks}
                                                                   setTanksStatsData={this.props.setTanksStatsData}
                                                                   tanksStats={this.props.tanksStats}
-                                                                  postPlayerStats={this.props.postPlayerStats} />} />
+                                                                  postAccountStats={this.props.postAccountStats}
+                                                                  postTankStats={this.props.postTankStats} />} />
           <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
-                                                                            setTanksStatsData={this.props.setTanksStatsData}
-                                                                            postPlayerStats={this.props.postPlayerStats} />} />
+                                                                            setTanksStatsData={this.props.setTanksStatsData} />} />
           <Route exact path='/tempAccount' element={<TempAccount accounts={this.props.accounts.accounts}
+                                                                 accountStats={this.props.accountStats}
                                                                  tanksStats={this.props.tanksStats}
-                                                                 postPlayerStats={this.props.postPlayerStats} />} />
+                                                                 postAccountStats={this.props.postAccountStats}
+                                                                 postTankStats={this.props.postTankStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
                                                          settings={this.props.settings.settings}
                                                          isLoading={this.props.settings.isLoading}

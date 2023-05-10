@@ -60,7 +60,8 @@ const Hangar = (props) => {
   useEffect(() => {
     (async () => {
       if (props.tanksStats?.data && props.tanksStats?.account_id === accountId) return;
-      props.postPlayerStats(accountId);
+      props.postAccountStats(accountId);
+      props.postTankStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
       setPlayerStats(stats);
       setStatsForFilter(stats);
