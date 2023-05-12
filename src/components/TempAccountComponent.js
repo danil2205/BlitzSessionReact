@@ -58,14 +58,14 @@ const TempAccount = (props) => {
           </Stack>
         </Col>
         <Col>
-          <Filter setFilteredAccountStats={setFilteredAccountStats} tanksStats={props.tanksStats} accountStats={props.accountStats}/>
+          {props.tanksStats.data && <Filter setFilteredAccountStats={setFilteredAccountStats} tanksStats={props.tanksStats} accountStats={props.accountStats}/>}
         </Col>
       </Row>
-      {props.accountStats.data &&
+      {props.tanksStats.data &&
         <Row>
           <Col className='statistics-column'>
             <OverviewCard tankStats={props.accountStats}/>
-            <Damage accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <Damage tanksStats={props.tanksStats} filteredStats={filteredAccountStats} />
           </Col>
 
           <Col className="statistics-column">
