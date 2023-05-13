@@ -59,16 +59,29 @@ export const Filter = (props) => {
       }).filter((snapshot) => snapshot != null);
       return { ...tankStats, snapshots };
     });
+    console.log(allData)
 
-    const dataForTables = allData.flatMap((tankStats) => tankStats.snapshots)
-      .reduce((acc, snapshot) => {
-        Object.entries(snapshot.regular).map(([key, value]) => {
-          acc[key] = (acc[key] || 0) + value;
-        });
-        return acc;
+    const allSnapshots = allData.flatMap((tankStats) => tankStats.snapshots);
+    const dataForTables = allSnapshots.reduce((acc, snapshot) => {
+      Object.entries(snapshot.regular).map(([key, value]) => {
+        acc[key] = (acc[key] || 0) + value;
+      });
+      return acc;
       }, {});
 
-    props.setFilteredAccountStats({ allData, dataForTables });
+    const dataForCharts = {};
+    allSnapshots.map((snapshot) => {
+      snapshot.lastBattleTime = new Date(snapshot.lastBattleTime * 1000).toLocaleDateString();
+      if (!dataForCharts[snapshot.lastBattleTime]) {
+        dataForCharts[snapshot.lastBattleTime] = { ...snapshot.regular };
+      } else {
+        for (const key in snapshot.regular) {
+          dataForCharts[snapshot.lastBattleTime][key] += snapshot.regular[key];
+        }
+      }
+    });
+
+    props.setFilteredAccountStats({ dataForTables, dataForCharts });
   };
 
   return (

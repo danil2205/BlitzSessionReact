@@ -5,17 +5,19 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Damage = (props) => {
-  return;
   const lastSnapshot = props.accountStats.data.snapshots.at(-1);
+  const dataForTables = props.filteredStats.dataForTables;
+  const isDataEmpty = Object.keys(dataForTables).length > 0;
 
   const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
-  const damageRatioFiltered = props.filteredStats ? (props.filteredStats.regular.damageDealt / props.filteredStats.regular.damageReceived).toFixed(3) : '-';
+  const damageRatioFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageDealt / props.filteredStats.dataForTables.damageReceived).toFixed(3) : '-';
 
   const avgDamage = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles).toFixed(0);
-  const avgDamageFiltered = props.filteredStats ? (props.filteredStats.regular.damageDealt / props.filteredStats.regular.battles).toFixed(0) : '-';
+  const avgDamageFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageDealt / props.filteredStats.dataForTables.battles).toFixed(0) : '-';
 
   const avgDamageReceived = (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles).toFixed(0);
-  const avgDamageReceivedFiltered = props.filteredStats ? (props.filteredStats.regular.damageReceived / props.filteredStats.regular.battles).toFixed(0) : '-';
+  const avgDamageReceivedFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageReceived / props.filteredStats.dataForTables.battles).toFixed(0) : '-';
+  console.log(props.filteredStats)
 
   return (
     <Card className="mb-3">
@@ -96,11 +98,11 @@ const Damage = (props) => {
               },
             }}
             data={{
-              labels: props.accountStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
               datasets: [
                 {
                   label: 'Damage ratio',
-                  data: props.accountStats.data.snapshots.map((snapshot) => (snapshot.regular.damageDealt / snapshot.regular.damageReceived).toFixed(3)),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageDealt / (stats.damageReceived || 1)).toFixed(3)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
@@ -132,17 +134,17 @@ const Damage = (props) => {
             },
           }}
           data={{
-            labels: props.accountStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+            labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
             datasets: [
               {
                 label: 'Average damage',
-                data: props.accountStats.data.snapshots.map((snapshot) => (snapshot.regular.damageDealt / snapshot.regular.battles).toFixed(0)),
+                data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageDealt / stats.battles).toFixed(0)),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
               },
               {
                 label: 'Average received damage',
-                data: props.accountStats.data.snapshots.map((snapshot) => (snapshot.regular.damageReceived / snapshot.regular.battles).toFixed(0)),
+                data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageReceived / stats.battles).toFixed(0)),
                 borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
               },
