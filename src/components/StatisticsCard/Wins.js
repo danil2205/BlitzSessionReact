@@ -10,8 +10,8 @@ const Wins = (props) => {
   const dataForTables = props.filteredStats.dataForTables;
   const isDataEmpty = Object.keys(dataForTables).length > 0;
 
-  const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`
-  const winRateFiltered = isDataEmpty ? `${((props.filteredStats.dataForTables.wins / props.filteredStats.dataForTables.battles) * 100).toFixed(2)}%` : '-'
+  const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;
+  const winRateFiltered = isDataEmpty ? `${((props.filteredStats.dataForTables.wins / props.filteredStats.dataForTables.battles) * 100).toFixed(2)}%` : '-';
 
   return (
     <Card className="mb-3">

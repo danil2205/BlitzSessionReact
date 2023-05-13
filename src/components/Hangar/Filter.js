@@ -46,6 +46,7 @@ export const Filter = (props) => {
       return;
     }
 
+    const filteredDate = new Date(timeRange[filterValues.timeRange]).toLocaleDateString();
     const filteredStats = props.tanksStats.data.filter((tankStats) => filterTankStats(tankStats, filterValues))
 
     const allData = filteredStats.map((tankStats) => {
@@ -81,7 +82,7 @@ export const Filter = (props) => {
       }
     });
 
-    props.setFilteredAccountStats({ dataForTables, dataForCharts });
+    props.setFilteredAccountStats({ filteredDate, dataForTables, dataForCharts });
   };
 
   return (
