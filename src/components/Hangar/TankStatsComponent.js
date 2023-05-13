@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 import { Stack } from 'react-bootstrap';
 import { ArrowLeftCircle } from 'react-bootstrap-icons';
-import OverviewCard from './StatisticsCard/Overview';
-import Damage from './StatisticsCard/Damage';
-import Wins from './StatisticsCard/Wins';
-import Battles from './StatisticsCard/Battles';
-import { Filter } from './Hangar/Filter';
-import { expressURL } from '../shared/expressURL';
-import BattleStyle from './StatisticsCard/BattleStyle';
+import OverviewCard from '../StatisticsCard/Overview';
+import Damage from '../StatisticsCard/Damage';
+import Wins from '../StatisticsCard/Wins';
+import Battles from '../StatisticsCard/Battles';
+import { Filter } from './Filter';
+import { expressURL } from '../../shared/expressURL';
+import BattleStyle from '../StatisticsCard/BattleStyle';
 
 const TankStats = (props) => {
   const [playerStats, setPlayerStats] = useState(props.tanksStats);

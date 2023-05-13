@@ -7,7 +7,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const Wins = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
-  const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`
+  const dataForTables = props.filteredStats.dataForTables;
+  const isDataEmpty = Object.keys(dataForTables).length > 0;
+
+  const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;
+  const winRateFiltered = isDataEmpty ? `${((props.filteredStats.dataForTables.wins / props.filteredStats.dataForTables.battles) * 100).toFixed(2)}%` : '-';
 
   return (
     <Card className="mb-3">
@@ -41,19 +45,19 @@ const Wins = (props) => {
             <tr>
               <td><strong>WinRate</strong></td>
               <td><strong className="increase-font-size">{winRate}</strong></td>
-              <td>228</td>
+              <td>{winRateFiltered}</td>
               <td>123</td>
             </tr>
             <tr>
               <td><strong>Wins</strong></td>
               <td><strong className="increase-font-size">{lastSnapshot.regular.wins}</strong></td>
-              <td>1</td>
+              <td>{props.filteredStats.dataForTables.wins}</td>
               <td>2</td>
             </tr>
             <tr>
               <td><strong>Loses</strong></td>
               <td><strong className="increase-font-size">{lastSnapshot.regular.losses}</strong></td>
-              <td>4</td>
+              <td>{props.filteredStats.dataForTables.losses}</td>
               <td>5</td>
             </tr>
           </tbody>
@@ -82,11 +86,11 @@ const Wins = (props) => {
               },
             }}
             data={{
-              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
               datasets: [
                 {
                   label: 'WinRate',
-                  data: props.tankStats.data.snapshots.map((snapshot) => ((snapshot.regular.wins / snapshot.regular.battles) * 100).toFixed(2)),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => ((stats.wins / stats.battles) * 100).toFixed(2)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
@@ -117,25 +121,17 @@ const Wins = (props) => {
               },
             }}
             data={{
-              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
               datasets: [
                 {
                   label: 'Wins',
-                  data: props.tankStats.data.snapshots.map((snapshot, index) => {
-                    if (index > 0) {
-                      return snapshot.regular.wins - props.tankStats.data.snapshots[index - 1].regular.wins
-                    }
-                  }),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => stats.wins),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
                 {
                   label: 'Loses',
-                  data: props.tankStats.data.snapshots.map((snapshot, index) => {
-                    if (index > 0) {
-                      return snapshot.regular.losses - props.tankStats.data.snapshots[index - 1].regular.losses
-                    }
-                  }),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => stats.losses),
                   borderColor: 'rgb(53, 162, 235)',
                   backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 },

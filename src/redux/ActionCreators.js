@@ -227,12 +227,22 @@ export const setTanksStatsData = (data) => (dispatch) => {
   dispatch(action);
 };
 
-export const postPlayerStats = (account_id) => (dispatch) => {
+export const postAccountStats = (account_id) => (dispatch) => {
+  fetchData({
+    link: `accounts/${account_id}`,
+    method: 'POST',
+    data: undefined,
+    dispatch,
+    actions: [makeActionCreator(ActionTypes.ADD_ACCOUNT_STATS)],
+  });
+};
+
+export const postTankStats = (account_id) => (dispatch) => {
   fetchData({
     link: `tanks/${account_id}`,
     method: 'POST',
     data: undefined,
     dispatch,
-    actions: [makeActionCreator(ActionTypes.ADD_PLAYER_STATS)],
+    actions: [makeActionCreator(ActionTypes.ADD_TANK_STATS)],
   });
 };
