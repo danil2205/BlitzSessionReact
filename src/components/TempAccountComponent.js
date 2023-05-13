@@ -74,7 +74,7 @@ const TempAccount = (props) => {
           </Col>
 
           <Col className="statistics-column">
-            <BattleStyle tankStats={props.accountStats}/>
+            <BattleStyle tankStats={props.accountStats} filteredStats={filteredAccountStats} />
           </Col>
         </Row>
       }

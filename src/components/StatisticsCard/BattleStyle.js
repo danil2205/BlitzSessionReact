@@ -7,9 +7,17 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const BattleStyle = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
+  const dataForTables = props.filteredStats.dataForTables;
+  const isDataEmpty = Object.keys(dataForTables).length > 0;
+
   const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
+  const fragsRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.frags / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
+
   const spottedRate = (lastSnapshot.regular.spotted / lastSnapshot.regular.battles).toFixed(2);
+  const spottedRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.spotted / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
+
   const survRate = (lastSnapshot.regular.survivedBattles / lastSnapshot.regular.battles).toFixed(2);
+  const survRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.survivedBattles / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
 
   return (
     <Card className="mb-3">
@@ -43,19 +51,19 @@ const BattleStyle = (props) => {
           <tr>
             <td><strong>Frags Rate</strong></td>
             <td><strong className="increase-font-size">{fragsRate}</strong></td>
-            <td>228</td>
+            <td>{fragsRateFiltered}</td>
             <td>123</td>
           </tr>
           <tr>
             <td><strong>Spotted Rate</strong></td>
             <td><strong className="increase-font-size">{spottedRate}</strong></td>
-            <td>1</td>
+            <td>{spottedRateFiltered}</td>
             <td>2</td>
           </tr>
           <tr>
             <td><strong>Survival Rate</strong></td>
             <td><strong className="increase-font-size">{survRate}</strong></td>
-            <td>4</td>
+            <td>{survRateFiltered}</td>
             <td>5</td>
           </tr>
           </tbody>
@@ -83,17 +91,17 @@ const BattleStyle = (props) => {
               },
             }}
             data={{
-              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
               datasets: [
                 {
                   label: 'Frags Rate',
-                  data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.frags / snapshot.regular.battles).toFixed(2)),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.frags / stats.battles).toFixed(2)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
                 {
                   label: 'Spotted Rate',
-                  data: props.tankStats.data.snapshots.map((snapshot) => (snapshot.regular.spotted / snapshot.regular.battles).toFixed(2)),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.spotted / stats.battles).toFixed(2)),
                   borderColor: 'rgb(53, 162, 235)',
                   backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 },
@@ -124,11 +132,11 @@ const BattleStyle = (props) => {
               },
             }}
             data={{
-              labels: props.tankStats.data.snapshots.map((snapshot) => new Date(snapshot.lastBattleTime*1000).toLocaleDateString()),
+              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
               datasets: [
                 {
                   label: 'Survival Rate',
-                  data: props.tankStats.data.snapshots.map((snapshot) => ((snapshot.regular.survivedBattles / snapshot.regular.battles) * 100).toFixed(2)),
+                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => ((stats.survivedBattles / stats.battles) * 100).toFixed(2)),
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
