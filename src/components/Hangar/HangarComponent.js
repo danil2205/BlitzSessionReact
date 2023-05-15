@@ -19,22 +19,50 @@ const Hangar = (props) => {
   const [isSortDesc, setSortDesc] = useState(false);
   const [lastSortCol, setLastSortCol] = useState('');
 
+  const calcStats = (tankStats) => {
+    const lastSnapshot = tankStats.snapshots.at(-1);
+
+    const winrate = ((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2);
+    const avgDmg = ~~(lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles);
+    const coefFrag = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
+    const percentRemainHP = ((1 - (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles) / tankStats.hp) * 100).toFixed(2)
+    const battlesForMaster = ~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery);
+    const avgTimeInBattle = lastSnapshot.battleLifeTime / lastSnapshot.regular.battles;
+
+    return {
+      name: tankStats.name,
+      tier: tankStats.tier,
+      lastBattleTime: lastSnapshot.lastBattleTime,
+      battles: lastSnapshot.regular.battles,
+      winrate,
+      avgDmg,
+      coefFrag,
+      percentRemainHP,
+      battlesForMaster,
+      avgTimeInBattle,
+    };
+  };
+
   const sortStats = (stats, col) => {
+    const filteredBadStats = stats.filter((tank) => tank.name);
     if (col === '') {
       setPlayerStats({
         status: 'ok',
-        data: stats,
+        data: filteredBadStats,
       });
       return;
     }
 
-    const data = stats.sort((tank1, tank2) => {
+    const data = filteredBadStats.sort((tank1, tank2) => {
+      const tank1Stats = calcStats(tank1);
+      const tank2Stats = calcStats(tank2);
+
       if (col === 'name') {
-        if (isSortDesc) return tank2[col].localeCompare(tank1[col])
-        else return tank1[col].localeCompare(tank2[col])
+        if (isSortDesc) return tank2Stats[col].localeCompare(tank1Stats[col])
+        else return tank1Stats[col].localeCompare(tank2Stats[col])
       } else {
-        if (isSortDesc) return tank2[col] - tank1[col]
-        else return tank1[col] - tank2[col]
+        if (isSortDesc) return tank2Stats[col] - tank1Stats[col]
+        else return tank1Stats[col] - tank2Stats[col]
       }
     });
 
@@ -131,7 +159,7 @@ const Hangar = (props) => {
                 <Label onClick={() => setFlagsForSort('battlesForMaster')}>Battles for Master</Label>
               </th>
               <th>
-                <Label onClick={() => setFlagsForSort('avgTimeInBattleForSort')}>Average Life Time</Label>
+                <Label onClick={() => setFlagsForSort('avgTimeInBattle')}>Average Life Time</Label>
               </th>
             </tr>
             </thead>
@@ -175,7 +203,7 @@ const Hangar = (props) => {
                     '0.00%' :
                     `${((1 - (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles) / accountTank.hp) * 100).toFixed(2)}%`
                   }</td>
-                  <td>{~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery) === 0 ? '-' : accountTank.battlesForMaster}</td>
+                  <td>{~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery) === 0 ? '-' : ~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery) }</td>
                   <td>{avgTimeInBattle}</td>
                 </tr>
               )
