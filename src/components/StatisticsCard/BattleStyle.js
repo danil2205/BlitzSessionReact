@@ -19,6 +19,11 @@ const BattleStyle = (props) => {
   const survRate = (lastSnapshot.regular.survivedBattles / lastSnapshot.regular.battles).toFixed(2);
   const survRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.survivedBattles / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
 
+  const battlesForMaster = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery).toFixed(0);
+  const battlesForMasterI = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMasteryI).toFixed(0);
+  const battlesForMasterII = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMasteryII).toFixed(0);
+  const battlesForMasterIII = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMasteryIII).toFixed(0);
+
   return (
     <Card className="mb-3">
       <CardHeader className="bg-metal">
@@ -65,6 +70,48 @@ const BattleStyle = (props) => {
             <td><strong className="increase-font-size">{survRate}</strong></td>
             <td>{survRateFiltered}</td>
             <td>5</td>
+          </tr>
+          </tbody>
+        </Table>
+      </CardBody>
+
+      <CardBody>
+        <Table bordered hover responsive size='sm' className='table-normal-header'>
+          <thead>
+          <tr>
+            <th></th>
+            <th>
+              <OverlayTrigger overlay={<Tips>Total value for the account</Tips>}>
+                <span><strong>Total</strong></span>
+              </OverlayTrigger>
+            </th>
+            <th>
+              <OverlayTrigger overlay={<Tips>Average value for the whole server</Tips>}>
+                <span>Server</span>
+              </OverlayTrigger>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><strong>Battles Per Master</strong></td>
+            <td><strong className="increase-font-size">{battlesForMaster}</strong></td>
+            <td>{fragsRateFiltered}</td>
+          </tr>
+          <tr>
+            <td><strong>Battles Per Master I</strong></td>
+            <td><strong className="increase-font-size">{battlesForMasterI}</strong></td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>Battles Per Master II</strong></td>
+            <td><strong className="increase-font-size">{battlesForMasterII}</strong></td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>Battles Per Master III</strong></td>
+            <td><strong className="increase-font-size">{battlesForMasterIII}</strong></td>
+            <td>2</td>
           </tr>
           </tbody>
         </Table>

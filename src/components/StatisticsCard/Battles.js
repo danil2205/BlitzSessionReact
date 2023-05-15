@@ -59,7 +59,7 @@ const Battles = (props) => {
           <tr>
             <td><strong>Rating Battles</strong></td>
             <td><strong className="increase-font-size">{lastSnapshot.rating?.battles || 0}</strong></td>
-            <td>1</td>
+            <td>-</td>
             <td>2</td>
           </tr>
           <tr>
