@@ -14,7 +14,6 @@ const Hangar = (props) => {
   const { accountId } = useParams();
   const navigate = useNavigate();
   const [playerStats, setPlayerStats] = useState(props.tanksStats);
-  const [statsForFilter, setStatsForFilter] = useState([]);
   const [statsFromFilter, setStatsFromFilter] = useState([]);
   const [isSortDesc, setSortDesc] = useState(false);
   const [lastSortCol, setLastSortCol] = useState('');
@@ -92,7 +91,6 @@ const Hangar = (props) => {
       props.postTankStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
       setPlayerStats(stats);
-      setStatsForFilter(stats);
       props.setTanksStatsData(stats);
     })();
   }, [accountId]);
@@ -119,11 +117,10 @@ const Hangar = (props) => {
           </Stack>
         </Col>
         <Col>
-          {/*<Filter*/}
-          {/*  setPlayerStats={setPlayerStats}*/}
-          {/*  statsForFilter={statsForFilter}*/}
-          {/*  setStatsFromFilter={setStatsFromFilter}*/}
-          {/*/>*/}
+          <Filter setPlayerStats={setPlayerStats}
+                  hangarStats={props.tanksStats}
+                  setStatsFromFilter={setStatsFromFilter}
+          />
         </Col>
       </Row>
       <Row>

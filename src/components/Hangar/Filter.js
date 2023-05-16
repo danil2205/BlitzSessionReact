@@ -18,8 +18,29 @@ export const Filter = (props) => {
   const [filterValues, setFilterValues] = useState({ timeRange: '1w', battles: 0 });
 
   useEffect(() => {
-    if (props.accountStats.data) setStatsForCards(filterValues);
-  }, [props.accountStats])
+    if (props.tanksStatsForCard) setStatsForCards(filterValues);
+  }, [props.tanksStatsForCard, filterValues]);
+
+  useEffect(() => {
+    if (props.hangarStats) {
+      const filteredStats = props.hangarStats.data.filter((tankStats) => filterHangarStats(tankStats));
+      if (filteredStats.length) props.setStatsFromFilter(filteredStats);
+      else props.setPlayerStats({
+        status: 'ok',
+        data: filteredStats,
+      })
+    }
+  }, [filterValues]);
+
+  const filterHangarStats = (tankStats) => {
+    const lastSnapshot = tankStats.snapshots.at(-1)
+
+    const isTierFiltered = filterValues.tier?.length ? filterValues.tier.includes(tankStats.tier) : true;
+    const isTypeFiltered = filterValues.type?.length ? filterValues.type.includes(tankStats.type) : true;
+    const isBattleFiltered = filterValues.battles ? lastSnapshot.regular.battles > filterValues.battles : true;
+
+    return isTierFiltered && isTypeFiltered && isBattleFiltered;
+  };
 
   const filterTankStats = (tankStats, filterValues) => {
     const isTierFiltered = filterValues.tier?.length ? filterValues.tier.includes(tankStats.tier) : true;
@@ -88,13 +109,11 @@ export const Filter = (props) => {
 
   return (
     <div className='filter-container'>
-      { (
+      {props.tanksStatsForCard && (
         <div>
           <Form.Select onChange={(event) => {
             const data = { ...filterValues, timeRange: event.target.value };
             setFilterValues(data);
-            setStatsForCards(data);
-            // if (props.statsForFilter) filterStats(data);
           }}>
             <option value="1w">1 week</option>
             <option value="2w">2 weeks</option>
@@ -111,7 +130,6 @@ export const Filter = (props) => {
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
-          setStatsForCards(data);
           // filterStats(data);
         }}>
           <option value="0">All Battles</option>
@@ -124,7 +142,6 @@ export const Filter = (props) => {
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, tier: event };
           setFilterValues(data);
-          setStatsForCards(data);
           // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-3" value={3} variant="outline-secondary">
@@ -158,7 +175,6 @@ export const Filter = (props) => {
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, type: event };
           setFilterValues(data);
-          setStatsForCards(data);
           // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-at" value={'AT-SPG'} variant="outline-secondary">
