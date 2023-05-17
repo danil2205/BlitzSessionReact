@@ -22,7 +22,7 @@ export const Filter = (props) => {
   }, [props.tanksStatsForCard, filterValues]);
 
   useEffect(() => {
-    if (props.hangarStats) {
+    if (props.hangarStats && props.hangarStats.data) {
       const filteredStats = props.hangarStats.data.filter((tankStats) => filterHangarStats(tankStats));
       if (filteredStats.length) props.setStatsFromFilter(filteredStats);
       else props.setPlayerStats({
