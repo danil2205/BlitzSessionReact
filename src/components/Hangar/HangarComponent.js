@@ -162,12 +162,12 @@ const Hangar = (props) => {
             </thead>
             <tbody>
             {[...playerStats.data].filter((tankStats) => tankStats.name).map((accountTank) => {
-              const lastSnapshot = accountTank.snapshots.at(-1);
+              const stats = calcStats(accountTank);
               const avgTimeInBattle = (
-                  Math.floor(lastSnapshot.battleLifeTime / lastSnapshot.regular.battles / 60) < 7
-                    ? `${Math.floor(lastSnapshot.battleLifeTime / lastSnapshot.regular.battles / 60)}m ${~~(lastSnapshot.battleLifeTime / lastSnapshot.regular.battles % 60)}s`
-                    : '~ 7m'
-              );
+                Math.floor(stats.avgTimeInBattle / 60) < 7
+                ? `${Math.floor(stats.avgTimeInBattle / 60)}m ${~~(stats.avgTimeInBattle % 60)}s`
+                : '~ 7m'
+                );
               return (
                 <tr key={accountTank.tank_id}>
                   <td>
@@ -190,18 +190,17 @@ const Hangar = (props) => {
                       {accountTank.isPremium === true && <StarFill size={1} color="Orange" />}
                     </Stack>
                   </td>
-                  <td>{new Date(lastSnapshot.lastBattleTime * 1000).toLocaleDateString()}</td>
-                  <td>{lastSnapshot.regular.battles}</td>
-                  <td>{`${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`}</td>
-                  <td>{~~(lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles)}</td>
-                  <td>{(lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2)}</td>
+                  <td>{new Date(stats.lastBattleTime * 1000).toLocaleDateString()}</td>
+                  <td>{stats.battles}</td>
+                  <td>{`${stats.winrate}%`}</td>
+                  <td>{stats.avgDmg}</td>
+                  <td>{stats.coefFrag}</td>
                   <td>{
-                    ((1 - (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles) / accountTank.hp) * 100).toFixed(2) === '-' ?
-                    '0.00%' :
-                    `${((1 - (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles) / accountTank.hp) * 100).toFixed(2)}%`
-                  }</td>
-                  <td>{~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery) === 0 ? '-' : ~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery) }</td>
-                  <td>{avgTimeInBattle}</td>
+                     stats.percentRemainHP === '-' ?
+                     '0.00%' :
+                      `${stats.percentRemainHP}%`
+                   }</td>
+                  <td>{stats.battlesForMaster === 0 ? '-' : stats.battlesForMaster }</td>
                 </tr>
               )
             })}

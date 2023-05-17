@@ -7,13 +7,15 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const Battles = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
   const dataForTables = props.filteredStats.dataForTables;
-  const isDataEmpty = Object.keys(dataForTables).length > 0
 
-  const months =  new Date().getMonth() - new Date(props.tankStats.data.createdAt * 1000).getMonth() +
-  12 * (new Date().getFullYear() - new Date(props.tankStats.data.createdAt * 1000).getFullYear());
+  const creationDate = new Date(props.tankStats.data.createdAt * 1000);
+
+  const months =  new Date().getMonth() - creationDate.getMonth() +
+  12 * (new Date().getFullYear() - creationDate.getFullYear());
+
 
   const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12);
-  const battlesPerYearFiltered = isDataEmpty ? Math.round(((props.filteredStats.dataForTables.battles) / months) * 12) : '-';
+  const battlesPerYearFiltered = dataForTables?.battles ? Math.round(((dataForTables.battles) / months) * 12) : '-';
 
   return (
     <Card className="mb-3">
@@ -53,7 +55,7 @@ const Battles = (props) => {
           <tr>
             <td><strong>Regular Battles</strong></td>
             <td><strong className="increase-font-size">{lastSnapshot.regular.battles}</strong></td>
-            <td>{props.filteredStats.dataForTables.battles }</td>
+            <td>{dataForTables.battles}</td>
             <td>2</td>
           </tr>
           <tr>
