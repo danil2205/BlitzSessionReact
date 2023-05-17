@@ -7,13 +7,13 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const Battles = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
   const dataForTables = props.filteredStats.dataForTables;
-  const isDataEmpty = Object.keys(dataForTables).length > 0;
+  const isDataEmpty = Object.keys(dataForTables).length > 0
 
-  const months = new Date().getMonth() - new Date(props.tankStats.data.createdAt * 1000).getMonth() +
-    12 * (new Date().getFullYear() - new Date(props.tankStats.data.createdAt * 1000).getFullYear());
+  const months =  new Date().getMonth() - new Date(props.tankStats.data.createdAt * 1000).getMonth() +
+  12 * (new Date().getFullYear() - new Date(props.tankStats.data.createdAt * 1000).getFullYear());
 
   const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12);
-  const battlesPerYearFiltered = isDataEmpty ? Math.round(((props.filteredStats.dataForTables.battles) / months) * 12) : '-'; // temporary without rating
+  const battlesPerYearFiltered = isDataEmpty ? Math.round(((props.filteredStats.dataForTables.battles) / months) * 12) : '-';
 
   return (
     <Card className="mb-3">
@@ -53,7 +53,7 @@ const Battles = (props) => {
           <tr>
             <td><strong>Regular Battles</strong></td>
             <td><strong className="increase-font-size">{lastSnapshot.regular.battles}</strong></td>
-            <td>{props.filteredStats.dataForTables.battles}</td>
+            <td>{props.filteredStats.dataForTables.battles }</td>
             <td>2</td>
           </tr>
           <tr>
@@ -74,7 +74,7 @@ const Battles = (props) => {
 
       <CardBody>
         <div className="chart-container">
-          <Bar
+          < Bar
             options={{
               responsive: true,
               plugins: {

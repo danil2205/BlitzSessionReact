@@ -8,16 +8,18 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const BattleStyle = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
   const dataForTables = props.filteredStats.dataForTables;
-  const isDataEmpty = Object.keys(dataForTables).length > 0;
+  const isDataEmpty = Object.keys(dataForTables).length > 0
 
   const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
-  const fragsRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.frags / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
+  const fragsRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.frags / props.filteredStats.dataForTables.battles).toFixed(2) : '-'
 
   const spottedRate = (lastSnapshot.regular.spotted / lastSnapshot.regular.battles).toFixed(2);
-  const spottedRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.spotted / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
+  const spottedRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.spotted / props.filteredStats.dataForTables.battles).toFixed(2) : '-'
 
   const survRate = (lastSnapshot.regular.survivedBattles / lastSnapshot.regular.battles).toFixed(2);
   const survRateFiltered = isDataEmpty ? (props.filteredStats.dataForTables.survivedBattles / props.filteredStats.dataForTables.battles).toFixed(2) : '-';
+
+  const calcBattlesForMaster = (badge) => (lastSnapshot.regular.battles / lastSnapshot.mastery[badge]).toFixed(0);
 
   const battlesForMaster = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery).toFixed(0);
   const battlesForMasterI = (lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMasteryI).toFixed(0);
@@ -96,7 +98,7 @@ const BattleStyle = (props) => {
           <tr>
             <td><strong>Battles Per Master</strong></td>
             <td><strong className="increase-font-size">{battlesForMaster}</strong></td>
-            <td>{fragsRateFiltered}</td>
+            <td>1</td>
           </tr>
           <tr>
             <td><strong>Battles Per Master I</strong></td>

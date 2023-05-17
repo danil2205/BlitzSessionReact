@@ -18,7 +18,7 @@ export const Filter = (props) => {
   const [filterValues, setFilterValues] = useState({ timeRange: '1w', battles: 0 });
 
   useEffect(() => {
-    if (props.tanksStatsForCard) setStatsForCards(filterValues);
+    if (props.tanksStatsForCard) setStatsForCards();
   }, [props.tanksStatsForCard, filterValues]);
 
   useEffect(() => {
@@ -91,9 +91,9 @@ export const Filter = (props) => {
     return statsForCharts;
   };
 
-  const setStatsForCards = (filterValues) => {
+  const setStatsForCards = () => {
     const isTimeRangeSelected = filterValues.timeRange === 'all';
-    const statsForDay = props.tanksStats.data
+    const statsForDay = props.tanksStatsForCard.data
       .filter((tankStats) => filterTankStats(tankStats, filterValues))
       .flatMap((tankStats) => getStatsForDay(tankStats));
 
@@ -130,7 +130,6 @@ export const Filter = (props) => {
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
-          // filterStats(data);
         }}>
           <option value="0">All Battles</option>
           <option value="100">>100 Battles</option>
@@ -142,7 +141,6 @@ export const Filter = (props) => {
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, tier: event };
           setFilterValues(data);
-          // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-3" value={3} variant="outline-secondary">
             <span className="filter-tank-tier">{'<'}III</span>
@@ -175,7 +173,6 @@ export const Filter = (props) => {
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, type: event };
           setFilterValues(data);
-          // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-at" value={'AT-SPG'} variant="outline-secondary">
             <img src={TdTankIcon} alt="AT-SPG" width="20" height="20" />
