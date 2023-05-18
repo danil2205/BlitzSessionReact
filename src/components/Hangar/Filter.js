@@ -16,10 +16,11 @@ const timeRange = {
 
 export const Filter = (props) => {
   const [filterValues, setFilterValues] = useState({ timeRange: '1w', battles: 0 });
+  const [stats, setStats] = useState(props.tanksStatsForCard || props.tankStatsCard)
 
   useEffect(() => {
-    if (props.tanksStatsForCard) setStatsForCards();
-  }, [props.tanksStatsForCard, filterValues]);
+    if (stats) setStatsForCards();
+  }, [stats, filterValues]);
 
   useEffect(() => {
     if (props.hangarStats && props.hangarStats.data) {
@@ -93,7 +94,9 @@ export const Filter = (props) => {
 
   const setStatsForCards = () => {
     const isTimeRangeSelected = filterValues.timeRange === 'all';
-    const statsForDay = props.tanksStatsForCard.data
+    const statsForCard = stats?.data ? stats.data : new Array(stats);
+
+    const statsForDay = statsForCard
       .filter((tankStats) => filterTankStats(tankStats, filterValues))
       .flatMap((tankStats) => getStatsForDay(tankStats));
 
@@ -104,12 +107,16 @@ export const Filter = (props) => {
         Object.keys(dataForCharts)[0] :
         new Date(timeRange[filterValues.timeRange]).toLocaleDateString();
 
-    props.setFilteredAccountStats({ filteredDate, dataForTables, dataForCharts });
+    if (!stats?.data) {
+      props.setFilteredTankStats({ filteredDate, dataForTables, dataForCharts });
+    } else {
+      props.setFilteredAccountStats({ filteredDate, dataForTables, dataForCharts });
+    }
   };
 
   return (
     <div className='filter-container'>
-      {props.tanksStatsForCard && (
+      {(props.tanksStatsForCard || props.tankStatsCard) && (
         <div>
           <Form.Select onChange={(event) => {
             const data = { ...filterValues, timeRange: event.target.value };
@@ -126,7 +133,7 @@ export const Filter = (props) => {
         </div>
       )}
 
-      {!props.tanksStatsForCard && <div>
+      {!(props.tanksStatsForCard || props.tankStatsCard) && <div>
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
@@ -138,7 +145,7 @@ export const Filter = (props) => {
       </div>
       }
 
-      <div>
+      {!props.tankStatsCard && <div>
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, tier: event };
           setFilterValues(data);
@@ -168,9 +175,9 @@ export const Filter = (props) => {
             <span className="filter-tank-tier">X</span>
           </ToggleButton>
         </ToggleButtonGroup>
-      </div>
+      </div>}
 
-      <div>
+      {!props.tankStatsCard && <div>
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, type: event };
           setFilterValues(data);
@@ -188,7 +195,7 @@ export const Filter = (props) => {
             <img src={HeavyTankIcon} alt="heavyTank" width="20" height="20" />
           </ToggleButton>
         </ToggleButtonGroup>
-      </div>
+      </div>}
     </div>
   );
 };

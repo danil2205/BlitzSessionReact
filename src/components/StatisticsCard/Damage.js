@@ -3,7 +3,8 @@ import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
 
 const Damage = (props) => {
-  const lastSnapshot = props.accountStats.data.snapshots.at(-1);
+  const stats = props.accountStats ? props.accountStats.data : props.tankStatsCard;
+  const lastSnapshot = stats.snapshots.at(-1);
   const { dataForTables, dataForCharts } = props.filteredStats;
 
   const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
@@ -66,7 +67,7 @@ const Damage = (props) => {
           </tr>
           {!props.accountStats && <tr>
             <td><strong>Tank HP</strong></td>
-            <td><strong className="increase-font-size">666</strong></td>
+            <td><strong className="increase-font-size">{props.tankStatsCard.hp}</strong></td>
             <td>-</td>
             <td>-</td>
           </tr>}

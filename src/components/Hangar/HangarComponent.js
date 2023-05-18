@@ -86,7 +86,7 @@ const Hangar = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (props.tanksStats?.data && props.tanksStats?.account_id === accountId) return;
+      if (props.tanksStats?.data && props.tanksStats?.account_id === Number(accountId)) return;
       props.postAccountStats(accountId);
       props.postTankStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
