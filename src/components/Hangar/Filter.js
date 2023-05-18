@@ -126,7 +126,7 @@ export const Filter = (props) => {
         </div>
       )}
 
-      <div>
+      {!props.tanksStatsForCard && <div>
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
@@ -136,6 +136,7 @@ export const Filter = (props) => {
           <option value="250">>250 Battles</option>
         </Form.Select>
       </div>
+      }
 
       <div>
         <ToggleButtonGroup type="checkbox" onChange={(event) => {

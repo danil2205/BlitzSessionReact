@@ -1,23 +1,21 @@
 import { Card, CardHeader, CardBody, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Legend, Tooltip } from 'chart.js';
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import LineChart from '../Charts/LineChart';
 
 const Damage = (props) => {
   const lastSnapshot = props.accountStats.data.snapshots.at(-1);
-  const dataForTables = props.filteredStats.dataForTables;
-  const isDataEmpty = Object.keys(dataForTables).length > 0;
+  const { dataForTables, dataForCharts } = props.filteredStats;
 
   const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
-  const damageRatioFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageDealt / props.filteredStats.dataForTables.damageReceived).toFixed(3) : '-';
+  const damageRatioFiltered = dataForTables?.battles ? (dataForTables.damageDealt / dataForTables.damageReceived).toFixed(3) : '-';
 
   const avgDamage = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles).toFixed(0);
-  const avgDamageFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageDealt / props.filteredStats.dataForTables.battles).toFixed(0) : '-';
+  const avgDamageFiltered = dataForTables?.battles ? (dataForTables.damageDealt / dataForTables.battles).toFixed(0) : '-';
 
   const avgDamageReceived = (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles).toFixed(0);
-  const avgDamageReceivedFiltered = isDataEmpty ? (props.filteredStats.dataForTables.damageReceived / props.filteredStats.dataForTables.battles).toFixed(0) : '-';
-  console.log(props.filteredStats)
+  const avgDamageReceivedFiltered = dataForTables?.battles ? (dataForTables.damageReceived / dataForTables.battles).toFixed(0) : '-';
+
+  const labelsForCharts = Object.keys(dataForCharts).map((key) => key);
 
   return (
     <Card className="mb-3">
@@ -77,81 +75,37 @@ const Damage = (props) => {
       </CardBody>
 
       <CardBody>
-        <div className='chart-container'>
-          <Line
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
-                },
-              },
-              maintainAspectRatio: false,
-              spanGaps: true,
-              scales: {
-                xAxis: {
-                  ticks: {
-                    maxTicksLimit: 10,
-                    autoSkip: true,
-                  },
-                },
-              },
-            }}
-            data={{
-              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
-              datasets: [
-                {
-                  label: 'Damage ratio',
-                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageDealt / (stats.damageReceived || 1)).toFixed(3)),
-                  borderColor: 'rgb(255, 99, 132)',
-                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-              ],
-            }}
-          />
-        </div>
-      </CardBody>
-
-      <CardBody>
-        <div className='chart-container'>
-        <Line
-          options={{
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top',
-              },
-            },
-            maintainAspectRatio: false,
-            spanGaps: true,
-            scales: {
-              xAxis: {
-                ticks: {
-                  maxTicksLimit: 10,
-                  autoSkip: true,
-                },
-              },
-            },
-          }}
-          data={{
-            labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
-            datasets: [
+          <LineChart
+            labels={labelsForCharts}
+            datasets={[
               {
-                label: 'Average damage',
-                data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageDealt / stats.battles).toFixed(0)),
+                label: 'Damage ratio',
+                data: Object.values(dataForCharts).map((stats) => (stats.damageDealt / (stats.damageReceived || 1)).toFixed(3)),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
               },
-              {
-                label: 'Average received damage',
-                data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.damageReceived / stats.battles).toFixed(0)),
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-              },
-            ],
-          }}
+            ]}
+          />
+      </CardBody>
+
+      <CardBody>
+        <LineChart
+          labels={labelsForCharts}
+          datasets={[
+            {
+              label: 'Average damage',
+              data: Object.values(dataForCharts).map((stats) => (stats.damageDealt / stats.battles).toFixed(0)),
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            {
+              label: 'Average received damage',
+              data: Object.values(dataForCharts).map((stats) => (stats.damageReceived / stats.battles).toFixed(0)),
+              borderColor: 'rgb(53, 162, 235)',
+              backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+          ]}
         />
-      </div>
       </CardBody>
     </Card>
   );

@@ -1,8 +1,6 @@
 import { Card, CardHeader, CardBody, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Legend, Tooltip } from 'chart.js';
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import BarChart from '../Charts/BarChart';
 
 const Battles = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
@@ -12,7 +10,6 @@ const Battles = (props) => {
 
   const months =  new Date().getMonth() - creationDate.getMonth() +
   12 * (new Date().getFullYear() - creationDate.getFullYear());
-
 
   const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12);
   const battlesPerYearFiltered = dataForTables?.battles ? Math.round(((dataForTables.battles) / months) * 12) : '-';
@@ -66,7 +63,7 @@ const Battles = (props) => {
           </tr>
           <tr>
             <td><strong>Start Date</strong></td>
-            <td><strong className="increase-font-size">{new Date(props.tankStats.data.createdAt * 1000).toLocaleDateString()}</strong></td>
+            <td><strong className="increase-font-size">{creationDate.toLocaleDateString()}</strong></td>
             <td>{props.filteredStats.filteredDate}</td>
             <td>5</td>
           </tr>
@@ -75,38 +72,17 @@ const Battles = (props) => {
       </CardBody>
 
       <CardBody>
-        <div className="chart-container">
-          < Bar
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
-                },
-              },
-              maintainAspectRatio: false,
-              scales: {
-                xAxis: {
-                  ticks: {
-                    maxTicksLimit: 10,
-                    autoSkip: true,
-                  },
-                },
-              },
-            }}
-            data={{
-              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
-              datasets: [
-                {
-                  label: 'Battles Count',
-                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => stats.battles),
-                  borderColor: 'rgb(255, 99, 132)',
-                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-              ],
-            }}
+          <BarChart
+            labels={Object.keys(props.filteredStats.dataForCharts).map((key) => key)}
+            datasets={[
+              {
+                label: 'Battles Count',
+                data: Object.values(props.filteredStats.dataForCharts).map((stats) => stats.battles),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+              }
+            ]}
           />
-        </div>
       </CardBody>
     </Card>
   );

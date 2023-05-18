@@ -201,6 +201,7 @@ const Hangar = (props) => {
                       `${stats.percentRemainHP}%`
                    }</td>
                   <td>{stats.battlesForMaster === 0 ? '-' : stats.battlesForMaster }</td>
+                  <td>{avgTimeInBattle}</td>
                 </tr>
               )
             })}

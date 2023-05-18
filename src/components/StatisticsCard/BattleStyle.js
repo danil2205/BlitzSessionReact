@@ -1,9 +1,6 @@
 import { Card, CardBody, CardHeader, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Legend, Tooltip } from 'chart.js';
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
+import LineChart from '../Charts/LineChart';
 
 const BattleStyle = (props) => {
   const lastSnapshot = props.tankStats.data.snapshots.at(-1);
@@ -19,6 +16,7 @@ const BattleStyle = (props) => {
   const survRateFiltered = dataForTables?.battles ? (dataForTables.survivedBattles / dataForTables.battles).toFixed(2) : '-';
 
   const calcBattlesForMaster = (badge) => (lastSnapshot.regular.battles / lastSnapshot.mastery[badge]).toFixed(0);
+
   return (
     <Card className="mb-3">
       <CardHeader className="bg-metal">
@@ -90,22 +88,22 @@ const BattleStyle = (props) => {
           <tbody>
           <tr>
             <td><strong>Battles Per Master</strong></td>
-            <td><strong className="increase-font-size">{calcBattlesForMaster(‘markOfMastery’)}</strong></td>
+            <td><strong className="increase-font-size">{calcBattlesForMaster('markOfMastery')}</strong></td>
             <td>1</td>
           </tr>
           <tr>
             <td><strong>Battles Per Master I</strong></td>
-            <td><strong className="increase-font-size">{calcBattlesForMaster(‘markOfMasteryI’)}</strong></td>
+            <td><strong className="increase-font-size">{calcBattlesForMaster('markOfMasteryI')}</strong></td>
             <td>2</td>
           </tr>
           <tr>
             <td><strong>Battles Per Master II</strong></td>
-            <td><strong className="increase-font-size">{calcBattlesForMaster(‘markOfMasteryII’)}</strong></td>
+            <td><strong className="increase-font-size">{calcBattlesForMaster('markOfMasteryII')}</strong></td>
             <td>2</td>
           </tr>
           <tr>
             <td><strong>Battles Per Master III</strong></td>
-            <td><strong className="increase-font-size">{calcBattlesForMaster(‘markOfMasteryIII’)}</strong></td>
+            <td><strong className="increase-font-size">{calcBattlesForMaster('markOfMasteryIII')}</strong></td>
             <td>2</td>
           </tr>
           </tbody>
@@ -113,79 +111,21 @@ const BattleStyle = (props) => {
       </CardBody>
 
       <CardBody>
-        <div className="chart-container">
-          <Line
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
-                },
-              },
-              maintainAspectRatio: false,
-              scales: {
-                xAxis: {
-                  ticks: {
-                    maxTicksLimit: 10,
-                    autoSkip: true,
-                  },
-                },
-              },
-            }}
-            data={{
-              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
-              datasets: [
-                {
-                  label: 'Frags Rate',
-                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.frags / stats.battles).toFixed(2)),
-                  borderColor: 'rgb(255, 99, 132)',
-                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-                {
-                  label: 'Spotted Rate',
-                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => (stats.spotted / stats.battles).toFixed(2)),
-                  borderColor: 'rgb(53, 162, 235)',
-                  backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                },
-              ],
-            }}
-          />
-        </div>
+
       </CardBody>
 
       <CardBody>
-        <div className="chart-container">
-          <Line
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
-                },
-              },
-              maintainAspectRatio: false,
-              scales: {
-                xAxis: {
-                  ticks: {
-                    maxTicksLimit: 10,
-                    autoSkip: true,
-                  },
-                },
-              },
-            }}
-            data={{
-              labels: Object.keys(props.filteredStats.dataForCharts).map((key) => key),
-              datasets: [
-                {
-                  label: 'Survival Rate',
-                  data: Object.values(props.filteredStats.dataForCharts).map((stats) => ((stats.survivedBattles / stats.battles) * 100).toFixed(2)),
-                  borderColor: 'rgb(255, 99, 132)',
-                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                },
-              ],
-            }}
-          />
-        </div>
+        <LineChart
+          labels={Object.keys(props.filteredStats.dataForCharts).map((key) => key)}
+          datasets={[
+            {
+              label: 'Survival Rate',
+              data: Object.values(props.filteredStats.dataForCharts).map((stats) => ((stats.survivedBattles / stats.battles) * 100).toFixed(2)),
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            }
+          ]}
+        />
       </CardBody>
     </Card>
   );
