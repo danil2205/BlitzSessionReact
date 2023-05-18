@@ -14,27 +14,54 @@ const Hangar = (props) => {
   const { accountId } = useParams();
   const navigate = useNavigate();
   const [playerStats, setPlayerStats] = useState(props.tanksStats);
-  const [statsForFilter, setStatsForFilter] = useState([]);
   const [statsFromFilter, setStatsFromFilter] = useState([]);
   const [isSortDesc, setSortDesc] = useState(false);
   const [lastSortCol, setLastSortCol] = useState('');
 
+  const calcStats = (tankStats) => {
+    const lastSnapshot = tankStats.snapshots.at(-1);
+
+    const winrate = ((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2);
+    const avgDmg = ~~(lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles);
+    const coefFrag = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
+    const percentRemainHP = ((1 - (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles) / tankStats.hp) * 100).toFixed(2)
+    const battlesForMaster = ~~(lastSnapshot.regular.battles / lastSnapshot.mastery.markOfMastery);
+    const avgTimeInBattle = lastSnapshot.battleLifeTime / lastSnapshot.regular.battles;
+
+    return {
+      name: tankStats.name,
+      tier: tankStats.tier,
+      lastBattleTime: lastSnapshot.lastBattleTime,
+      battles: lastSnapshot.regular.battles,
+      winrate,
+      avgDmg,
+      coefFrag,
+      percentRemainHP,
+      battlesForMaster,
+      avgTimeInBattle,
+    };
+  };
+
   const sortStats = (stats, col) => {
+    const filteredBadStats = stats.filter((tank) => tank.name);
     if (col === '') {
       setPlayerStats({
         status: 'ok',
-        data: stats,
+        data: filteredBadStats,
       });
       return;
     }
 
-    const data = stats.sort((tank1, tank2) => {
+    const data = filteredBadStats.sort((tank1, tank2) => {
+      const tank1Stats = calcStats(tank1);
+      const tank2Stats = calcStats(tank2);
+
       if (col === 'name') {
-        if (isSortDesc) return tank2[col].localeCompare(tank1[col])
-        else return tank1[col].localeCompare(tank2[col])
+        if (isSortDesc) return tank2Stats[col].localeCompare(tank1Stats[col])
+        else return tank1Stats[col].localeCompare(tank2Stats[col])
       } else {
-        if (isSortDesc) return tank2[col] - tank1[col]
-        else return tank1[col] - tank2[col]
+        if (isSortDesc) return tank2Stats[col] - tank1Stats[col]
+        else return tank1Stats[col] - tank2Stats[col]
       }
     });
 
@@ -64,7 +91,6 @@ const Hangar = (props) => {
       props.postTankStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
       setPlayerStats(stats);
-      setStatsForFilter(stats);
       props.setTanksStatsData(stats);
     })();
   }, [accountId]);
@@ -91,10 +117,9 @@ const Hangar = (props) => {
           </Stack>
         </Col>
         <Col>
-          <Filter
-            setPlayerStats={setPlayerStats}
-            statsForFilter={statsForFilter}
-            setStatsFromFilter={setStatsFromFilter}
+          <Filter setPlayerStats={setPlayerStats}
+                  hangarStats={props.tanksStats}
+                  setStatsFromFilter={setStatsFromFilter}
           />
         </Col>
       </Row>
@@ -131,12 +156,18 @@ const Hangar = (props) => {
                 <Label onClick={() => setFlagsForSort('battlesForMaster')}>Battles for Master</Label>
               </th>
               <th>
-                <Label onClick={() => setFlagsForSort('avgTimeInBattleForSort')}>Average Life Time</Label>
+                <Label onClick={() => setFlagsForSort('avgTimeInBattle')}>Average Life Time</Label>
               </th>
             </tr>
             </thead>
             <tbody>
-            {[...playerStats.data].map((accountTank) => {
+            {[...playerStats.data].filter((tankStats) => tankStats.name).map((accountTank) => {
+              const stats = calcStats(accountTank);
+              const avgTimeInBattle = (
+                Math.floor(stats.avgTimeInBattle / 60) < 7
+                ? `${Math.floor(stats.avgTimeInBattle / 60)}m ${~~(stats.avgTimeInBattle % 60)}s`
+                : '~ 7m'
+                );
               return (
                 <tr key={accountTank.tank_id}>
                   <td>
@@ -159,14 +190,18 @@ const Hangar = (props) => {
                       {accountTank.isPremium === true && <StarFill size={1} color="Orange" />}
                     </Stack>
                   </td>
-                  <td>{new Date(accountTank.lastBattleTime * 1000).toLocaleDateString()}</td>
-                  <td>{accountTank.battles}</td>
-                  <td>{`${accountTank.winrate}%`}</td>
-                  <td>{accountTank.avgDmg}</td>
-                  <td>{accountTank.coefFrag}</td>
-                  <td>{accountTank.percentRemainHP[0] === '-' ? '0.00%' : `${accountTank.percentRemainHP}%`}</td>
-                  <td>{accountTank.battlesForMaster === 0 ? '-' : accountTank.battlesForMaster}</td>
-                  <td>{accountTank.avgTimeInBattle}</td>
+                  <td>{new Date(stats.lastBattleTime * 1000).toLocaleDateString()}</td>
+                  <td>{stats.battles}</td>
+                  <td>{`${stats.winrate}%`}</td>
+                  <td>{stats.avgDmg}</td>
+                  <td>{stats.coefFrag}</td>
+                  <td>{
+                     stats.percentRemainHP === '-' ?
+                     '0.00%' :
+                      `${stats.percentRemainHP}%`
+                   }</td>
+                  <td>{stats.battlesForMaster === 0 ? '-' : stats.battlesForMaster }</td>
+                  <td>{avgTimeInBattle}</td>
                 </tr>
               )
             })}

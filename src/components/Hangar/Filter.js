@@ -18,82 +18,102 @@ export const Filter = (props) => {
   const [filterValues, setFilterValues] = useState({ timeRange: '1w', battles: 0 });
 
   useEffect(() => {
-    if (props.accountStats.data) filterStatsForCard(filterValues);
-  }, [props.accountStats])
+    if (props.tanksStatsForCard) setStatsForCards();
+  }, [props.tanksStatsForCard, filterValues]);
 
-  const filterStats = (filterValues) => {
-    const filteredStats = props.statsForFilter.data.filter((tankStats) => filterTankStats(tankStats, filterValues));
-    if (filteredStats.length && filterValues) props.setStatsFromFilter(filteredStats);
-    else {
-      props.setPlayerStats({
+  useEffect(() => {
+    if (props.hangarStats && props.hangarStats.data) {
+      const filteredStats = props.hangarStats.data.filter((tankStats) => filterHangarStats(tankStats));
+      if (filteredStats.length) props.setStatsFromFilter(filteredStats);
+      else props.setPlayerStats({
         status: 'ok',
-        data: [],
-      });
+        data: filteredStats,
+      })
     }
+  }, [filterValues]);
+
+  const filterHangarStats = (tankStats) => {
+    const lastSnapshot = tankStats.snapshots.at(-1)
+
+    const isTierFiltered = filterValues.tier?.length ? filterValues.tier.includes(tankStats.tier) : true;
+    const isTypeFiltered = filterValues.type?.length ? filterValues.type.includes(tankStats.type) : true;
+    const isBattleFiltered = filterValues.battles ? lastSnapshot.regular.battles > filterValues.battles : true;
+
+    return isTierFiltered && isTypeFiltered && isBattleFiltered;
   };
 
   const filterTankStats = (tankStats, filterValues) => {
     const isTierFiltered = filterValues.tier?.length ? filterValues.tier.includes(tankStats.tier) : true;
     const isTypeFiltered = filterValues.type?.length ? filterValues.type.includes(tankStats.type) : true;
-    const isTimeRangeFiltered = tankStats.snapshots.map((snapshot) => timeRange[filterValues.timeRange] < snapshot.lastBattleTime * 1000);
+    const isTimeRangeFiltered = filterValues.timeRange !== 'all' ?
+      tankStats.snapshots.map((snapshot) => timeRange[filterValues.timeRange] < snapshot.lastBattleTime * 1000) :
+      true;
     return tankStats.snapshots.length > 1 && isTierFiltered && isTypeFiltered && isTimeRangeFiltered;
   };
 
-  const filterStatsForCard = (filterValues) => {
-    if (filterValues.timeRange === 'all') {
-      const lastSnapshot = props.accountStats.data.snapshots.at(-1)
-      props.setFilteredAccountStats(lastSnapshot);
-      return;
-    }
+  const getStatsForDay = (allStats) => {
+    const statsForDay = allStats.snapshots.slice(1).map((snapshot, index) => {
+      const prevSnapshot = allStats.snapshots[index];
+      const regular = Object.fromEntries(
+        Object.entries(snapshot.regular)
+          .map(([key, value]) => [key, value - prevSnapshot.regular[key]])
+      );
+      return { ...snapshot, regular };
+    }).filter((snapshot) => snapshot != null);
 
-    const filteredDate = new Date(timeRange[filterValues.timeRange]).toLocaleDateString();
-    const filteredStats = props.tanksStats.data.filter((tankStats) => filterTankStats(tankStats, filterValues))
+    return statsForDay;
+  };
 
-    const allData = filteredStats.map((tankStats) => {
-      const snapshots = tankStats.snapshots.slice(1).map((snapshot, snapshotIndex) => {
-        const prevSnapshot = tankStats.snapshots[snapshotIndex];
-        const regular = Object.fromEntries(
-          Object.entries(snapshot.regular)
-            .map(([key, value]) => [key, value - prevSnapshot.regular[key]])
-        );
-        return { ...snapshot, regular };
-      }).filter((snapshot) => snapshot != null);
-      return { ...tankStats, snapshots };
-    });
-    console.log(allData)
-
-    const allSnapshots = allData.flatMap((tankStats) => tankStats.snapshots);
-    const dataForTables = allSnapshots.reduce((acc, snapshot) => {
+  const getStatsForTable = (snapshots) => {
+    const statsForTable = snapshots.reduce((acc, snapshot) => {
       Object.entries(snapshot.regular).map(([key, value]) => {
         acc[key] = (acc[key] || 0) + value;
       });
       return acc;
-      }, {});
+    }, {});
 
-    const dataForCharts = {};
-    allSnapshots.map((snapshot) => {
+    return statsForTable;
+  };
+
+  const getStatsForCharts = (snapshots) => {
+    const statsForCharts = {};
+    snapshots.map((snapshot) => {
       snapshot.lastBattleTime = new Date(snapshot.lastBattleTime * 1000).toLocaleDateString();
-      if (!dataForCharts[snapshot.lastBattleTime]) {
-        dataForCharts[snapshot.lastBattleTime] = { ...snapshot.regular };
+      if (!statsForCharts[snapshot.lastBattleTime]) {
+        statsForCharts[snapshot.lastBattleTime] = { ...snapshot.regular };
       } else {
         for (const key in snapshot.regular) {
-          dataForCharts[snapshot.lastBattleTime][key] += snapshot.regular[key];
+          statsForCharts[snapshot.lastBattleTime][key] += snapshot.regular[key];
         }
       }
     });
+
+    return statsForCharts;
+  };
+
+  const setStatsForCards = () => {
+    const isTimeRangeSelected = filterValues.timeRange === 'all';
+    const statsForDay = props.tanksStatsForCard.data
+      .filter((tankStats) => filterTankStats(tankStats, filterValues))
+      .flatMap((tankStats) => getStatsForDay(tankStats));
+
+    const dataForTables = getStatsForTable(statsForDay);
+    const dataForCharts = getStatsForCharts(statsForDay);
+
+    const filteredDate = isTimeRangeSelected ?
+        Object.keys(dataForCharts)[0] :
+        new Date(timeRange[filterValues.timeRange]).toLocaleDateString();
 
     props.setFilteredAccountStats({ filteredDate, dataForTables, dataForCharts });
   };
 
   return (
     <div className='filter-container'>
-      { (
+      {props.tanksStatsForCard && (
         <div>
           <Form.Select onChange={(event) => {
             const data = { ...filterValues, timeRange: event.target.value };
             setFilterValues(data);
-            filterStatsForCard(data);
-            // if (props.statsForFilter) filterStats(data);
           }}>
             <option value="1w">1 week</option>
             <option value="2w">2 weeks</option>
@@ -106,25 +126,22 @@ export const Filter = (props) => {
         </div>
       )}
 
-      <div>
+      {!props.tanksStatsForCard && <div>
         <Form.Select onChange={(event) => {
           const data = { ...filterValues, battles: +event.target.value };
           setFilterValues(data);
-          filterStatsForCard(data);
-          // filterStats(data);
         }}>
           <option value="0">All Battles</option>
           <option value="100">>100 Battles</option>
           <option value="250">>250 Battles</option>
         </Form.Select>
       </div>
+      }
 
       <div>
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, tier: event };
           setFilterValues(data);
-          filterStatsForCard(data);
-          // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-3" value={3} variant="outline-secondary">
             <span className="filter-tank-tier">{'<'}III</span>
@@ -157,8 +174,6 @@ export const Filter = (props) => {
         <ToggleButtonGroup type="checkbox" onChange={(event) => {
           const data = { ...filterValues, type: event };
           setFilterValues(data);
-          filterStatsForCard(data);
-          // filterStats(data);
         }}>
           <ToggleButton id="tbg-btn-at" value={'AT-SPG'} variant="outline-secondary">
             <img src={TdTankIcon} alt="AT-SPG" width="20" height="20" />
