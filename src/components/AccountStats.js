@@ -34,7 +34,7 @@ const Dropdown = (props) => {
   );
 }
 
-const TempAccount = (props) => {
+const AccountStats = (props) => {
   const [accountId, setAccountId] = useState('');
   const [filteredAccountStats, setFilteredAccountStats] = useState(undefined);
 
@@ -81,4 +81,4 @@ const TempAccount = (props) => {
   );
 };
 
-export default TempAccount;
+export default AccountStats;

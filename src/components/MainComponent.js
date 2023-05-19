@@ -27,7 +27,7 @@ import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
 import SearchPlayer from './Hangar/SearchComponent';
 import Widget from './WidgetComponent.js';
-import TempAccount from './TempAccountComponent';
+import TempAccount from './AccountStats';
 import { actions } from 'react-redux-form';
 
 const withRouter = (Component) => {
