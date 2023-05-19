@@ -192,11 +192,11 @@ const Hangar = (props) => {
                   </td>
                   <td>{new Date(stats.lastBattleTime * 1000).toLocaleDateString()}</td>
                   <td>{stats.battles}</td>
-                  <td>{`${stats.winrate}%`}</td>
+                  <td>{`${isNaN(stats.winrate) ? 0 : stats.winrate }%`}</td>
                   <td>{stats.avgDmg}</td>
-                  <td>{stats.coefFrag}</td>
+                  <td>{isNaN(stats.coefFrag) ? 0 : stats.coefFrag}</td>
                   <td>{
-                     stats.percentRemainHP === '-' ?
+                     stats.percentRemainHP[0] === '-' || isNaN(stats.percentRemainHP) ?
                      '0.00%' :
                       `${stats.percentRemainHP}%`
                    }</td>
