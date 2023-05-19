@@ -4,7 +4,7 @@ import LineChart from '../Charts/LineChart';
 import BarChart from '../Charts/BarChart';
 
 const Wins = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats.data;
+  const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
   const { dataForTables, dataForCharts } = props.filteredStats;
 

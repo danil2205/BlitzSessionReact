@@ -79,9 +79,7 @@ export const Filter = (props) => {
   const getStatsForCharts = (snapshots) => {
     const statsForCharts = snapshots.reduce((result, snapshot) => {
       const lastBattleTime = new Date(snapshot.lastBattleTime * 1000).toLocaleDateString();
-      if (!result[lastBattleTime]) {
-        result[lastBattleTime] = { ...snapshot.regular };
-      } else {
+        result[lastBattleTime] = result[lastBattleTime] || { ...snapshot.regular };
         for (const key in snapshot.regular) {
           result[lastBattleTime][key] = (result[lastBattleTime][key] || 0) + snapshot.regular[key];
         }

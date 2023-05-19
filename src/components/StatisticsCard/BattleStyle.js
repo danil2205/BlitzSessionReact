@@ -3,9 +3,9 @@ import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
 
 const BattleStyle = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats?.data;
+  const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
-  const dataForTables = props.filteredStats.dataForTables;
+  const { dataForTables } = props.filteredStats;
 
   const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
   const fragsRateFiltered = dataForTables?.battles ? (dataForTables.frags / dataForTables.battles).toFixed(2) : '-';

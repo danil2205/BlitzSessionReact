@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
 
 const Damage = (props) => {
-  const stats = props.accountStats ? props.accountStats.data : props.tankStatsCard;
+  const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
   const { dataForTables, dataForCharts } = props.filteredStats;
 

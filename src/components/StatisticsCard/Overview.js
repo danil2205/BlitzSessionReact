@@ -5,7 +5,7 @@ import { Card, CardHeader, CardBody, CardImg } from 'reactstrap';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Legend, Tooltip);
 
 const OverviewCard = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats.data;
+  const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
   const winRate = (lastSnapshot.regular.wins / lastSnapshot.regular.battles).toFixed(2);
 

@@ -3,9 +3,9 @@ import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import BarChart from '../Charts/BarChart';
 
 const Battles = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats?.data;
+  const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
-  const dataForTables = props.filteredStats.dataForTables;
+  const { dataForTables } = props.filteredStats;
 
   const creationDate = new Date(stats.createdAt * 1000);
 
