@@ -77,26 +77,27 @@ export const Filter = (props) => {
   };
 
   const getStatsForCharts = (snapshots) => {
-    const statsForCharts = {};
-    snapshots.map((snapshot) => {
-      snapshot.lastBattleTime = new Date(snapshot.lastBattleTime * 1000).toLocaleDateString();
-      if (!statsForCharts[snapshot.lastBattleTime]) {
-        statsForCharts[snapshot.lastBattleTime] = { ...snapshot.regular };
+    const statsForCharts = snapshots.reduce((result, snapshot) => {
+      const lastBattleTime = new Date(snapshot.lastBattleTime * 1000).toLocaleDateString();
+      if (!result[lastBattleTime]) {
+        result[lastBattleTime] = { ...snapshot.regular };
       } else {
         for (const key in snapshot.regular) {
-          statsForCharts[snapshot.lastBattleTime][key] += snapshot.regular[key];
+          result[lastBattleTime][key] = (result[lastBattleTime][key] || 0) + snapshot.regular[key];
         }
       }
-    });
 
-    return statsForCharts;
+      return result;
+    }, {});
+
+    const sortedStatsForCharts = Object.fromEntries(Object.entries(statsForCharts).sort());
+
+    return sortedStatsForCharts;
   };
 
   const setStatsForCards = () => {
     const isTimeRangeSelected = filterValues.timeRange === 'all';
-    const statsForCard = stats?.data ? stats.data : new Array(stats);
-
-    const statsForDay = statsForCard
+    const statsForDay = (stats?.data || [stats])
       .filter((tankStats) => filterTankStats(tankStats, filterValues))
       .flatMap((tankStats) => getStatsForDay(tankStats));
 
