@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,8 +11,9 @@ import {
 import { Link } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import { Loading } from './LoadingComponent.js';
-import { playerStatsURL }  from '../shared/wargaming.js';
 import { InitialWidgetSettings } from '../redux/forms.js';
+import { expressURL } from '../shared/expressURL';
+import { playerStatsURL } from '../shared/wargaming';
 
 const stopAllTimeouts = () => {
   const timeout = setTimeout(() => {
@@ -20,209 +21,161 @@ const stopAllTimeouts = () => {
   });
 };
 
-class Dropdown extends Component {
-  constructor(props) {
-    super(props);
+const Dropdown = (props) => {
+  const [nickname, setNickname] = useState('');
+  const [dropdown, setDropdown] = useState(false)
 
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.state = {
-      dropdownOpen: false,
-    };
-  }
-
-  toggleDropdown() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
-  }
-
-  render() {
-    if (!this.props.accounts[0]) return <div></div>;
-    return (
-      <div className='dropdown'>
-        <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-          <DropdownToggle caret className='primary-button'>
-            {this.props.session[0]?.inGameNickname || this.props.dropdown}
-          </DropdownToggle>
-          <DropdownMenu>
-            {this.props.accounts[0].userAccounts.map((account, index) => (
-
-              <DropdownItem key={index} onClick={(e) => {
-                stopAllTimeouts();
-                this.props.startPlayerSession(e.target.textContent.trim());
-              }}>
-                <IoIcons.IoMdPerson /> {account.nickname}
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </ButtonDropdown>
-      </div>
-    );
-  }
+  if (!props.accounts[0]) return <div></div>;
+  return (
+    <div className='dropdown' style={{marginLeft: '40px'}}>
+      <ButtonDropdown isOpen={dropdown} toggle={() => setDropdown(!dropdown)}>
+        <DropdownToggle caret className='primary-button'>{nickname || 'Choose nickname'}
+        </DropdownToggle>
+        <DropdownMenu>
+          {props.accounts[0].userAccounts.map((account, index) => (
+            <DropdownItem key={index} onClick={() => {
+              setNickname(account.nickname);
+              props.setAccountId(account.account_id);
+            }}>
+              <IoIcons.IoMdPerson /> {account.nickname}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      </ButtonDropdown>
+    </div>
+  );
 }
 
-class Session extends Component  {
-  constructor(props) {
-    super(props);
+const Session = (props) => {
+  const [accountId, setAccountId] = useState('');
+  const [stats, setStats] = useState('');
+  const [sessionStats, setSessionStats] = useState({});
 
-    this.state = {
-      dropdown: 'Choose account',
-      sessionStats: {
-        sessionBattles: null,
-        sessionDamage: null,
-        sessionWinRate: null,
-      },
-    };
-  }
+  useEffect(() => {
+    return () => {
+      stopAllTimeouts();
+    }
+  }, [])
 
-  async componentDidMount() {
-    const nickname = this.props.session[0]?.inGameNickname;
-    if (nickname) await this.startPlayerSession(nickname); // works only if user came from another tab
-  }
+  useEffect(() => {
+    (async () => {
+      stopAllTimeouts();
+      if (accountId) await getPlayerStats(accountId);
+    })()
+  }, [accountId, props.accountStats]);
 
-  componentWillUnmount() {
-    const clearAllTimeouts = setTimeout(() => {
-      for (let id = 1; id <= clearAllTimeouts; id++) window.clearTimeout(id);
-    });
-  }
+  useEffect(() => {
+    if (stats) startPlayerSession();
+  }, [stats])
 
-  startPlayerSession = async (nickname) => {
-    const sessionInfo = this.props.session[0];
-    const playerInfo = await this.getPlayerStats(nickname);
-    await this.getSessionStats(nickname);
-    this.setState({ dropdown: nickname });
-
-    if (sessionInfo?.inGameNickname === nickname) return;
-    this.props.postSessionData({
-      inGameNickname: nickname,
-      account_id: this.getAccountId(nickname),
-      battles: playerInfo.currBattles,
-      damage: playerInfo.currDamage,
-      wins: playerInfo.currWins,
-    });
+  const getPlayerStats = async (accountId) => {
+    const stats = await fetch(`${expressURL}accounts/${accountId}`).then((res) => res.json());
+    const lastSnapshot = stats.data.snapshots.at(-1);
+    setStats(lastSnapshot);
   };
 
-  clearPlayerSession = async (nickname) => {
-    const playerInfo = await this.getPlayerStats(nickname);
-    await this.getSessionStats(nickname);
+  const startPlayerSession = () => {
+    setInterval(async () => {
+      const res = await fetch(playerStatsURL(accountId)).then((res) => res.json());
+      const playerStats = res.data[accountId]?.statistics;
+      console.log(stats)
 
-    this.props.postSessionData({
-      battles: playerInfo.currBattles,
-      damage: playerInfo.currDamage,
-      wins: playerInfo.currWins,
-    });
+      const currBattles = playerStats?.all.battles + playerStats?.rating.battles || 0;
+      const currDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt || 0;
+      const currWins = playerStats?.all.wins + playerStats?.rating.wins || 0;
+
+      const oldBattles = stats.regular.battles + stats.rating?.battles || 0;
+      const oldDamage = stats.regular.damageDealt + stats.rating?.damageDealt || 0;
+      const oldWins = stats.regular.wins + stats.rating?.wins || 0;
+
+      setSessionStats({
+        battles: currBattles - oldBattles,
+        damage: currDamage - oldDamage,
+        wins:  currWins - oldWins,
+      });
+    }, 10000);
   };
 
-  handleSessionStats = (sessionStats) => {
-    this.setState({
-      sessionStats: { ...sessionStats },
-    });
-  };
-
-  getAccountId = (nickname) => {
-    const userAccounts = this.props.accounts[0].userAccounts;
-    return userAccounts.find((account) => account.nickname === nickname).account_id;
-  };
-
-  getPlayerStats = async (nickname) => {
-    const account_id = this.getAccountId(nickname);
-    const res = await fetch(playerStatsURL(account_id))
-      .then((res) => res.json());
-    const playerStats = res.data[account_id]?.statistics;
-    const currBattles = playerStats?.all.battles + playerStats?.rating.battles || 0;
-    const currDamage = playerStats?.all.damage_dealt + playerStats?.rating.damage_dealt || 0;
-    const currWins = playerStats?.all.wins + playerStats?.rating.wins || 0;
-
-    return { currBattles, currDamage, currWins };
-  };
-
-  getSessionStats = (nickname) => {
-    setTimeout(async () => {
-      const { currBattles, currDamage, currWins } = await this.getPlayerStats(nickname);
-      const { battles, damage, wins } = this.props.session[0];
-      const sessionBattles = currBattles - battles;
-      const sessionDamage = (((currDamage - damage) / sessionBattles) || 0).toFixed(0);
-      const sessionWinRate = (((currWins - wins) / sessionBattles) * 100 || 0).toFixed(2);
-
-      this.handleSessionStats({ sessionBattles, sessionDamage, sessionWinRate });
-      this.getSessionStats(nickname);
-    }, 5000);
-  };
-
-  getWidgetSettings = () => {
-    if (this.props.settings[0]) return this.props.settings.at(-1);
+  const getWidgetSettings = () => {
+    if (props.settings[0]) return props.settings.at(-1);
     return InitialWidgetSettings;
   };
 
-  render() {
-    if (this.props.isLoading) {
-      return (
-        <div className='container'>
-          <div className='row'>
-            <Loading />
-          </div>
-        </div>
-      );
-    }
-    if (this.props.errMess) {
-      return (
-        <div className='container'>
-          <div className='row'>
-            <h2 className='text-center'>{'Oops... Something went wrong. Log in before access this tab or refresh page'}</h2>
-          </div>
-        </div>
-      );
-    }
-
-    if (!this.props.accounts[0]) return <div><h3 style={{ textAlign: 'center' }}>Add Account in tab Accounts</h3></div>;
-    const widgetSettings = this.getWidgetSettings();
+  if (props.isLoading) {
     return (
       <div className='container'>
-        <div className='content'>
-          <div className='row'>
-            <Breadcrumb>
-              <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
-              <BreadcrumbItem active>Session</BreadcrumbItem>
-            </Breadcrumb>
-            <div className='col-12'>
-              <h3>Session</h3>
-              <hr />
-            </div>
-          </div>
-          <div className='session-buttons'>
-            <Dropdown accounts={this.props.accounts}
-                      dropdown={this.state.dropdown}
-                      session={this.props.session}
-                      startPlayerSession={this.startPlayerSession}
-            />
-            <Link to='/session/configure-widget' className='primary-button'>Configure Widget</Link>
-          </div>
-          <div className='user-information' style={{
-            flexDirection: widgetSettings.alignment,
-            backgroundColor: widgetSettings.backgroundColor,
-            color: widgetSettings.textColor,
-            fontSize: widgetSettings.fontSize + 'px'
-          }}>
-            <div className='battles'>
-              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.battleText}: {this.state.sessionStats.sessionBattles}</span>
-            </div>
-            <div className='damage'>
-              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.damageText}: {this.state.sessionStats.sessionDamage}</span>
-            </div>
-            <div className='winrate'>
-              <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.winrateText}: {this.state.sessionStats.sessionWinRate}%</span>
-            </div>
-          </div>
-          <div className='reset-button'>
-            <Button className='primary-button' onClick={async () => {
-              stopAllTimeouts();
-              await this.clearPlayerSession(this.props.session[0].inGameNickname);
-            }}>Reset Stats</Button>
-          </div>
+        <div className='row'>
+          <Loading />
         </div>
       </div>
     );
   }
+  if (props.errMess) {
+    return (
+      <div className='container'>
+        <div className='row'>
+          <h2 className='text-center'>{'Oops... Something went wrong. Log in before access this tab or refresh page'}</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!props.accounts[0]) return <div><h3 style={{ textAlign: 'center' }}>Add Account in tab Accounts</h3></div>;
+  const widgetSettings = getWidgetSettings();
+  return (
+    <div className='container'>
+      <div className='content'>
+        <div className='row'>
+          <Breadcrumb>
+            <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
+            <BreadcrumbItem active>Session</BreadcrumbItem>
+          </Breadcrumb>
+          <div className='col-12'>
+            <h3>Session</h3>
+            <hr />
+          </div>
+        </div>
+        <div className='session-buttons'>
+          <Dropdown accounts={props.accounts}
+                    session={props.session}
+                    setAccountId={setAccountId}
+          />
+          <Link to='/session/configure-widget' className='primary-button'>Configure Widget</Link>
+        </div>
+        <div className='user-information' style={{
+          flexDirection: widgetSettings.alignment,
+          backgroundColor: widgetSettings.backgroundColor,
+          color: widgetSettings.textColor,
+          fontSize: widgetSettings.fontSize + 'px'
+        }}>
+          <div className='battles'>
+            <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.battleText}: {sessionStats.battles}</span>
+          </div>
+          <div className='damage'>
+            <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.damageText}: {
+              isNaN((sessionStats.damage / sessionStats.battles).toFixed(0)) ?
+              0 :
+              (sessionStats.damage / sessionStats.battles).toFixed(0)
+            }</span>
+          </div>
+          <div className='winrate'>
+            <span style={{ fontFamily: widgetSettings.fontFamily }}>{widgetSettings.winrateText}: {
+              isNaN(((sessionStats.wins / sessionStats.battles)*100).toFixed(2)) ?
+                0 :
+                ((sessionStats.wins / sessionStats.battles)*100).toFixed(2)
+            }%</span>
+          </div>
+        </div>
+        <div className='reset-button'>
+          <Button className='primary-button' onClick={async () => {
+            props.postAccountStats(accountId);
+            stopAllTimeouts();
+            await getPlayerStats(accountId);
+          }}>Reset Stats</Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Session;
