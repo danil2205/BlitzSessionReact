@@ -4,7 +4,8 @@ import LineChart from '../Charts/LineChart';
 import BarChart from '../Charts/BarChart';
 
 const Wins = (props) => {
-  const lastSnapshot = props.tankStats.data.snapshots.at(-1);
+  const stats = props.tankStatsCard || props.accountStats?.data;
+  const lastSnapshot = stats.snapshots.at(-1);
   const { dataForTables, dataForCharts } = props.filteredStats;
 
   const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;

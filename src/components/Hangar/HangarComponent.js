@@ -86,7 +86,7 @@ const Hangar = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (props.tanksStats?.data && props.tanksStats?.account_id === accountId) return;
+      if (props.tanksStats?.data && props.tanksStats?.account_id === Number(accountId)) return;
       props.postAccountStats(accountId);
       props.postTankStats(accountId);
       const stats = await fetch(`${expressURL}tanks/${accountId}`).then((res) => res.json());
@@ -192,11 +192,11 @@ const Hangar = (props) => {
                   </td>
                   <td>{new Date(stats.lastBattleTime * 1000).toLocaleDateString()}</td>
                   <td>{stats.battles}</td>
-                  <td>{`${stats.winrate}%`}</td>
+                  <td>{`${isNaN(stats.winrate) ? 0 : stats.winrate }%`}</td>
                   <td>{stats.avgDmg}</td>
-                  <td>{stats.coefFrag}</td>
+                  <td>{isNaN(stats.coefFrag) ? 0 : stats.coefFrag}</td>
                   <td>{
-                     stats.percentRemainHP === '-' ?
+                     stats.percentRemainHP[0] === '-' || isNaN(stats.percentRemainHP) ?
                      '0.00%' :
                       `${stats.percentRemainHP}%`
                    }</td>

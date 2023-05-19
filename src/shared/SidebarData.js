@@ -17,8 +17,8 @@ export const SidebarData =
       cName: 'nav-text'
     },
     {
-      title: 'TempAccount',
-      path: '/tempAccount',
+      title: 'Account Stats',
+      path: '/accountStats',
       icons: <IoIcons.IoMdPerson />,
       cName: 'nav-text'
     },

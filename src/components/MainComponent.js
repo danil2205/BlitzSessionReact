@@ -27,7 +27,7 @@ import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
 import SearchPlayer from './Hangar/SearchComponent';
 import Widget from './WidgetComponent.js';
-import TempAccount from './TempAccountComponent';
+import TempAccount from './AccountStats';
 import { actions } from 'react-redux-form';
 
 const withRouter = (Component) => {
@@ -127,8 +127,9 @@ class Main extends Component {
                                                                   postAccountStats={this.props.postAccountStats}
                                                                   postTankStats={this.props.postTankStats} />} />
           <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
-                                                                            setTanksStatsData={this.props.setTanksStatsData} />} />
-          <Route exact path='/tempAccount' element={<TempAccount accounts={this.props.accounts.accounts}
+                                                                            setTanksStatsData={this.props.setTanksStatsData}
+                                                                            postTankStats={this.props.postTankStats} />} />
+          <Route exact path='/accountStats' element={<TempAccount accounts={this.props.accounts.accounts}
                                                                  accountStats={this.props.accountStats}
                                                                  tanksStats={this.props.tanksStats}
                                                                  postAccountStats={this.props.postAccountStats}

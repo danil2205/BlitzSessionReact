@@ -34,7 +34,7 @@ const Dropdown = (props) => {
   );
 }
 
-const TempAccount = (props) => {
+const AccountStats = (props) => {
   const [accountId, setAccountId] = useState('');
   const [filteredAccountStats, setFilteredAccountStats] = useState(undefined);
 
@@ -44,7 +44,6 @@ const TempAccount = (props) => {
       props.postTankStats(accountId);
     }
   }, [accountId])
-
 
   return (
     <div className='content'>
@@ -61,20 +60,20 @@ const TempAccount = (props) => {
           {props.tanksStats.data && <Filter setFilteredAccountStats={setFilteredAccountStats} tanksStatsForCard={props.tanksStats} />}
         </Col>
       </Row>
-      {props.tanksStats.data && filteredAccountStats &&
+      {props.accountStats.data && props.accountStats.data.name && filteredAccountStats &&
         <Row>
           <Col className='statistics-column'>
-            <OverviewCard tankStats={props.accountStats}/>
-            <Damage tanksStats={props.tanksStats} accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <OverviewCard accountStats={props.accountStats} />
+            <Damage accountStats={props.accountStats} filteredStats={filteredAccountStats} />
           </Col>
 
           <Col className="statistics-column">
-            <Wins tankStats={props.accountStats} filteredStats={filteredAccountStats} />
-            <Battles tankStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <Wins accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <Battles accountStats={props.accountStats} filteredStats={filteredAccountStats} />
           </Col>
 
           <Col className="statistics-column">
-            <BattleStyle tankStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <BattleStyle accountStats={props.accountStats} filteredStats={filteredAccountStats} />
           </Col>
         </Row>
       }
@@ -82,4 +81,4 @@ const TempAccount = (props) => {
   );
 };
 
-export default TempAccount;
+export default AccountStats;
