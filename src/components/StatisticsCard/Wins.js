@@ -4,12 +4,14 @@ import LineChart from '../Charts/LineChart';
 import BarChart from '../Charts/BarChart';
 
 const Wins = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats.data;
+  const stats = props.tankStatsCard || props.accountStats.data;
   const lastSnapshot = stats.snapshots.at(-1);
+  const serverStats = props.serverStats.serverStats.account.regular;
   const { dataForTables, dataForCharts } = props.filteredStats;
 
   const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;
   const winRateFiltered = dataForTables?.battles ? `${((dataForTables.wins / dataForTables.battles) * 100).toFixed(2)}%` : '-';
+  const winRateServer = `${((serverStats.wins / serverStats.battles) * 100).toFixed(2)}%`;
 
   const labelsForCharts = Object.keys(dataForCharts).map((key) => key);
 
@@ -44,21 +46,25 @@ const Wins = (props) => {
           <tbody>
             <tr>
               <td><strong>WinRate</strong></td>
-              <td><strong className="increase-font-size">{winRate}</strong></td>
-              <td>{winRateFiltered}</td>
-              <td>123</td>
+              <td className={winRateServer < winRate ? 'success-background': 'warning-background'}>
+                <strong className="increase-font-size">{winRate}</strong>
+              </td>
+              <td className={winRateServer < winRateFiltered ? 'success-background': 'warning-background'}>
+                {winRateFiltered}
+              </td>
+              <td>{winRateServer}</td>
             </tr>
             <tr>
               <td><strong>Wins</strong></td>
               <td><strong className="increase-font-size">{lastSnapshot.regular.wins}</strong></td>
               <td>{dataForTables.wins}</td>
-              <td>2</td>
+              <td>-</td>
             </tr>
             <tr>
               <td><strong>Loses</strong></td>
               <td><strong className="increase-font-size">{lastSnapshot.regular.losses}</strong></td>
               <td>{dataForTables.losses}</td>
-              <td>5</td>
+              <td>-</td>
             </tr>
           </tbody>
         </Table>

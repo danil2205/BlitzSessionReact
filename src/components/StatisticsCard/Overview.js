@@ -1,13 +1,28 @@
-import { useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, Filler, Legend, LineElement, PointElement, RadialLinearScale, Tooltip } from 'chart.js';
 import { Card, CardHeader, CardBody, CardImg } from 'reactstrap';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Legend, Tooltip);
 
 const OverviewCard = (props) => {
-  const stats = props.tankStatsCard ? props.tankStatsCard : props.accountStats.data;
+  const stats = props.tankStatsCard || props.accountStats.data;
+  const serverStats = props.serverStats.serverStats.account.regular;
   const lastSnapshot = stats.snapshots.at(-1);
-  const winRate = (lastSnapshot.regular.wins / lastSnapshot.regular.battles).toFixed(2);
+
+  const winRate = lastSnapshot.regular.wins / (lastSnapshot.regular.battles || 1);
+  const winRateServer = serverStats.wins / (serverStats.battles || 1);
+
+  const damageRate = lastSnapshot.regular.damageDealt / (lastSnapshot.regular.damageReceived || 1);
+  const damageRateServer = serverStats.damage_dealt / (serverStats.damage_received || 1);
+
+  const fragsRate = lastSnapshot.regular.frags / (lastSnapshot.regular.battles || 1);
+  const fragsRateServer = serverStats.frags / (serverStats.battles || 1);
+
+  const spotsRate = lastSnapshot.regular.spotted / (lastSnapshot.regular.battles || 1);
+  const spotsRateServer = serverStats.spotted / (serverStats.battles || 1);
+
+  const survivalRate = lastSnapshot.regular.survivedBattles / (lastSnapshot.regular.battles || 1);
+  const survivalRateServer = serverStats.survived_battles / (serverStats.battles || 1);
+
 
   return (
     <Card className='mb-3'>
@@ -42,13 +57,16 @@ const OverviewCard = (props) => {
                 'Frags rate',
                 'Spots rate',
                 'Survival rate',
-                'Remaining HP rate',
               ],
               datasets: [
                 {
                   label: 'Your Statistics',
                   data: [
-                    1.5, 2.2, 3.3, 4.4, 3.2, 1.2,
+                    winRate / winRateServer,
+                    damageRate / damageRateServer,
+                    fragsRate / fragsRateServer,
+                    spotsRate / spotsRateServer,
+                    survivalRate / survivalRateServer,
                   ],
                   borderColor: 'rgb(53, 162, 235)',
                   backgroundColor: 'rgba(53, 162, 235, 0.5)',
@@ -56,7 +74,7 @@ const OverviewCard = (props) => {
                 },
                 {
                   label: 'Statistics of the server',
-                  data: [1, 1, 1, 1, 1, 1],
+                  data: [1, 1, 1, 1, 1],
                   borderColor: 'rgb(255, 99, 132)',
                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
                   borderWidth: 1,

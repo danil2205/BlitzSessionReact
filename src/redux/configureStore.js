@@ -6,6 +6,7 @@ import { Auth } from './auth.js';
 import { Session } from './session.js';
 import { Tanks } from './tanks.js';
 import { AccountStats, TankStats } from './playerAndTankStats';
+import { ServerStats } from './serverStats';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { createForms } from 'react-redux-form';
@@ -22,6 +23,7 @@ export const ConfigureStore = () => {
       tanks: Tanks,
       tanksStats: TankStats,
       accountStats: AccountStats,
+      serverStats: ServerStats,
       ...createForms({
         feedback: InitialFeedback,
         widget: InitialWidgetSettings,
