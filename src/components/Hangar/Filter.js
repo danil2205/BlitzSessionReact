@@ -46,10 +46,16 @@ export const Filter = (props) => {
   const filterTankStats = (tankStats, filterValues) => {
     const isTierFiltered = filterValues.tier?.length ? filterValues.tier.includes(tankStats.tier) : true;
     const isTypeFiltered = filterValues.type?.length ? filterValues.type.includes(tankStats.type) : true;
-    const isTimeRangeFiltered = filterValues.timeRange !== 'all' ?
-      tankStats.snapshots.map((snapshot) => timeRange[filterValues.timeRange] < snapshot.lastBattleTime * 1000) :
-      true;
-    return tankStats.snapshots.length > 1 && isTierFiltered && isTypeFiltered && isTimeRangeFiltered;
+    return tankStats.snapshots.length > 1 && isTierFiltered && isTypeFiltered;
+  };
+
+  const filterStatsByTimeRange = (snapshots) => {
+    if (filterValues.timeRange === 'all') return snapshots;
+
+    return snapshots.filter((snapshot) => {
+      const correctTimeStamp = snapshot.lastBattleTime * 1000;
+      return timeRange[filterValues.timeRange] <= correctTimeStamp;
+    });
   };
 
   const getStatsForDay = (allStats) => {
@@ -101,8 +107,10 @@ export const Filter = (props) => {
       .filter((tankStats) => filterTankStats(tankStats, filterValues))
       .flatMap((tankStats) => getStatsForDay(tankStats));
 
-    const dataForTables = getStatsForTable(statsForDay);
-    const dataForCharts = getStatsForCharts(statsForDay);
+    const filteredStatsTimeRange = filterStatsByTimeRange(statsForDay);
+
+    const dataForTables = getStatsForTable(filteredStatsTimeRange);
+    const dataForCharts = getStatsForCharts(filteredStatsTimeRange);
 
     const filteredDate = isTimeRangeSelected ?
         Object.keys(dataForCharts)[0] :

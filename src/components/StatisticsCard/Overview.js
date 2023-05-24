@@ -30,7 +30,7 @@ const OverviewCard = (props) => {
         <h2>Overview</h2>
       </CardHeader>
 
-      {props.tankStats && props.tankStats.image && <CardImg className='tankStatsImg' variant='top' src={props.tankStats.image} />  }
+      {props.tankStatsCard && props.tankStatsCard.image && <CardImg className='tankStatsImg' variant='top' src={props.tankStatsCard.image} />  }
 
       <CardBody>
 

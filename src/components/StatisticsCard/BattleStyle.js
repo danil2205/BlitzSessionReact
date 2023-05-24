@@ -34,8 +34,6 @@ const BattleStyle = (props) => {
   const lastSnapshotBattles = calculateBattlesForMasters(lastSnapshot);
   const serverStatsBattles = calculateBattlesForMasters(serverStats);
 
-  console.log(lastSnapshotBattles)
-  console.log(serverStatsBattles)
   return (
     <Card className="mb-3">
       <CardHeader className="bg-metal">

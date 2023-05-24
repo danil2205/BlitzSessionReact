@@ -42,20 +42,20 @@ const TankStats = (props) => {
           {tankStats?.name && <Filter tankStatsCard={tankStats} setFilteredTankStats={setFilteredTankStats} />}
         </Col>
       </Row>
-      {tankStats?.name && filteredTankStats &&
+      {tankStats?.name && filteredTankStats && props.serverStats &&
       <Row>
         <Col className='statistics-column'>
-          <OverviewCard tankStatsCard={tankStats} filteredStats={filteredTankStats} />
-          <Damage tankStatsCard={tankStats} filteredStats={filteredTankStats} />
+          <OverviewCard tankStatsCard={tankStats} filteredStats={filteredTankStats} serverStats={props.serverStats} />
+          <Damage tankStatsCard={tankStats} filteredStats={filteredTankStats} serverStats={props.serverStats} />
         </Col>
 
         <Col className="statistics-column">
-          <Wins tankStatsCard={tankStats} filteredStats={filteredTankStats} />
-          <Battles tankStatsCard={tankStats} filteredStats={filteredTankStats} />
+          <Wins tankStatsCard={tankStats} filteredStats={filteredTankStats} serverStats={props.serverStats} />
+          <Battles tankStatsCard={tankStats} filteredStats={filteredTankStats} serverStats={props.serverStats} />
         </Col>
 
         <Col className="statistics-column">
-          <BattleStyle tankStatsCard={tankStats} filteredStats={filteredTankStats} />
+          <BattleStyle tankStatsCard={tankStats} filteredStats={filteredTankStats} serverStats={props.serverStats} />
         </Col>
       </Row>
       }
