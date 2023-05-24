@@ -1,20 +1,30 @@
 import { Card, CardHeader, CardBody, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
+import { useParams } from 'react-router-dom';
 
 const Damage = (props) => {
+  const { wotId } = useParams();
+  const isTankStatsCard = Boolean(props.tankStatsCard);
   const stats = props.tankStatsCard || props.accountStats?.data;
   const lastSnapshot = stats.snapshots.at(-1);
+  const serverStats = isTankStatsCard ?
+    props.serverStats.serverStats.tanks.find((tankStats) => tankStats.wotId === Number(wotId)).regular :
+    props.serverStats.serverStats.account.regular;
+
   const { dataForTables, dataForCharts } = props.filteredStats;
 
   const damageRatio = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.damageReceived).toFixed(3);
   const damageRatioFiltered = dataForTables?.battles ? (dataForTables.damageDealt / dataForTables.damageReceived).toFixed(3) : '-';
+  const damageRatioServer = (serverStats.damage_dealt / serverStats.damage_received).toFixed(3);
 
   const avgDamage = (lastSnapshot.regular.damageDealt / lastSnapshot.regular.battles).toFixed(0);
   const avgDamageFiltered = dataForTables?.battles ? (dataForTables.damageDealt / dataForTables.battles).toFixed(0) : '-';
+  const avgDamageServer = (serverStats.damage_dealt / serverStats.battles).toFixed(0);
 
   const avgDamageReceived = (lastSnapshot.regular.damageReceived / lastSnapshot.regular.battles).toFixed(0);
   const avgDamageReceivedFiltered = dataForTables?.battles ? (dataForTables.damageReceived / dataForTables.battles).toFixed(0) : '-';
+  const avgDamageReceivedServer = (serverStats.damage_received / serverStats.battles).toFixed(0);
 
   const labelsForCharts = Object.keys(dataForCharts).map((key) => key);
 
@@ -49,21 +59,33 @@ const Damage = (props) => {
           <tbody>
           <tr>
             <td><strong>Damage ratio</strong></td>
-            <td><strong className="increase-font-size">{damageRatio}</strong></td>
-            <td>{damageRatioFiltered}</td>
-            <td>123</td>
+            <td className={damageRatioServer < damageRatio ? 'success-background': 'warning-background'}>
+              <strong className="increase-font-size">{damageRatio}</strong>
+            </td>
+            <td className={damageRatioServer < damageRatioFiltered ? 'success-background': 'warning-background'}>
+              {damageRatioFiltered}
+            </td>
+            <td >{damageRatioServer}</td>
           </tr>
           <tr>
             <td><strong>Avg. damage</strong></td>
-            <td><strong className="increase-font-size">{avgDamage}</strong></td>
-            <td>{avgDamageFiltered}</td>
-            <td>2</td>
+            <td className={avgDamageServer < avgDamage ? 'success-background': 'warning-background'}>
+              <strong className="increase-font-size">{avgDamage}</strong>
+            </td>
+            <td className={avgDamageServer < avgDamageFiltered ? 'success-background': 'warning-background'}>
+              {avgDamageFiltered}
+            </td>
+            <td>{avgDamageServer}</td>
           </tr>
           <tr>
             <td><strong>Avg. damage received</strong></td>
-            <td><strong className="increase-font-size">{avgDamageReceived}</strong></td>
-            <td>{avgDamageReceivedFiltered}</td>
-            <td>5</td>
+            <td className={avgDamageReceivedServer < avgDamageReceived ? 'success-background': 'warning-background'}>
+              <strong className="increase-font-size">{avgDamageReceived}</strong>
+            </td>
+            <td className={avgDamageReceivedServer < avgDamageReceivedFiltered ? 'success-background': 'warning-background'}>
+              {avgDamageReceivedFiltered}
+            </td>
+            <td>{avgDamageReceivedServer}</td>
           </tr>
           {!props.accountStats && <tr>
             <td><strong>Tank HP</strong></td>

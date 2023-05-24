@@ -18,6 +18,7 @@ import {
   setTanksStatsData,
   postAccountStats,
   postTankStats,
+  getServerStatistic,
 } from '../redux/ActionCreators.js';
 import Accounts from './AccountComponent.js';
 import Hangar from './Hangar/HangarComponent.js';
@@ -27,7 +28,7 @@ import Navbar from './NavBar.js';
 import Session from './SessionComponent.js';
 import SearchPlayer from './Hangar/SearchComponent';
 import Widget from './WidgetComponent.js';
-import TempAccount from './AccountStats';
+import AccountStats from './AccountStats';
 import { actions } from 'react-redux-form';
 
 const withRouter = (Component) => {
@@ -55,7 +56,8 @@ const mapStateToProps = (state) => {
     session: state.session,
     tanks: state.tanks,
     tanksStats: state.tanksStats,
-    accountStats: state.accountStats
+    accountStats: state.accountStats,
+    serverStats: state.serverStats
   };
 };
 
@@ -76,7 +78,8 @@ const mapDispatchToProps = (dispatch) => ({
   getListOfTanks: () => {dispatch(getListOfTanks())},
   setTanksStatsData: (data) => {dispatch(setTanksStatsData(data))},
   postAccountStats: (account_id) => {dispatch(postAccountStats(account_id))},
-  postTankStats: (account_id) => {dispatch(postTankStats(account_id))}
+  postTankStats: (account_id) => {dispatch(postTankStats(account_id))},
+  getServerStatistic: () => {dispatch(getServerStatistic())},
 });
 
 class Main extends Component {
@@ -87,6 +90,7 @@ class Main extends Component {
     this.props.fetchSettings();
     this.props.fetchSessionData();
     this.props.getListOfTanks();
+    this.props.getServerStatistic();
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -128,10 +132,14 @@ class Main extends Component {
                                                                   postTankStats={this.props.postTankStats} />} />
           <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
                                                                             setTanksStatsData={this.props.setTanksStatsData}
+                                                                            accountStats={this.props.accountStats}
+                                                                            serverStats={this.props.serverStats}
+                                                                            postAccountStats={this.props.postAccountStats}
                                                                             postTankStats={this.props.postTankStats} />} />
-          <Route exact path='/accountStats' element={<TempAccount accounts={this.props.accounts.accounts}
+          <Route exact path='/accountStats' element={<AccountStats accounts={this.props.accounts.accounts}
                                                                  accountStats={this.props.accountStats}
                                                                  tanksStats={this.props.tanksStats}
+                                                                 serverStats={this.props.serverStats}
                                                                  postAccountStats={this.props.postAccountStats}
                                                                  postTankStats={this.props.postTankStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}

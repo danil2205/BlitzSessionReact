@@ -60,20 +60,32 @@ const AccountStats = (props) => {
           {props.tanksStats.data && <Filter setFilteredAccountStats={setFilteredAccountStats} tanksStatsForCard={props.tanksStats} />}
         </Col>
       </Row>
-      {props.accountStats.data && props.accountStats.data.name && filteredAccountStats &&
+      {props.serverStats && props.accountStats.data && props.accountStats.data.name && filteredAccountStats &&
         <Row>
           <Col className='statistics-column'>
-            <OverviewCard accountStats={props.accountStats} />
-            <Damage accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+            <OverviewCard accountStats={props.accountStats} serverStats={props.serverStats} />
+            <Damage accountStats={props.accountStats}
+                    serverStats={props.serverStats}
+                    filteredStats={filteredAccountStats}
+            />
           </Col>
 
-          <Col className="statistics-column">
-            <Wins accountStats={props.accountStats} filteredStats={filteredAccountStats} />
-            <Battles accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+          <Col className='statistics-column'>
+            <Wins accountStats={props.accountStats}
+                  serverStats={props.serverStats}
+                  filteredStats={filteredAccountStats}
+            />
+            <Battles accountStats={props.accountStats}
+                     serverStats={props.serverStats}
+                     filteredStats={filteredAccountStats}
+            />
           </Col>
 
-          <Col className="statistics-column">
-            <BattleStyle accountStats={props.accountStats} filteredStats={filteredAccountStats} />
+          <Col className='statistics-column'>
+            <BattleStyle accountStats={props.accountStats}
+                         serverStats={props.serverStats}
+                         filteredStats={filteredAccountStats}
+            />
           </Col>
         </Row>
       }

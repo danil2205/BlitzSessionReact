@@ -246,3 +246,18 @@ export const postTankStats = (account_id) => (dispatch) => {
     actions: [makeActionCreator(ActionTypes.ADD_TANK_STATS)],
   });
 };
+
+export const getServerStatistic = () => (dispatch) => {
+  dispatch(makeActionCreator(ActionTypes.SERVER_STATISTIC_LOADING)());
+
+  fetchData({
+    link: 'serverStatistic',
+    method: 'GET',
+    data: undefined,
+    dispatch,
+    actions: [
+      makeActionCreator(ActionTypes.ADD_SERVER_STATISTIC),
+      makeActionCreator(ActionTypes.SERVER_STATISTIC_FAILED),
+    ],
+  });
+};

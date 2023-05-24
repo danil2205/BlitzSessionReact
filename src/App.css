@@ -561,3 +561,11 @@ th > label {
   background-color: transparent;
   border-color: transparent;
 }
+
+.success-background {
+  background-color: #d4edda !important;
+}
+
+.warning-background {
+  background-color: #fff3cd !important;
+}
