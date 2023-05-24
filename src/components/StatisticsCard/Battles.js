@@ -5,7 +5,7 @@ import BarChart from '../Charts/BarChart';
 const Battles = (props) => {
   const stats = props.tankStatsCard || props.accountStats.data;
   const lastSnapshot = stats.snapshots.at(-1);
-  const dataForTables = props.filteredStats.dataForTables;
+  const { dataForTables } = props.filteredStats;
   const creationDate = new Date((stats.createdAt || props.creationDate) * 1000);
 
   const months =  new Date().getMonth() - creationDate.getMonth() +

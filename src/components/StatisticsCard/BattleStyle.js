@@ -12,7 +12,7 @@ const BattleStyle = (props) => {
     props.serverStats.serverStats.tanks.find((tankStats) => tankStats.wotId === Number(wotId)) :
     props.serverStats.serverStats.account;
 
-  const dataForTables = props.filteredStats.dataForTables;
+  const { dataForTables } = props.filteredStats;
 
   const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
   const fragsRateFiltered = dataForTables?.battles ? (dataForTables.frags / dataForTables.battles).toFixed(2) : '-';

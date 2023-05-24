@@ -24,7 +24,7 @@ const TankStats = (props) => {
     })();
   }, [accountId]);
 
-  const tankStats = props.tanksStats.data ? props.tanksStats.data.find((tank) => tank.tank_id === Number(wotId)) : [];
+  const tankStats = props.tanksStats?.data?.find((tank) => tank.tank_id === Number(wotId)) || [];
 
   return (
     <div className='content'>
