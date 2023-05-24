@@ -2,11 +2,17 @@ import { Card, CardHeader, CardBody, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
 import BarChart from '../Charts/BarChart';
+import { useParams } from 'react-router-dom';
 
 const Wins = (props) => {
+  const { wotId } = useParams();
+  const isTankStatsCard = Boolean(props.tankStatsCard);
   const stats = props.tankStatsCard || props.accountStats.data;
   const lastSnapshot = stats.snapshots.at(-1);
-  const serverStats = props.serverStats.serverStats.account.regular;
+  const serverStats = isTankStatsCard ?
+    props.serverStats.serverStats.tanks.find((tankStats) => tankStats.wotId === Number(wotId)).regular :
+    props.serverStats.serverStats.account.regular;
+
   const { dataForTables, dataForCharts } = props.filteredStats;
 
   const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;

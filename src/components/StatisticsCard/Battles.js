@@ -6,13 +6,12 @@ const Battles = (props) => {
   const stats = props.tankStatsCard || props.accountStats.data;
   const lastSnapshot = stats.snapshots.at(-1);
   const dataForTables = props.filteredStats.dataForTables;
-
-  const creationDate = new Date(stats.createdAt * 1000);
+  const creationDate = new Date((stats.createdAt || props.creationDate) * 1000);
 
   const months =  new Date().getMonth() - creationDate.getMonth() +
   12 * (new Date().getFullYear() - creationDate.getFullYear());
 
-  const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot.rating?.battles ?? 0)) / months) * 12);
+  const battlesPerYear = Math.round(((lastSnapshot.regular.battles + (lastSnapshot?.rating?.battles ?? 0)) / months) * 12);
   const battlesPerYearFiltered = dataForTables?.battles ? Math.round(((dataForTables.battles) / months) * 12) : '-';
 
   return (

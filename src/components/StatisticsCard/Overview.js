@@ -1,11 +1,17 @@
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, Filler, Legend, LineElement, PointElement, RadialLinearScale, Tooltip } from 'chart.js';
 import { Card, CardHeader, CardBody, CardImg } from 'reactstrap';
+import { useParams } from 'react-router-dom';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Legend, Tooltip);
 
 const OverviewCard = (props) => {
+  const { wotId } = useParams();
+  const isTankStatsCard = Boolean(props.tankStatsCard);
   const stats = props.tankStatsCard || props.accountStats.data;
-  const serverStats = props.serverStats.serverStats.account.regular;
+  const serverStats = isTankStatsCard ?
+    props.serverStats.serverStats.tanks.find((tankStats) => tankStats.wotId === Number(wotId)).regular :
+    props.serverStats.serverStats.account.regular;
+
   const lastSnapshot = stats.snapshots.at(-1);
 
   const winRate = lastSnapshot.regular.wins / (lastSnapshot.regular.battles || 1);

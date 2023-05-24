@@ -1,11 +1,17 @@
 import { Card, CardBody, CardHeader, Table } from 'reactstrap';
 import { OverlayTrigger, Tooltip as Tips } from 'react-bootstrap';
 import LineChart from '../Charts/LineChart';
+import { useParams } from 'react-router-dom';
 
 const BattleStyle = (props) => {
+  const { wotId } = useParams();
+  const isTankStatsCard = Boolean(props.tankStatsCard);
   const stats = props.tankStatsCard || props.accountStats.data;
   const lastSnapshot = stats.snapshots.at(-1);
-  const serverStats = props.serverStats.serverStats.account;
+  const serverStats = isTankStatsCard ?
+    props.serverStats.serverStats.tanks.find((tankStats) => tankStats.wotId === Number(wotId)) :
+    props.serverStats.serverStats.account;
+
   const dataForTables = props.filteredStats.dataForTables;
 
   const fragsRate = (lastSnapshot.regular.frags / lastSnapshot.regular.battles).toFixed(2);
@@ -20,13 +26,14 @@ const BattleStyle = (props) => {
   const survRateFiltered = dataForTables?.battles ? (dataForTables.survivedBattles / dataForTables.battles).toFixed(2) : '-';
   const survRateServer = (serverStats.regular.survived_battles / serverStats.regular.battles).toFixed(2);
 
-  const calcBattlesForMaster = (stats, badge) => (stats.regular.battles / stats.mastery[badge]).toFixed(0);
+  const calcBattlesForMaster = (stats, badge) => stats.mastery[badge] ? (stats.regular.battles / stats.mastery[badge]).toFixed(0) : '-'
   const badges = ['markOfMastery', 'markOfMasteryI', 'markOfMasteryII', 'markOfMasteryIII'];
 
   const calculateBattlesForMasters = (stats) => {
     const battles = {};
     badges.forEach((badge) => {
-      battles[badge] = +calcBattlesForMaster(stats, badge);
+      const battlesForMaster = calcBattlesForMaster(stats, badge)
+      battles[badge] = (battlesForMaster === '-' ? '-' : +battlesForMaster);
     });
     return battles;
   };

@@ -132,12 +132,14 @@ class Main extends Component {
                                                                   postTankStats={this.props.postTankStats} />} />
           <Route exact path='/hangar/:accountId/:wotId' element={<TankStats tanksStats={this.props.tanksStats}
                                                                             setTanksStatsData={this.props.setTanksStatsData}
+                                                                            accountStats={this.props.accountStats}
                                                                             serverStats={this.props.serverStats}
+                                                                            postAccountStats={this.props.postAccountStats}
                                                                             postTankStats={this.props.postTankStats} />} />
           <Route exact path='/accountStats' element={<AccountStats accounts={this.props.accounts.accounts}
                                                                  accountStats={this.props.accountStats}
                                                                  tanksStats={this.props.tanksStats}
-                                                                   serverStats={this.props.serverStats}
+                                                                 serverStats={this.props.serverStats}
                                                                  postAccountStats={this.props.postAccountStats}
                                                                  postTankStats={this.props.postTankStats} />} />
           <Route exact path='/session' element={<Session accounts={this.props.accounts.accounts}
