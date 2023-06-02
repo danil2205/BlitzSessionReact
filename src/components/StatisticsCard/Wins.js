@@ -15,9 +15,9 @@ const Wins = (props) => {
 
   const { dataForTables, dataForCharts } = props.filteredStats;
 
-  const winRate = `${((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2)}%`;
-  const winRateFiltered = dataForTables?.battles ? `${((dataForTables.wins / dataForTables.battles) * 100).toFixed(2)}%` : '-';
-  const winRateServer = `${((serverStats.wins / serverStats.battles) * 100).toFixed(2)}%`;
+  const winRate = ((lastSnapshot.regular.wins / lastSnapshot.regular.battles) * 100).toFixed(2);
+  const winRateFiltered = dataForTables?.battles ? ((dataForTables.wins / dataForTables.battles) * 100).toFixed(2) : '-';
+  const winRateServer = ((serverStats.wins / serverStats.battles) * 100).toFixed(2);
 
   const labelsForCharts = Object.keys(dataForCharts).map((key) => key);
 
@@ -52,13 +52,13 @@ const Wins = (props) => {
           <tbody>
             <tr>
               <td><strong>WinRate</strong></td>
-              <td className={winRateServer < winRate ? 'success-background': 'warning-background'}>
-                <strong className="increase-font-size">{winRate}</strong>
+              <td className={+winRateServer < +winRate ? 'success-background': 'warning-background'}>
+                <strong className="increase-font-size">{winRate + '%'}</strong>
               </td>
-              <td className={winRateServer < winRateFiltered ? 'success-background': 'warning-background'}>
-                {winRateFiltered}
+              <td className={+winRateServer < +winRateFiltered ? 'success-background': 'warning-background'}>
+                {winRateFiltered !== '-' ? winRateFiltered + '%' : '-'}
               </td>
-              <td>{winRateServer}</td>
+              <td>{winRateServer + '%'}</td>
             </tr>
             <tr>
               <td><strong>Wins</strong></td>

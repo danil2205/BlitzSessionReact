@@ -29,12 +29,6 @@ export const SidebarData =
       cName: 'nav-text'
     },
     {
-      title: 'Search User',
-      path: '/user-search',
-      icons: <IoIcons.IoMdSearch />,
-      cName: 'nav-text'
-    },
-    {
       title: 'Contact Us',
       path: '/contactus',
       icons: <FaIcons.FaQuestionCircle />,
