@@ -7,16 +7,24 @@ The user can register (or log in if he already has an account). After that, he h
 ## Motivation
 World of Tanks Blitz boasts a massive fan base, and i want to make website that offers valuable insights and data analysis for players. As avid gamers ourselves, I understand the significance of statistics in shaping gameplay decisions, such as tank selection, performance improvement strategies, and issue identification. My motivation behind BlitzSession is to fill this gap and provide World of Tanks Blitz players with a user-friendly and feature-rich website to analyze their performance comprehensively
 
-Link on backend: https://github.com/danil2205/BlitzSession
+[Link on Backend](https://github.com/danil2205/BlitzSession)
+
+[Design Document](https://docs.google.com/document/d/1Blprl62qVn8JEoNXtWzSsBnPYQ7XCCcmvsvOy5Jzq-c/edit)
 
 ## Download & Run
+**You need to have installed NodeJS on your machine.**
 
-1. Install all necessary packages
+1. Clone the repository
+```bash
+$ git clone https://github.com/danil2205/blitz-session-react.git
+```
+
+2. Install all necessary packages
 
 ```bash
 $ npm install
 ```
-2. Run
+3. Run
 
 ```bash
 $ npm start
@@ -38,3 +46,17 @@ User can choose his account in dropdown menu and after fetching stats about this
 
 **In Contact Us Tab:**<br />
 User can leave a feedback about project, what to add or fix.
+
+## Сode reviews of my project
+
+- [Code review №1](https://github.com/danil2205/blitz-session-react/pull/3) 
+- [Code review №2](https://github.com/danil2205/blitz-session-react/pull/4) 
+- [Code review №3](https://github.com/danil2205/BlitzSession/pull/1) 
+- [Code review №4](https://github.com/danil2205/BlitzSession/pull/2) 
+
+## My code reviews
+
+- [Code review №1](https://github.com/vladimirvikulin/To-Do-List/pull/4) 
+- [Code review №2](https://github.com/vladimirvikulin/To-Do-List-Server/pull/2) 
+- [Code review №3](https://github.com/vladimirvikulin/To-Do-List-Server/pull/3) 
+- [Code review №4](https://github.com/vladimirvikulin/To-Do-List/pull/8) 
